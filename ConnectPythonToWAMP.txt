@@ -1,3 +1,0 @@
-Connecting Python to Wamp (https://codeloop.org/python-mysql-database-for-beginners/):
-1. Connect to the database with correct name, host, username, password, charset and port
-2. 
