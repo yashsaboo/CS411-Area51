@@ -7,7 +7,7 @@ DBUSER = "root"
 db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME, charset='utf8', port=3308)
 cur = db.cursor()
 querysql = """
-INSERT INTO Employee (Name, Email, Age) VALUES ('John2', 'joh8n@gmail.com', '285')
+INSERT INTO CrimeType (type) VALUES ('Battery')
 """
 try:
     cur.execute(querysql)

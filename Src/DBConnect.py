@@ -1,6 +1,6 @@
 import MySQLdb as mdb
  
-DBNAME = "dbtest"
+DBNAME = "area51"
 DBHOST = "localhost"
 DBPASS = ""
 DBUSER = "root"
@@ -12,15 +12,19 @@ try:
     cur = db.cursor()
  
     # we are droping the table if it already exists
-    cur.execute("DROP TABLE IF EXISTS Employee")
+    cur.execute("DROP TABLE IF EXISTS Crime")
  
     sqlquery = """
-    CREATE TABLE Employee (
-    Name CHAR(20) NOT NULL,
-    Email CHAR(20),
-    Age INT
-    )
- 
+    CREATE TABLE Crime
+    (
+        incidentID int NOT NULL AUTO_INCREMENT,
+        reportedAt DateTime,
+        occuredAt DateTime,
+        deposition varchar(255),
+        crimeTypeID int NOT NULL,
+        PRIMARY KEY (incidentID),
+        FOREIGN KEY (crimeTypeID) REFERENCES CrimeType(crimeTypeID)
+    ) 
     """
     cur.execute(sqlquery)
     print("Table Created Successfully")
