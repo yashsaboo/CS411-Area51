@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script
+      type="text/javascript"
+      src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"
+    ></script>
+    <script src="static/js/application.js"></script>
+
+    <!-- <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/track1.css') }}"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+
+    <script
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="w3-content" style="max-width:1200px">
+    <h3>Leaflet Map Demo</h3>
+    <!-- Sidebar/menu -->
+    <nav
+      class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
+      style="z-index:3;width:250px"
+      id="mySidebar"
+    >
+      <div class="w3-container w3-display-container w3-padding-16">
+        <i
+          onclick="w3_close()"
+          class="fa fa-remove w3-hide-large w3-button w3-display-topright"
+        ></i>
+        <h3 class="w3-wide"><b>UIUC Crime Map</b></h3>
+      </div>
+      <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
+        <!-- Dropdown button -->
+        <a
+          onclick="displayDropdown('crimeTypeDropdown');"
+          href="javascript:void(0)"
+          class="w3-button w3-block w3-white w3-left-align"
+          id="crimeTypeBtn"
+        >
+          Crime Type <i class="fa fa-caret-down"></i>
+        </a>
+        <div
+          id="crimeTypeDropdown"
+          class="w3-bar-block w3-hide w3-padding-large w3-medium"
+        >
+          <!-- <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a> -->
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Theft
+            </div>
+          </a>
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Assault
+            </div>
+          </a>
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Alcohol
+            </div>
+          </a>
+        </div>
+
+        <a
+          onclick="displayDropdown('crimeFreqDropdown')"
+          href="javascript:void(0)"
+          class="w3-button w3-block w3-white w3-left-align"
+          id="crimeFreqBtn"
+        >
+          Crime Frequency <i class="fa fa-caret-down"></i>
+        </a>
+
+        <div
+          id="crimeFreqDropdown"
+          class="w3-bar-block w3-hide w3-padding-large w3-medium"
+        >
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="radio" id="low" name="frequency" value="low" />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              Low
+            </div>
+          </a>
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input
+                  type="radio"
+                  id="medium"
+                  name="frequency"
+                  value="medium"
+                />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              Medium
+            </div>
+          </a>
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="radio" id="high" name="frequency" value="high" />
+                <input type="checkbox" />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              High
+            </div>
+          </a>
+        </div>
+
+        <a href="#" class="w3-bar-item w3-button">Some buttons yo</a>
+        <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a>
+      </div>
+      <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
+      <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
+      <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a> -->
+    </nav>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left:250px">
+      <!-- Push down content on small screens -->
+      <div class="w3-hide-large" style="margin-top:83px"></div>
+
+      <!-- Image header -->
+      <div class="w3-display-container w3-container">
+        <!--The div element for the map -->
+        <div id="mapid" style="width: 1000px; height: 600px;"></div>
+      </div>
+
+      <div class="container" id="content">
+        <div class="row">
+          <p>Asynchronous page updates will appear here:</p>
+          <h3>Number list:</h3>
+          <div id="log"></div>
+          <!-- /#log -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
+      <h4>WHAT</h4>
+      
+    </footer> -->
+
+    <script>
+      // **----------- MAP SCRIPT ----------------**
+      // instantiate map
+      var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
+      L.tileLayer(
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+        {
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: "mapbox/streets-v11",
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken:
+            "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA"
+        }
+      ).addTo(mymap);
+
+      // circle markers
+      // var circle = L.circle([40.1138, -88.2249], {
+      //   color: "red",
+      //   fillColor: "#f03",
+      //   fillOpacity: 0.5,
+      //   radius: 200
+      // }).addTo(mymap);
+
+      // circle.bindPopup(circleLabel);
+      let circleLabel = "Siebel Center!!! :)";
+      // drawCircle([40.1138, -88.2249], "red", circleLabel);
+
+      function drawCircle(coordinates, circleColor, label, rad) {
+        var circle = L.circle(coordinates, {
+          color: circleColor,
+          fillColor: circleColor,
+          fillOpacity: 0.5,
+          radius: rad
+        });
+        circle.bindPopup(label);
+        return circle;
+      }
+
+      function removeCircle(circle) {
+        mymap.removeLayer(circle);
+      }
+
+      // Create stack of circle objects
+      var myList = [];
+
+      // Async function to add circles of random radii to map
+      $(document).ready(function() {
+        //connect to the socket server.
+        var socket = io.connect(
+          "http://" + document.domain + ":" + location.port + "/test"
+        );
+
+        var numbers_received = [];
+
+        //receive details from server
+        socket.on("newnumber", function(msg) {
+          console.log("Received number" + msg.number);
+          //maintain a list of ten numbers
+          if (numbers_received.length >= 10) {
+            numbers_received.shift();
+          }
+          numbers_received.push(msg.number);
+          numbers_string = "";
+          for (var i = 0; i < numbers_received.length; i++) {
+            numbers_string =
+              numbers_string + "<p>" + numbers_received[i].toString() + "</p>";
+          }
+
+          // Log the randomly generated numbers to bottom of screen
+          $("#log").html(numbers_string);
+
+          // Pop the one elem on stack and replace it w/ another circle
+          if (myList.length > 0) {
+            removeCircle(myList.pop());
+          }
+          // Create new circle object
+          var circle = drawCircle(
+            [40.1138, -88.2249],
+            "red",
+            circleLabel,
+            parseInt(msg.number)
+          );
+          // Add circle to stack and map
+          myList.push(circle);
+          circle.addTo(mymap);
+        });
+      });
+
+      mymap.on("click", function(ev) {
+        // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+        drawCircle(ev.latlng, "blue", "I added something here", 150).addTo(
+          mymap
+        );
+      });
+
+      // ----------------- PAGE FUNCTIONALITY -----------------
+
+      document.getElementById("crimeTypeBtn").click();
+      document.getElementById("crimeFreqBtn").click();
+
+      // Accordion
+      function displayDropdown(listTitle) {
+        console.log(listTitle);
+        var x = document.getElementById(listTitle);
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+        } else {
+          x.className = x.className.replace(" w3-show", "");
+        }
+      }
+    </script>
+  </body>
+</html>
+
+<style type="text/css">
+  /* Set the size of the div element that contains the map */
+  #mapid {
+    height: 500px;
+  }
+
+  #log {
+    height: 500px;
+    font-family: "Montserrat", sans-serif;
+    color: black;
+  }
+
+  .w3-sidebar a {
+    font-family: "Roboto", sans-serif;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .w3-wide {
+    font-family: "Montserrat", sans-serif;
+  }
+
+  /* ------ CHECKBOX CUSTOMIZATION ---------- */
+  /* Styling Checkbox Starts */
+
+  .checkbox-label {
+    display: inline-block;
+    position: relative;
+    margin: auto;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 24px;
+    height: 24px;
+    width: 24px;
+    clear: both;
+    vertical-align: middle;
+    padding-right: 30px;
+  }
+
+  .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .checkbox-label .checkbox-custom {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom {
+    background-color: #ff8052;
+    border-radius: 5px;
+    -webkit-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label .checkbox-custom::after {
+    position: absolute;
+    content: "";
+    left: 12px;
+    top: 12px;
+    height: 0px;
+    width: 0px;
+    border-radius: 5px;
+    border: solid #009bff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(0deg) scale(0);
+    -ms-transform: rotate(0deg) scale(0);
+    transform: rotate(0deg) scale(0);
+    opacity: 1;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom::after {
+    -webkit-transform: rotate(45deg) scale(1);
+    -ms-transform: rotate(45deg) scale(1);
+    transform: rotate(45deg) scale(1);
+    opacity: 1;
+    left: 8px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  /* For Ripple Effect */
+  .checkbox-label .checkbox-custom::before {
+    position: absolute;
+    content: "";
+    left: 10px;
+    top: 10px;
+    width: 0px;
+    height: 0px;
+    border-radius: 5px;
+    border: 2px solid #ffffff;
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0);
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom::before {
+    left: -3px;
+    top: -3px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    -webkit-transform: scale(3);
+    -ms-transform: scale(3);
+    transform: scale(3);
+    opacity: 0;
+    z-index: 999;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+
+  /* Style for Circular Radio Button */
+
+  .checkbox-label .checkbox-custom.circular {
+    border-radius: 50%;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom.circular {
+    background-color: #ff8052;
+    border-radius: 50%;
+    border: 2px solid #ff8052;
+  }
+  .checkbox-label input:checked ~ .checkbox-custom.circular::after {
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+  }
+  .checkbox-label .checkbox-custom.circular::after {
+    border-radius: 50%;
+  }
+
+  .checkbox-label .checkbox-custom.circular::before {
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom.circular::before {
+    border-radius: 50%;
+  }
+</style>
