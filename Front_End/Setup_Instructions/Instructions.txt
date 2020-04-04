@@ -1,0 +1,28 @@
+DISCLAIMER:
+* It may not be necessary to follow the "Setting up Virtual Environment" steps, but you will DEFINITELY need to follow the "Start running website" steps.
+
+Seting up Virtual Environment:
+
+1. Follow the setup to install virtual environment and Flask here: 	https://dev.to/sahilrajput/install-flask-and-create-your-first-web-application-2dba
+
+2. After you've created the hello.py sample script, run the following commands in PowerShell if you're on Windows (not covered in above instructions):
+	a. $env:FLASK_APP="hello.py"
+	b. py -m flask run
+
+3. Navigate to the website that flask produces, and you're good
+
+4. Follow tutorial on how to do GET/POST requests with Flask: https://www.google.com/search?q=post+and+get+in+flask&rlz=1C1CHBF_esUS839US839&oq=post+and+get+in+flask&aqs=chrome..69i57.1533j0j4&sourceid=chrome&ie=UTF-8#kpvalbx=_GLJ7XqPmMoXPtQbPxrygDw27
+
+5. When you're all done, tpye `deactivate` and exit your terminal
+
+--------
+
+Start running website:
+
+1. Install flask (pip install Flask)
+
+2. Install SocketIO (pip install python-socketio)
+
+3. Open terminal and run: `python hello.py`
+
+4. Navigate to your browser and open `localhost:5000`, providing the site runs on port 5000

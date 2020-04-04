@@ -7,6 +7,10 @@ from threading import Thread, Event
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
+# Sources:
+# https://github.com/shanealynn/async_flask
+# https://www.shanelynn.ie/asynchronous-updates-to-a-webpage-with-flask-and-socket-io/
+
 # turn the flask app into a socketio app
 socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
 

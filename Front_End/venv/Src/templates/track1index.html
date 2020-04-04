@@ -8,6 +8,7 @@
     ></script>
     <script src="static/js/application.js"></script>
 
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script> -->
     <!-- <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/track1.css') }}"
@@ -42,12 +43,12 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
   </head>
-  <body class="w3-content" style="max-width:1200px">
+  <body class="w3-content" style="max-width: 1200px;">
     <h3>Leaflet Map Demo</h3>
     <!-- Sidebar/menu -->
     <nav
       class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
-      style="z-index:3;width:250px"
+      style="z-index: 3; width: 250px;"
       id="mySidebar"
     >
       <div class="w3-container w3-display-container w3-padding-16">
@@ -57,7 +58,10 @@
         ></i>
         <h3 class="w3-wide"><b>UIUC Crime Map</b></h3>
       </div>
-      <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight:bold">
+      <div
+        class="w3-padding-64 w3-large w3-text-grey"
+        style="font-weight: bold;"
+      >
         <!-- Dropdown button -->
         <a
           onclick="displayDropdown('crimeTypeDropdown');"
@@ -164,9 +168,9 @@
     </nav>
 
     <!-- !PAGE CONTENT! -->
-    <div class="w3-main" style="margin-left:250px">
+    <div class="w3-main" style="margin-left: 250px;">
       <!-- Push down content on small screens -->
-      <div class="w3-hide-large" style="margin-top:83px"></div>
+      <div class="w3-hide-large" style="margin-top: 83px;"></div>
 
       <!-- Image header -->
       <div class="w3-display-container w3-container">
@@ -204,7 +208,7 @@
           tileSize: 512,
           zoomOffset: -1,
           accessToken:
-            "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA"
+            "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA",
         }
       ).addTo(mymap);
 
@@ -217,17 +221,32 @@
       // }).addTo(mymap);
 
       // circle.bindPopup(circleLabel);
-      let circleLabel = "Siebel Center!!! :)";
+
+      // let circleLabel = "Siebel Center!!! :)";
+      // let popUp = L.popup();
+      // var container = L.DomUtil.create("div");
+      // startBtn = document.createElement("button");
+      // startBtn.innerHTML = "Start from this location";
+      // // div.innerHTML = "" + startBtn;
+      // popUp.setContent("You clicked the map at " + startBtn);
+
+      function popupFunction() {
+        window.alert("YEET");
+      }
+      var popUp =
+        'This is a button \
+        <br> <button id="add-button" type="button" onclick="popupFunction()"> pls be a button</button>';
       // drawCircle([40.1138, -88.2249], "red", circleLabel);
 
-      function drawCircle(coordinates, circleColor, label, rad) {
+      function drawCircle(coordinates, circleColor, pop, rad) {
         var circle = L.circle(coordinates, {
           color: circleColor,
           fillColor: circleColor,
           fillOpacity: 0.5,
-          radius: rad
+          radius: rad,
         });
-        circle.bindPopup(label);
+
+        circle.bindPopup(pop);
         return circle;
       }
 
@@ -239,7 +258,7 @@
       var myList = [];
 
       // Async function to add circles of random radii to map
-      $(document).ready(function() {
+      $(document).ready(function () {
         //connect to the socket server.
         var socket = io.connect(
           "http://" + document.domain + ":" + location.port + "/test"
@@ -248,7 +267,7 @@
         var numbers_received = [];
 
         //receive details from server
-        socket.on("newnumber", function(msg) {
+        socket.on("newnumber", function (msg) {
           console.log("Received number" + msg.number);
           //maintain a list of ten numbers
           if (numbers_received.length >= 10) {
@@ -272,7 +291,7 @@
           var circle = drawCircle(
             [40.1138, -88.2249],
             "red",
-            circleLabel,
+            popUp,
             parseInt(msg.number)
           );
           // Add circle to stack and map
@@ -281,12 +300,12 @@
         });
       });
 
-      mymap.on("click", function(ev) {
-        // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
-        drawCircle(ev.latlng, "blue", "I added something here", 150).addTo(
-          mymap
-        );
-      });
+      // mymap.on("click", function (ev) {
+      //   // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+      //   drawCircle(ev.latlng, "blue", "I added something here", 150).addTo(
+      //     mymap
+      //   );
+      // });
 
       // ----------------- PAGE FUNCTIONALITY -----------------
 
