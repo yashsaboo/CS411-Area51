@@ -33,10 +33,17 @@ def randomNumberGenerator():
         socketio.sleep(5)
 
 
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def index():
     # only by sending this page first will the client be connected to the socketio instance
     return render_template('track1index.html')
+    # return redirect(url_for('predicted'))
+
+
+@app.route('/predicted')
+def predicted():
+    # only by sending this page first will the client be connected to the socketio instance
+    return render_template('predicted.html')
 
 
 @socketio.on('connect', namespace='/test')
@@ -53,7 +60,12 @@ def test_connect():
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
+    global thread, thread_stop_event
     print('Client disconnected')
+    # test_connect()
+    # thread_stop_event.set()
+    # thread.join()
+    # print('All threads killed')
 
 
 if __name__ == '__main__':

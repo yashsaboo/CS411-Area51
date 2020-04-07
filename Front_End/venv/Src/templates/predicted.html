@@ -75,7 +75,7 @@
           id="crimeTypeDropdown"
           class="w3-bar-block w3-hide w3-padding-large w3-medium"
         >
-        
+          <!-- <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a> -->
 
           <a href="#" class="w3-bar-item w3-button">
             <div class="checkbox-container">
@@ -159,7 +159,7 @@
           </a>
         </div>
 
-        <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
+        <a href="/" class="w3-bar-item w3-button">Return home</a>
         <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
       </div>
       <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
@@ -213,7 +213,7 @@
 
             <div class="custom-select" style="width:200px;">
                 <label for="crimeType">Select a crime type:</label>
-                    <select id="selected-crime">
+                    <select id="crimes">
                     <option value="theft">Theft</option>
                     <option value="drug possession">Drug Possession</option>
                     <option value="trespass">Trespass</option>
@@ -228,7 +228,7 @@
                 <label for="birthdaytime">Date and Time:</label>
                 <input type="datetime-local" id="crimetime" name="crimetime">
             </div>
-            <button id="submitBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+            <button id="submitBtn" class="button">ADD CRIME</button>
         </div> <!-- end modal body -->
 
         </div>
@@ -275,179 +275,141 @@
       
       //=============================== POP UP CODE ===================================
       // ----------------draw table inside map marker----------------//
-    var tableHeader = `<tr>
-              <th>Crime</th>
-              <th>Date</th>
-              <th>Time</th>
-          </tr>`;
+      var tableString = `<tr>
+                <th>Crime</th>
+                <th>Location</th>
+                <th>Time</th>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>6-Apr-2020 12:30PM</td>
+            </tr>
+            <tr>
+                <td>Assault</td>
+                <td>Siebel Center</td>
+                <td>2-Feb-2020 9:45PM</td>
+            </tr>
+            <tr>
+                <td>Alcohol</td>
+                <td>Siebel Center</td>
+                <td>20-Dec-2019 11:34PM</td>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>11-Nov-2019 9:22AM</td>
+            </tr>`
 
-    function addTableItem(crimeType, crimeTime, tableString){
-      let timeSplit     = crimeTime.split("T");       // reformat timestamp
+      var popUp = '<table>' + tableString + `</table>
+        <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
 
-      let crimeTypeHTML = '<td>' + crimeType.toUpperCase() + '</td>';
-      let crimeDateHTML = '<td>' + timeSplit[0] + '</td>';
-      let crimeTimeHTML = '<td>' + timeSplit[1] + '</td>';
+      
+      function popupFunction() {
+        // window.alert("YEET");
+        // ----------------add crime popup modal JS----------------
+        // Get the modal
+        var modal = document.getElementById("addCrimeModal");
 
-      let newEntry      = '<tr>' + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
-      tableString       = tableString + newEntry;
+        // Get the button that opens the modal
+        // var btn = document.getElementById("addCrimeBtn");
 
-      return tableString;
-    }
-    
-    var tableString = `<tr>
-              <td>THEFT</td>
-              <td>2020-04-06 </td>
-              <td> 12:30</td>
-          </tr>
-          <tr>
-              <td>ASSAULT</td>
-              <td>2020-02-02</td>
-              <td>21:45</td>
-          </tr>
-          <tr>
-              <td>ALCOHOL</td>
-              <td>2019-12-23</td>
-              <td> 23:30</td>
-          </tr>
-          <tr>
-              <td>ACCIDENT</td>
-              <td>2019-11-23</td>
-              <td> 9:22</td>
-          </tr>`
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
 
-    var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div>
-      <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+        // When the user clicks the button, open the modal 
+        modal.style.display = "block";
 
-    
-    function popupFunction() {
-      // window.alert("YEET");
-      // ----------------add crime popup modal JS----------------
-      // Get the modal
-      var modal = document.getElementById("addCrimeModal");
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
 
-      // Get the button that opens the modal
-      // var btn = document.getElementById("addCrimeBtn");
-
-      // Get the <span> element that closes the modal
-      var span = document.getElementsByClassName("close")[0];
-
-      // When the user clicks the button, open the modal 
-      modal.style.display = "block";
-
-      // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
-      modal.style.display = "none";
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
       }
 
-      // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-      if (event.target == modal) {
-          modal.style.display = "none";
-      }
-      }
-    }
+      // dropdown select list 
+        var x, i, j, selElmnt, a, b, c;
+        /* Look for any elements with the class "custom-select": */
+        x = document.getElementsByClassName("custom-select");
+        for (i = 0; i < x.length; i++) {
+            selElmnt = x[i].getElementsByTagName("select")[0];
+            /* For each element, create a new DIV that will act as the selected item: */
+            a = document.createElement("DIV");
+            a.setAttribute("class", "select-selected");
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            /* For each element, create a new DIV that will contain the option list: */
+            b = document.createElement("DIV");
+            b.setAttribute("class", "select-items select-hide");
+            for (j = 1; j < selElmnt.length; j++) {
+                /* For each option in the original select element,
+                create a new DIV that will act as an option item: */
+                c = document.createElement("DIV");
+                c.innerHTML = selElmnt.options[j].innerHTML;
+                c.addEventListener("click", function(e) {
+                    /* When an item is clicked, update the original select box,
+                    and the selected item: */
+                    var y, i, k, s, h;
+                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < s.length; i++) {
+                    if (s.options[i].innerHTML == this.innerHTML) {
+                        s.selectedIndex = i;
+                        h.innerHTML = this.innerHTML;
+                        y = this.parentNode.getElementsByClassName("same-as-selected");
+                        for (k = 0; k < y.length; k++) {
+                        y[k].removeAttribute("class");
+                        }
+                        this.setAttribute("class", "same-as-selected");
+                        break;
+                    }
+                    }
+                h.click();
+            });
+            b.appendChild(c);
+        }
+        x[i].appendChild(b);
+        a.addEventListener("click", function(e) {
+            /* When the select box is clicked, close any other select boxes,
+            and open/close the current select box: */
+            e.stopPropagation();
+            closeAllSelect(this);
+            this.nextSibling.classList.toggle("select-hide");
+            this.classList.toggle("select-arrow-active");
+        });
+        }
 
-    // dropdown select list 
-      var x, i, j, selElmnt, a, b, c;
-      /* Look for any elements with the class "custom-select": */
-      x = document.getElementsByClassName("custom-select");
-      for (i = 0; i < x.length; i++) {
-          selElmnt = x[i].getElementsByTagName("select")[0];
-          /* For each element, create a new DIV that will act as the selected item: */
-          a = document.createElement("DIV");
-          a.setAttribute("class", "select-selected");
-          a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-          x[i].appendChild(a);
-          /* For each element, create a new DIV that will contain the option list: */
-          b = document.createElement("DIV");
-          b.setAttribute("class", "select-items select-hide");
-          for (j = 1; j < selElmnt.length; j++) {
-              /* For each option in the original select element,
-              create a new DIV that will act as an option item: */
-              c = document.createElement("DIV");
-              c.innerHTML = selElmnt.options[j].innerHTML;
-              c.addEventListener("click", function(e) {
-                  /* When an item is clicked, update the original select box,
-                  and the selected item: */
-                  var y, i, k, s, h;
-                  s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-                  h = this.parentNode.previousSibling;
-                  for (i = 0; i < s.length; i++) {
-                  if (s.options[i].innerHTML == this.innerHTML) {
-                      s.selectedIndex = i;
-                      h.innerHTML = this.innerHTML;
-                      y = this.parentNode.getElementsByClassName("same-as-selected");
-                      for (k = 0; k < y.length; k++) {
-                      y[k].removeAttribute("class");
-                      }
-                      this.setAttribute("class", "same-as-selected");
-                      break;
-                  }
-                  }
-              h.click();
-          });
-          b.appendChild(c);
-      }
-      x[i].appendChild(b);
-      a.addEventListener("click", function(e) {
-          /* When the select box is clicked, close any other select boxes,
-          and open/close the current select box: */
-          e.stopPropagation();
-          closeAllSelect(this);
-          this.nextSibling.classList.toggle("select-hide");
-          this.classList.toggle("select-arrow-active");
-      });
-      }
+        function closeAllSelect(elmnt) {
+        /* A function that will close all select boxes in the document,
+        except the current select box: */
+        var x, y, i, arrNo = [];
+        x = document.getElementsByClassName("select-items");
+        y = document.getElementsByClassName("select-selected");
+        for (i = 0; i < y.length; i++) {
+            if (elmnt == y[i]) {
+            arrNo.push(i)
+            } else {
+            y[i].classList.remove("select-arrow-active");
+            }
+        }
+        for (i = 0; i < x.length; i++) {
+            if (arrNo.indexOf(i)) {
+            x[i].classList.add("select-hide");
+            }
+        }
+        }
 
-      function closeAllSelect(elmnt) {
-      /* A function that will close all select boxes in the document,
-      except the current select box: */
-      var x, y, i, arrNo = [];
-      x = document.getElementsByClassName("select-items");
-      y = document.getElementsByClassName("select-selected");
-      for (i = 0; i < y.length; i++) {
-          if (elmnt == y[i]) {
-          arrNo.push(i)
-          } else {
-          y[i].classList.remove("select-arrow-active");
-          }
-      }
-      for (i = 0; i < x.length; i++) {
-          if (arrNo.indexOf(i)) {
-          x[i].classList.add("select-hide");
-          }
-      }
-      }
-
-      /* If the user clicks anywhere outside the select box,
-      then close all select boxes: */
-      document.addEventListener("click", closeAllSelect);
-
-      //------------- code for getting crime addition data
-
-      function addCrime(){
-          var crimeType = document.getElementById("selected-crime").value;
-          var crimeTime = document.getElementById("crimetime").value;
-          var modal = document.getElementById("addCrimeModal");
-
-          console.log("Crime Type:", crimeType);
-          console.log("Crime Time:", crimeTime);
-          updatePopupTable(crimeType, crimeTime);
-
-          // close the modal
-          modal.style.display = "none";
-      }
-
-      function updatePopupTable(crimeType, crimeTime){
-          newTableString = addTableItem(crimeType, crimeTime, tableString);
-          tableString = newTableString;
-          popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader +  tableString + `</table></div>
-          <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
-          // console.log(popUp);
-      }
-    
-
-
+        /* If the user clicks anywhere outside the select box,
+        then close all select boxes: */
+        document.addEventListener("click", closeAllSelect);
+ 
+      
     //  ============================= DRAWING CIRCLES ================================
       // drawCircle([40.1138, -88.2249], "red", circleLabel);
 
@@ -924,29 +886,4 @@
         border-radius: 8px;
         margin-bottom: 10px;
     }
-
-
-    /* ------------- custom scrollbar --------------- */
-
-    /* width */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1; 
-    }
-    
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #ff8052; 
-      border-radius: 8px;
-    }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffc252; 
-    }
-
 </style>
