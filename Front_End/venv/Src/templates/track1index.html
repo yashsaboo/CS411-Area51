@@ -179,6 +179,30 @@
       </div>
 
       <div class="container" id="content">
+              <!-- -----add crime pop-up modal html ---- -->
+    <!-- Trigger/Open The Modal -->
+    <button id="addCrimeBtn">Open Modal</button>
+    <!-- The Modal -->
+    <div id="addCrimeModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Modal Header</h2>
+        </div>
+        <div class="modal-body">
+            <p>Some text in the Modal Body</p>
+            <p>Some other text...</p>
+        </div>
+        <div class="modal-footer">
+            <h3>Modal Footer</h3>
+        </div>
+        </div>
+    
+    </div>
+      
+    </div>
         <div class="row">
           <p>Asynchronous page updates will appear here:</p>
           <h3>Number list:</h3>
@@ -193,6 +217,7 @@
       <h4>WHAT</h4>
       
     </footer> -->
+
 
     <script>
       // **----------- MAP SCRIPT ----------------**
@@ -230,13 +255,78 @@
       // // div.innerHTML = "" + startBtn;
       // popUp.setContent("You clicked the map at " + startBtn);
 
+
+      
+      // ----------------draw table inside map marker----------------//
+
+      var tableString = `<tr>
+                <th>Crime</th>
+                <th>Location</th>
+                <th>Time</th>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>6-Apr-2020 12:30PM</td>
+            </tr>
+            <tr>
+                <td>Assault</td>
+                <td>Siebel Center</td>
+                <td>2-Feb-2020 9:45PM</td>
+            </tr>
+            <tr>
+                <td>Alcohol</td>
+                <td>Siebel Center</td>
+                <td>20-Dec-2019 11:34PM</td>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>11-Nov-2019 9:22AM</td>
+            </tr>`
+
+      var popUp = '<table>' + tableString + `</table>
+        <br> <button class="button" id="crimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+
+      
       function popupFunction() {
-        window.alert("YEET");
+        // window.alert("YEET");
+
       }
-      var popUp =
-        'This is a button \
-        <br> <button id="add-button" type="button" onclick="popupFunction()"> pls be a button</button>';
+
+
+              // ----------------add crime popup modal JS----------------
+        // Get the modal
+        // Get the modal
+        var modal = document.getElementById("addCrimeModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("addCrimeBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+        modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+ 
+      
+      
       // drawCircle([40.1138, -88.2249], "red", circleLabel);
+
 
       function drawCircle(coordinates, circleColor, pop, rad) {
         var circle = L.circle(coordinates, {
@@ -329,8 +419,10 @@
 <style type="text/css">
   /* Set the size of the div element that contains the map */
   #mapid {
-    height: 500px;
+    /* height: 500px; */
+    z-index:1; 
   }
+  #modal{ z-index:2; }
 
   #log {
     height: 500px;
@@ -499,4 +591,118 @@
   .checkbox-label input:checked ~ .checkbox-custom.circular::before {
     border-radius: 50%;
   }
+
+
+  /* table stuff */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  tr:hover {background-color:#f5f5f5;}
+
+  /* button stuff */
+
+  .button {
+      background-color: #ff8052;
+      border: none;
+      color: white;
+      padding: 10px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .button:hover {
+      background-color: white;
+      color: #ff8052;
+      border: 2px solid #ff8052;
+      border-radius: 8px;
+  }
+
+  /* popup modal stuff  */
+  /* The Modal (background) */
+    body {font-family: "Montserrat", sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        padding-left: 20%;
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 50%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {top:-300px; opacity:0} 
+        to {top:0; opacity:1}
+    }
+
+    @keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #ff8052;
+        color: white;
+    }
+
+    .modal-body {padding: 2px 16px;}
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #ff8052;
+        color: white;
+    }
 </style>
