@@ -4,6 +4,6 @@ Start running website:
 
 2. Install SocketIO (pip install python-socketio)
 
-3. Open terminal and run: `python hello.py`
+3. Go to the folder: "CS411-Area51\Front_End\venv\Src". Open terminal and run: `python hello.py`
 
 4. Navigate to your browser and open `localhost:5000`, providing the site runs on port 5000
