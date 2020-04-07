@@ -1,4 +1,4 @@
-id,Topleft lat,Topleft lon,Topright lat,Topright lon,Bottomleft lat,Bottomleft lon,Bottomleft lat,Bottomleft lon
+id,Topleft lat,Topleft lon,Topright lat,Topright lon,Bottomleft lat,Bottomleft lon,Bottomright lat,Bottomright lon
 1,40.116411,-88.228957,40.116411,-88.225699,40.112745,-88.228957,40.112745,-88.225699
 2,40.116411,-88.225699,40.116411,-88.224054,40.11544,-88.225699,40.11544,-88.224054
 3,40.116411,-88.224054,40.116411,-88.22238,40.11544,-88.224054,40.11544,-88.22238
