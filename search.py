@@ -9,7 +9,7 @@ Created on Wed Apr  8 21:42:41 2020
 import numpy as np
 
 def search(lat, lon):
-    block_raw = np.loadtxt('location.csv', delimiter = ',', skiprows = 1)
+    block_raw = np.loadtxt('BlockLocation.csv', delimiter = ',', skiprows = 1)
     block = np.zeros((50, 8))
     for i in range(50):
         block[int(block_raw[i,0]) - 1] = block_raw[i,1:] 
@@ -22,5 +22,5 @@ def search(lat, lon):
     print(index)
     return index
 
-search(40.1128338,-88.238641399999999)
+search(40.1079691,-88.23033009999999)
         

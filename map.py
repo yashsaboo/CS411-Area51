@@ -16,7 +16,7 @@ mapCoords = {}
 #mappedLocsDir = Path(r'..\Crime_Logs\Mapped_Locations')
 mappedLocsDir = Path(r'./Union')
 
-block_raw = np.loadtxt('location.csv', delimiter = ',', skiprows = 1)
+block_raw = np.loadtxt('BlockLocation.csv', delimiter = ',', skiprows = 1)
 block = np.zeros((50, 8))
 for i in range(50):
     block[int(block_raw[i,0]) - 1] = block_raw[i,1:] 
@@ -30,7 +30,7 @@ for File in os.listdir(mappedLocsDir):
             i = 0
             for line in lines:
                 tok = line.split(':')
-                print(tok)
+                #print(tok)
                 if(len(tok)==4):
                     location[i,0] = float(tok[2].split(',')[0])
                     location[i,1] = float(tok[3].split('}')[0])
@@ -41,6 +41,7 @@ for File in os.listdir(mappedLocsDir):
                     i += 1
                 elif (len(tok) == 1):
                     num-=1
+                    #print(tok)
                     # there may exist '\n' in some files
     
         index = np.zeros((num,1))
