@@ -41,14 +41,11 @@ for File in os.listdir(mappedLocsDir):
                     i += 1
                 elif (len(tok) == 1):
                     num-=1
-                #print(tok[2].split(',')[0])
-                #print(tok[3].split('}')[0])
+                    # there may exist '\n' in some files
     
         index = np.zeros((num,1))
         for i in range(num):
             for j in range(50):
-                #print(location[i][0])
-                #print(block[j][2])
                 if((location[i][0] < block[j][0]) & (location[i][0] > block[j][6]) 
                 & (location[i][1] < block[j][3]) & (location[i][1] > block[j][1])):
                     index[i] = j + 1
