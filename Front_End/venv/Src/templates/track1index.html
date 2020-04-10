@@ -266,14 +266,14 @@
                 <div class="custom-select" style="width:200px;">
                     <label for="crimeType">Change attribute:</label>
 
-                    <div class="checkbox-container"> 
+                    <!-- <div class="checkbox-container"> 
                         <label class="checkbox-label"><input type="radio" name="editRadio" id="incidentID"/><span class="checkbox-custom circular"></span></label>
                         <label for="crimeIDRadio">Update incident ID:
                             <div class="custom-form" style="width:300px;">
                                 <input type="text" id="newCrimeID" placeholder="8-character ID">
                             </div>
                         </label>
-                    </div>
+                    </div> -->
 
                                           
                     <div class="checkbox-container"> 
@@ -840,8 +840,8 @@
         for (i=0; i<columns.length; i++){
             if(columns[i].checked){
                 columnToBeUpdated = columns[i].id;
-                if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
-                else if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
+                // if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
+                if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
                 else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
                 // newColumnValue = columns[i].value;
             }
