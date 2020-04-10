@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
 """
@@ -73,9 +73,13 @@ Created on Thu Apr 9
 
 # #### Please go to the update section
 
+# # Search Format
+
+# #### Please go to the search section
+
 # # The Code
 
-# In[1]:
+# In[2]:
 
 
 import MySQLdb as mdb
@@ -83,7 +87,7 @@ import DatabaseHelperFunctions as dbhelp
 import numpy as np
 
 
-# In[2]:
+# In[3]:
 
 
 csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\Convert_CSV\Data"
@@ -91,7 +95,7 @@ csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Ar
 
 # ### Sanity Checker
 
-# In[3]:
+# In[4]:
 
 
 def checkDateAndTimeSanity(str):
@@ -153,7 +157,7 @@ def checkSanity(msg):
 
 # ### Find CrimeTypeID
 
-# In[4]:
+# In[5]:
 
 
 def findCrimeTypeID_InsertIfNotPresent(crimeType):
@@ -198,7 +202,7 @@ def findCrimeTypeID_InsertIfNotPresent(crimeType):
 
 # ### Find blockID
 
-# In[5]:
+# In[6]:
 
 
 def search(lat, lon):
@@ -270,7 +274,7 @@ def insertNewData(msg):
         return False
 
 
-# In[12]:
+# In[8]:
 
 
 # msg = {}
@@ -285,7 +289,7 @@ def insertNewData(msg):
 # msg
 
 
-# In[13]:
+# In[9]:
 
 
 # insertNewData(msg)
@@ -293,7 +297,7 @@ def insertNewData(msg):
 
 # ## Delete Data
 
-# In[14]:
+# In[10]:
 
 
 columnsOfCrimeType = ["type", "crimeTypeID"]
@@ -301,7 +305,7 @@ columnsOfCrime     = ["incidentID", "reportedAt", "occuredAt", "disposition"]
 columnsOfhappensAt = ["genLocation"]
 
 
-# In[16]:
+# In[11]:
 
 
 def getTableName(columnName):
@@ -318,7 +322,7 @@ def getTableName(columnName):
         return None
 
 
-# In[18]:
+# In[12]:
 
 
 def deleteData(columnNameOfDeleteRecord, valueOfDeleteRecord):
@@ -339,7 +343,7 @@ def deleteData(columnNameOfDeleteRecord, valueOfDeleteRecord):
         return True
 
 
-# In[19]:
+# In[13]:
 
 
 # columnNameOfDeleteRecord = "type"
@@ -357,7 +361,7 @@ def deleteData(columnNameOfDeleteRecord, valueOfDeleteRecord):
 #     
 # **Input**: 3 String values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
 #     
-# **Output**: True/False whether the new data was inserted successfully or not
+# **Output**: True/False whether the new data was updated successfully or not
 #     
 # **Example**: 
 # 
@@ -366,13 +370,13 @@ def deleteData(columnNameOfDeleteRecord, valueOfDeleteRecord):
 #             newValueOfUpdateRecord = "ARREST with Guns"
 #             updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
 
-# In[74]:
+# In[49]:
 
 
 columnsWhichCantBeUpdated = ["blockID", "crimeTypeID", "incidentID"]
 
 
-# In[75]:
+# In[15]:
 
 
 def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord):
@@ -399,7 +403,7 @@ def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdat
         return True
 
 
-# In[77]:
+# In[16]:
 
 
 # columnNameOfUpdateRecord = "disposition"
@@ -414,7 +418,7 @@ def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdat
 #     
 # **Input**: 3 String values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
 #     
-# **Output**: True/False whether the new data was inserted successfully or not
+# **Output**: True/False whether the new data was updated successfully or not
 #     
 # **Example**: 
 # 
@@ -423,7 +427,7 @@ def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdat
 #             newValueOfUpdateRecord = "REPORTED TO OTHER"
 #             updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
 
-# In[78]:
+# In[17]:
 
 
 def updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord):
@@ -450,7 +454,7 @@ def updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newVal
         return True
 
 
-# In[79]:
+# In[18]:
 
 
 # columnNameOfUpdateRecord = "disposition"
@@ -465,7 +469,7 @@ def updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newVal
 #     
 # **Input**: 3 String/**Dictionary** values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
 #     
-# **Output**: True/False whether the new data was inserted successfully or not
+# **Output**: True/False whether the new data was updated successfully or not
 #     
 # **Example**: 
 #             
@@ -490,7 +494,7 @@ def updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newVal
 #                 newValueOfUpdateRecord["lon"] = "-88.2293074"
 #                 updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
 
-# In[80]:
+# In[19]:
 
 
 def updateCrimeTable(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecordForCrimeTable):
@@ -525,7 +529,7 @@ def updateHappensAtTable(blockIDValue, genLocationValue, incidentIDVal):
     return querySuccessOrNot
 
 
-# In[84]:
+# In[20]:
 
 
 def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord):
@@ -579,7 +583,7 @@ def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateR
         return True
 
 
-# In[82]:
+# In[21]:
 
 
 # columnNameOfUpdateRecord = "genLocation"
@@ -591,10 +595,67 @@ def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateR
 # newValueOfUpdateRecord["lon"] = "-88.2293074"
 
 
-# In[83]:
+# In[22]:
 
 
 # updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
+
+
+# In[ ]:
+
+
+
+
+
+# ## Search Data
+
+# **Function Name**: serchData(incidentID)
+#     
+# **Input**: 1 String values - incidentID                
+#     
+# **Output**: Tuple Result (containing the join columns of Crime, CrimeType and happensAt) if query returned the result or None if otherwise
+#     
+# **Example**: 
+#             
+#             incidentID = "II130w0003"
+#             serchData(incidentID)
+
+# In[47]:
+
+
+def serchData(incidentID):
+    
+    sqlQeueryForSearchUsingIncidentID = """
+                select *
+                from 
+                Crime c
+                INNER JOIN
+                    CrimeType ct ON
+                    c.crimeTypeID = ct.crimeTypeID
+                INNER JOIN
+                    happensAt h ON
+                    c.incidentID = h.incidentID
+                WHERE c.incidentID = \"{incidentID}\"
+                """
+    tupleOfTupleForForSearchUsingIncidentID = dbhelp.executeSingleQueryWhichReturns(sqlQeueryForSearchUsingIncidentID.format 
+                                                                                               (incidentID = incidentID))
+    if(len(tupleOfTupleForForSearchUsingIncidentID)>0):
+        return tupleOfTupleForForSearchUsingIncidentID
+    else:
+        return None
+
+
+# In[48]:
+
+
+# incidentID = "II130w0003"
+# serchData(incidentID)
+
+
+# In[40]:
+
+
+
 
 
 # In[ ]:
