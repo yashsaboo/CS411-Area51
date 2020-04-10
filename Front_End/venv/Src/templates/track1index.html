@@ -220,9 +220,23 @@
                     <input type="text" id="addForm-crimeType">
                 </div>
                 <div class="custom-datetime" style="width: 180px;">
-                    <label for="birthdaytime">Date and Time:</label>
+                    <label for="addForm-crimeTime">Date and Time:</label>
                     <input type="datetime-local" id="addForm-crimeTime" name="addForm-crimeTime">
                 </div>
+
+                <div class="custom-select" style="width:200px;">
+                <label for="selected-disposition">Select disposition:
+                    <select id="selected-disposition">
+                        <option value="arrest">Arrest</option>
+                        <option value="admin close">Admin Close</option>
+                        <option value="student discipline">Student Discipline</option>
+                        <option value="reported to other">Reported to Other</option>
+                        <option value="pending">Pending</option>
+                        <option value="cleared except pros">Cleared Except Pros</option>
+                        </select>
+                </label>
+                </div>
+
                 <button id="submitAddBtn" class="submit-button" onclick="addCrime()">ADD CRIME</button>
             </div> <!-- end modal body -->
         </div>
@@ -239,8 +253,8 @@
             </div>
             <div class="modal-body">
                 <div class="custom-form" style="width:300px;">
-                    <label for="editForm-crimeID">Enter Incident ID:</label>
-                    <input type="text" id="oldcrimeID">
+                    <label for="oldCrimeID">Enter Incident ID:</label>
+                    <input type="text" id="oldCrimeID" placeholder="8-character ID">
                 </div>
 
                 <div class="custom-select" style="width:200px;">
@@ -250,17 +264,26 @@
                         <label class="checkbox-label"><input type="checkbox" id="crimeIDRadio"><span class="checkbox-custom rectangular"></span></label>
                         <label for="crimeIDRadio">Update incident ID:
                             <div class="custom-form" style="width:300px;">
-                                <input type="text" id="newcrimeID">
+                                <input type="text" id="newCrimeID" placeholder="8-character ID">
                             </div>
                         </label>
                     </div>
 
                                           
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="checkbox" id="crimeTimeRadio"><span class="checkbox-custom rectangular"></span></label>
-                        <label for="crimeTimeRadio">Update date/time:
+                        <label class="checkbox-label"><input type="checkbox" id="crimeDateRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label for="crimeDateRadio">Update date:
                             <div class="custom-form" style="width:300px;">
-                                <input type="text" id="newCrimeTime" placeholder="MM/DD/YYYY">
+                                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD">
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="checkbox" id="crimeTimeRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label for="crimeTimeRadio">Update time:
+                            <div class="custom-form" style="width:300px;">
+                                <input type="text" id="newCrimeTime" placeholder="HH:MM">
                             </div>
                         </label>
                     </div>
@@ -268,7 +291,7 @@
                     <div class="checkbox-container"> 
                         <label class="checkbox-label"><input type="checkbox" id="crimeTypeRadio"><span class="checkbox-custom rectangular"></span></label>
                         <label for="crimeTypeRadio">Select crime type:
-                            <select id="selected-crime">
+                            <select id="newCrimeType">
                                 <option value="theft">Theft</option>
                                 <option value="drug possession">Drug Possession</option>
                                 <option value="trespass">Trespass</option>
@@ -276,6 +299,9 @@
                                 <option value="assault">Assault</option>
                                 <option value="alcohol">Alcohol</option>
                                 <option value="vandalism">Vandalism</option>
+                                <option value="stalking">Stalking</option>
+                                <option value="missing person">Missing Person</option>
+                                <option value="traffic offense">Traffic Offense</option>
                                 </select>
                         </label>
                       </div>
@@ -299,10 +325,30 @@
             </div>
             <div class="modal-body">
                 <div class="custom-form" style="width:300px;">
-                    <label for="addForm-crimeType">Type of Crime:</label>
-                    <input type="text" id="addForm-crimeType">
+                    <label for="deleteID">Incident ID to be deleted:</label>
+                    <input type="text" id="deleteID">
                 </div>
-                <button id="subitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME</button>
+
+                <div class="custom-select" style="width:200px;">
+                    <label for="selected-delete">Delete all crimes of type:
+                        <select id="selected-delete">
+                            <option value="none">None</option>
+                            <option value="theft">Theft</option>
+                            <option value="drug possession">Drug Possession</option>
+                            <option value="trespass">Trespass</option>
+                            <option value="accident">Accident</option>
+                            <option value="assault">Assault</option>
+                            <option value="alcohol">Alcohol</option>
+                            <option value="vandalism">Vandalism</option>
+                            <option value="stalking">Stalking</option>
+                            <option value="missing person">Missing Person</option>
+                            <option value="traffic offense">Traffic Offense</option>
+                            </select>
+                    </label>
+                    </div>
+
+                <button id="submitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME(S)</button>
+
             </div> <!-- end modal body -->
         </div>
     </div>
@@ -312,7 +358,16 @@
 
     <script>
 
-      //  ============================= INSTANTIATE MAP ================================
+      // Add listener to 'log' div
+      $('body').on('DOMSubtreeModified', 'log', function(){
+        console.log('DIV CHANGED');
+        // Live update crimeDBData
+        crimeDBList = document.getElementById('log').innerHTML;
+        // Repopulate map
+        populateMap(crimeDBList);
+
+      });
+            //  ============================= INSTANTIATE MAP ================================
 
       var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
       L.tileLayer(
@@ -336,6 +391,7 @@
     // Retreives database crime data. Should be in the form:
     // [crimeID, crimeType, [year, month, day, hour, minute], topLeft lat, topLeft lon, topRight lat, topRight lon, botLeft lat, botLeft lon, botRight lat, botRightlong]
     var crimeDBList = {{crimeDBData | safe}}; 
+
     // console.log(crimeDBList);
 
     // global crime dictionary
@@ -348,15 +404,21 @@
     var markers = L.layerGroup();
 
     //  =========================== ON-CLICK COORDINATES ===========================
+    
+    // holds the current click coordinates
     var clickCoords = [];
+
+
+    // get on-click coordinates for anywhere on map
     mymap.on("click", function (clickEvent) {
-    // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
         clickCoords = clickEvent.latlng;
-        console.log("you clicked at: ", clickCoords);
+        // console.log("lat: ", clickCoords.lat);
+        // console.log("long: ", clickCoords.lng);
     });
 
+
     // the table header html 
-    var tableHeader = `<div style="height: 300px; overflow: auto"><table>
+    var tableHeader = `<div style="height: 300px; width: 500px; overflow: auto"><table>
          <tr>
               <th>ID</th>
               <th>Crime</th>
@@ -374,7 +436,7 @@
 
     // draw the map 
     populateMap(crimeDBList);
-
+    
 
 
 
@@ -447,6 +509,13 @@
 
         block.bindPopup(popupContents, {maxWidth: 560}); // bind popup
         markers.addLayer(block);
+
+        // get on-click coordinates inside blocks 
+        block.on("click", function (clickEvent) {
+        clickCoords = clickEvent.latlng;
+        // console.log("lat: ", clickCoords.lat);
+        // console.log("long: ", clickCoords.lng);
+    });
         // blockList.push(block); // push to stack
         // block.addTo(mymap);  // draw the block
     }
@@ -726,15 +795,26 @@
        * Function to add a new crime to the database
        */
       function addCrime(){
-          var crimeType = document.getElementById("addForm-crimeType").value;
-          var crimeTime = document.getElementById("addForm-crimeTime").value;
+          var crimeType = document.getElementById("addForm-crimeType").value;       // string holding crime type -- can be sent to DB
+          var crimemDisp = document.getElementById("selected-disposition").value;   // holds disposition type -- can be sent to DB
+          var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
           var modal = document.getElementById("addCrimeModal");
+
+          let crimeDateTime = crimeTime.replace('T', ' ');      // YYYY-nn-dd hh:mm
+          let crimeCoords = [clickCoords.lat, clickCoords.lng]; // coordinates to send to DB
+
+          // time and date formatted for DB insertion
+          // let crimeDate    = crimeTimeSplit[0]; //
+          // let crimeHourMin = crimeTimeSplit[1]; //hh:mm
+
+          // please use: 
+          // crimeType, crimeDisp, crimeDateTime, crimeCoords
 
           $.ajax({
             type: "POST",
             url: "{{ url_for('get_post_json') }}",
             contentType: "application/json",
-            data: JSON.stringify({crimeType: crimeType}),
+            data: JSON.stringify({crimeType, crimeDateTime, lat: crimeCoords[0], lon: crimeCoords[1]}),
             dataType: "json",
             success: function(response) {
                 console.log(response);
@@ -756,7 +836,25 @@
        * Function to edit a crime
        */
       function editCrime(){
-        var modal = document.getElementById("editCrimeModal");          
+        var modal = document.getElementById("editCrimeModal");   
+
+        var crimeIDRadio   = document.getElementById("crimeIDRadio");
+        var crimeDateRadio = document.getElementById("crimeDateRadio");
+        var crimeTimeRadio = document.getElementById("crimeTimeRadio");
+        var crimeTypeRadio = document.getElementById("crimeTypeRadio");
+
+        var oldID   = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
+       
+        if (crimeIDRadio.checked)   var newID   = document.getElementById("newCrimeID").value;
+        if (crimeDateRadio.checked) var newDate = document.getElementById("newCrimeDate").value;
+        if (crimeTimeRadio.checked) var newTime = document.getElementById("newCrimeTime").value;
+        if (crimeTypeRadio.checked) var newType = document.getElementById("newCrimeType").value.toUpperCase();
+
+        // please send these to DB:
+        // oldID (ID of the crime to be updated)
+        // newID, newDate, newTime, newType
+        // if the user does not select an attribute to update, it will return "undefined"
+        
         modal.style.display = "none";  // close the modal
 
       }
@@ -766,6 +864,18 @@
        */
       function deleteCrime(){
         var modal = document.getElementById("deleteCrimeModal");
+
+        var deleteID = document.getElementById("deleteID").value;
+        if (document.getElementById("selected-delete").value != 'none'){
+            var typeToDelete = document.getElementById("selected-delete").value.toUpperCase();
+        }
+
+        console.log(deleteID);
+        console.log(typeToDelete);
+
+        // send to DB:
+        // deleteID (incident ID of the crime to be deleted)
+        // typeToDelete (delete all crimes of this type if something is entered, otherwise undefined)
         modal.style.display = "none";  // close the modal
       }
 
@@ -871,9 +981,10 @@
   #modal{ z-index:2; }
 
   #log {
-    height: 500px;
+    display: none 
+    /* height: 500px;
     font-family: "Montserrat", sans-serif;
-    color: black;
+    color: black; */
   }
 
   .w3-sidebar a {
@@ -1086,7 +1197,7 @@
       text-align: left;
       text-decoration: none;
       margin: auto;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       margin-top: 5px;
       display: inline-block;
       font-size: 14px;
@@ -1110,7 +1221,7 @@
       text-align: left;
       text-decoration: none;
       margin: auto;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       margin-top: 5px;
       display: inline-block;
       font-size: 14px;
@@ -1215,6 +1326,7 @@
     .custom-select {
         position: relative;
         font-family: "Montserrat", sans-serif;
+    
         
     }
 
@@ -1248,6 +1360,7 @@
     .select-items div,.select-selected {
         color: #ffffff;
         margin-top: 3px;
+        margin-bottom: 10px;
         padding: 8px 16px;
         border: 1px solid transparent;
         border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;

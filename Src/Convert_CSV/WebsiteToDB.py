@@ -31,7 +31,7 @@ Created on Thu Apr 9
 # 
 #                 For instance,
 #                             {'incidentID': 'II1300563',
-#                              'reportedAt': '20135-1-1 11:39:00',
+#                              'reportedAt': '2013-1-1 11:39:00',
 #                              'occuredAt': '2013-1-1 11:39:00',
 #                              'disposition': 'ARREST',
 #                              'type': 'POSSESSION OF CANNABIS test5',
@@ -264,7 +264,7 @@ def insertNewData(msg):
         
         print("Inserted the new row")
         return True
-    except e:
+    except Exception as e:
         print("Couldn't insert the new row")
         print(e)
         return False

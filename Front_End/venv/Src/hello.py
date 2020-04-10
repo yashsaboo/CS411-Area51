@@ -1,12 +1,15 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from flask_socketio import SocketIO, emit
+from threading import Thread, Event
+from datetime import datetime
 from random import random
 from time import sleep
-from threading import Thread, Event
 import MySQLdb as mdb
+import string
+import secrets
 import sys
 import os
-sys.path.insert(0, os.path.abspath('../../../Src/Convert_CSV'))
+sys.path.insert(0, os.path.abspath('Src/Convert_CSV'))
 import WebsiteToDB
 
 app = Flask(__name__)
@@ -40,6 +43,7 @@ def randomNumberGenerator():
     while not thread_stop_event.isSet():
         number = round(random()*100, 3)
         print(number)
+        
         socketio.emit('newnumber', {'number': number}, namespace='/test')
         socketio.sleep(5)
 
@@ -64,14 +68,18 @@ def predicted():
 def get_post_json():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
-    WebsiteToDB.insertNewData({'incidentID': 'joo99998',
-                                       'reportedAt': '2013-1-1 11:39:00',
-                                       'occuredAt': '2013-1-1 11:39:00',
-                                       'disposition': 'ARREST',
-                                       'type': 'YOOO',
-                                       'genLocation': 'CIRCLE K',
-                                       'lat': '40.1081487',
-                                       'lon': '-88.2293074'})
+    res = WebsiteToDB.insertNewData({'incidentID': ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)),
+        'reportedAt': datetime.now().strftime(r"%Y-%m-%d %H:%M"),
+        'occuredAt': data['crimeDateTime'],
+        'disposition': 'ARREST',
+        'type': data['crimeType'],
+        'genLocation': 'CIRCLE K',
+        'lat': data['lat'],
+        'lon': data['lon']})
+    
+    # Emit updated data if insertion succesful
+    if res:
+        socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
     return jsonify(status="success", data=data)
 
 
@@ -178,8 +186,12 @@ def sendDBData():
     listOfListForMap = []
 
     for row in tupleOfTupleForMap:
+        if None in row:
+            continue
+
         crimeID = row[0]
         crimeType = row[1]
+        # print("row:", row)
         dateTimeList = [row[2].year, row[2].month,
                         row[2].day, row[2].hour, row[2].minute]
         coord1 = row[3]

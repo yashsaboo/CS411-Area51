@@ -114,6 +114,9 @@ for row in tupleOfTupleForMap:
     
 listOfListForMap
 
+for i in range(10):
+    print(listOfListForMap[i][2].year)
+
 
 # In[ ]:
 
