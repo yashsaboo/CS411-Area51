@@ -263,20 +263,6 @@
 
     //  ============================= POPULATE MAP ================================
 
-        // var exampleDict = {"hi": 3, "hey": 2, "nah": 2};
-    // console.log("length:", Object.keys(exampleDict).length);
-    // Object.keys(exampleDict).forEach(function(key){
-    //     console.log("the key value pair is:", key, exampleDict[key]);
-    // });
-    // var arr1 = [1,2];
-    // var arr2 = [2,2];
-    // var arr3 = [1,4];
-    // var exampleDict2 = {arr1: 2, arr2: 3, arr3: 4};
-    // var arr4 = [1,2];
-    // console.log("is [1,2] a key of exampleDict2: ", arr4 in exampleDict2);
-
-
-
     // Retreives database crime data. Should be in the form:
     // [crimeID, crimeType, [year, month, day, hour, minute], topLeft lat, topLeft lon, topRight lat, topRight lon, botLeft lat, botLeft lon, botRight lat, botRightlong]
     var crimeDBList = {{crimeDBData | safe}}; 
@@ -330,7 +316,7 @@
             blockTableHTML = getTableString(blockData);
             blockCoordList = key.split(',');
             drawBlock(blockCoordList, colorList[colorIndex], blockTableHTML);
-            colorIndex = (colorIndex + 1) % 8;    // change color of block
+            colorIndex = (colorIndex + 1) % colorList.length;    // change color of block
         });
 
         // draw all the layers in the layer group to populate map 
