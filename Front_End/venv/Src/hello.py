@@ -71,7 +71,7 @@ def insert():
     res = WebsiteToDB.insertNewData({'incidentID': ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)),
         'reportedAt': datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"),
         'occuredAt': data['crimeDateTime'],
-        'disposition': 'ARREST',
+        'disposition': data['disposition'],
         'type': data['crimeType'],
         'genLocation': 'CIRCLE K',
         'lat': data['lat'],

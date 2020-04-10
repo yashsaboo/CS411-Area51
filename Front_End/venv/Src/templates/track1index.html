@@ -788,7 +788,7 @@
        */
       function addCrime(){
           var crimeType = document.getElementById("addForm-crimeType").value;       // string holding crime type -- can be sent to DB
-          var crimemDisp = document.getElementById("selected-disposition").value;   // holds disposition type -- can be sent to DB
+          var crimeDisp = document.getElementById("selected-disposition").value.toUpperCase();   // holds disposition type -- can be sent to DB
           var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
           var modal = document.getElementById("addCrimeModal");
 
@@ -803,7 +803,7 @@
             type: "POST",
             url: "{{ url_for('insert') }}",
             contentType: "application/json",
-            data: JSON.stringify({crimeType, crimeDateTime, lat: crimeCoords[0], lon: crimeCoords[1]}),
+            data: JSON.stringify({crimeType, crimeDateTime, disposition: crimeDisp, lat: crimeCoords[0], lon: crimeCoords[1]}),
             dataType: "json",
             // success: function() {
             //     console.log("Succeeded!");
