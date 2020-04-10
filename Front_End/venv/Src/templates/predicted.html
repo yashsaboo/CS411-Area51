@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script
+      type="text/javascript"
+      src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"
+    ></script>
+    <script src="static/js/application.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script> -->
+    <!-- <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/track1.css') }}"
+    /> -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+      crossorigin=""
+    />
+
+    <script
+      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body class="w3-content" style="max-width: 1200px;">
+    <h3>Leaflet Map Demo</h3>
+    <!-- Sidebar/menu -->
+    <nav
+      class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
+      style="z-index: 3; width: 250px;"
+      id="mySidebar"
+    >
+      <div class="w3-container w3-display-container w3-padding-16">
+        <i
+          onclick="w3_close()"
+          class="fa fa-remove w3-hide-large w3-button w3-display-topright"
+        ></i>
+        <h3 class="w3-wide"><b>UIUC Crime Map</b></h3>
+      </div>
+      <div
+        class="w3-padding-64 w3-large w3-text-grey"
+        style="font-weight: bold;"
+      >
+        <!-- Dropdown button -->
+        <a
+          onclick="displayDropdown('crimeTypeDropdown');"
+          href="javascript:void(0)"
+          class="w3-button w3-block w3-white w3-left-align"
+          id="crimeTypeBtn"
+        >
+          Crime Type <i class="fa fa-caret-down"></i>
+        </a>
+        <div
+          id="crimeTypeDropdown"
+          class="w3-bar-block w3-hide w3-padding-large w3-medium"
+        >
+          <!-- <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a> -->
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Theft
+            </div>
+          </a>
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Assault
+            </div>
+          </a>
+
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" /><span
+                  class="checkbox-custom rectangular"
+                ></span>
+              </label>
+              Alcohol
+            </div>
+          </a>
+        </div>
+
+        <a
+          onclick="displayDropdown('crimeFreqDropdown')"
+          href="javascript:void(0)"
+          class="w3-button w3-block w3-white w3-left-align"
+          id="crimeFreqBtn"
+        >
+          Crime Frequency <i class="fa fa-caret-down"></i>
+        </a>
+
+        <div
+          id="crimeFreqDropdown"
+          class="w3-bar-block w3-hide w3-padding-large w3-medium"
+        >
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="radio" id="low" name="frequency" value="low" />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              Low
+            </div>
+          </a>
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input
+                  type="radio"
+                  id="medium"
+                  name="frequency"
+                  value="medium"
+                />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              Medium
+            </div>
+          </a>
+          <a href="#" class="w3-bar-item w3-button">
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="radio" id="high" name="frequency" value="high" />
+                <input type="checkbox" />
+                <span class="checkbox-custom circular"></span>
+              </label>
+              High
+            </div>
+          </a>
+        </div>
+
+        <a href="/" class="w3-bar-item w3-button">Return home</a>
+        <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
+      </div>
+      <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
+      <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
+      <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a> -->
+    </nav>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main" style="margin-left: 250px;">
+      <!-- Push down content on small screens -->
+      <div class="w3-hide-large" style="margin-top: 83px;"></div>
+
+      <!-- Image header -->
+      <div class="w3-display-container w3-container">
+        <!--The div element for the map -->
+        <div id="mapid" style="width: 1000px; height: 600px;"></div>
+      </div>
+
+      <div class="container" id="content">
+      
+    </div>
+        <div class="row">
+          <p>Asynchronous page updates will appear here:</p>
+          <h3>Number list:</h3>
+          <div id="log"></div>
+          <!-- /#log -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
+      <h4>WHAT</h4>
+      
+    </footer> -->
+
+        
+    
+    <!-- -----add crime pop-up modal html ---- -->
+
+    <!-- The Modal -->
+    <div id="addCrimeModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h3>Add New Crime</h3>
+        </div>
+        <div class="modal-body">
+
+            <div class="custom-select" style="width:200px;">
+                <label for="crimeType">Select a crime type:</label>
+                    <select id="crimes">
+                    <option value="theft">Theft</option>
+                    <option value="drug possession">Drug Possession</option>
+                    <option value="trespass">Trespass</option>
+                    <option value="accident">Accident</option>
+                    <option value="assault">Assault</option>
+                    <option value="alcohol">Alcohol</option>
+                    <option value="vandalism">Vandalism</option>
+                    </select>
+            </div>
+            
+            <div class="custom-datetime">
+                <label for="birthdaytime">Date and Time:</label>
+                <input type="datetime-local" id="crimetime" name="crimetime">
+            </div>
+            <button id="submitBtn" class="button">ADD CRIME</button>
+        </div> <!-- end modal body -->
+
+        </div>
+    
+    </div>
+
+    <script>
+      // **----------- MAP SCRIPT ----------------**
+      // instantiate map
+      var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
+      L.tileLayer(
+        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+        {
+          attribution:
+            'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 18,
+          id: "mapbox/streets-v11",
+          tileSize: 512,
+          zoomOffset: -1,
+          accessToken:
+            "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA",
+        }
+      ).addTo(mymap);
+
+      // circle markers
+      // var circle = L.circle([40.1138, -88.2249], {
+      //   color: "red",
+      //   fillColor: "#f03",
+      //   fillOpacity: 0.5,
+      //   radius: 200
+      // }).addTo(mymap);
+
+      // circle.bindPopup(circleLabel);
+
+      // let circleLabel = "Siebel Center!!! :)";
+      // let popUp = L.popup();
+      // var container = L.DomUtil.create("div");
+      // startBtn = document.createElement("button");
+      // startBtn.innerHTML = "Start from this location";
+      // // div.innerHTML = "" + startBtn;
+      // popUp.setContent("You clicked the map at " + startBtn);
+
+
+      
+      //=============================== POP UP CODE ===================================
+      // ----------------draw table inside map marker----------------//
+      var tableString = `<tr>
+                <th>Crime</th>
+                <th>Location</th>
+                <th>Time</th>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>6-Apr-2020 12:30PM</td>
+            </tr>
+            <tr>
+                <td>Assault</td>
+                <td>Siebel Center</td>
+                <td>2-Feb-2020 9:45PM</td>
+            </tr>
+            <tr>
+                <td>Alcohol</td>
+                <td>Siebel Center</td>
+                <td>20-Dec-2019 11:34PM</td>
+            </tr>
+            <tr>
+                <td>Theft</td>
+                <td>Siebel Center</td>
+                <td>11-Nov-2019 9:22AM</td>
+            </tr>`
+
+      var popUp = '<table>' + tableString + `</table>
+        <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+
+      
+      function popupFunction() {
+        // window.alert("YEET");
+        // ----------------add crime popup modal JS----------------
+        // Get the modal
+        var modal = document.getElementById("addCrimeModal");
+
+        // Get the button that opens the modal
+        // var btn = document.getElementById("addCrimeBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        modal.style.display = "block";
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+      }
+
+      // dropdown select list 
+        var x, i, j, selElmnt, a, b, c;
+        /* Look for any elements with the class "custom-select": */
+        x = document.getElementsByClassName("custom-select");
+        for (i = 0; i < x.length; i++) {
+            selElmnt = x[i].getElementsByTagName("select")[0];
+            /* For each element, create a new DIV that will act as the selected item: */
+            a = document.createElement("DIV");
+            a.setAttribute("class", "select-selected");
+            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+            x[i].appendChild(a);
+            /* For each element, create a new DIV that will contain the option list: */
+            b = document.createElement("DIV");
+            b.setAttribute("class", "select-items select-hide");
+            for (j = 1; j < selElmnt.length; j++) {
+                /* For each option in the original select element,
+                create a new DIV that will act as an option item: */
+                c = document.createElement("DIV");
+                c.innerHTML = selElmnt.options[j].innerHTML;
+                c.addEventListener("click", function(e) {
+                    /* When an item is clicked, update the original select box,
+                    and the selected item: */
+                    var y, i, k, s, h;
+                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                    h = this.parentNode.previousSibling;
+                    for (i = 0; i < s.length; i++) {
+                    if (s.options[i].innerHTML == this.innerHTML) {
+                        s.selectedIndex = i;
+                        h.innerHTML = this.innerHTML;
+                        y = this.parentNode.getElementsByClassName("same-as-selected");
+                        for (k = 0; k < y.length; k++) {
+                        y[k].removeAttribute("class");
+                        }
+                        this.setAttribute("class", "same-as-selected");
+                        break;
+                    }
+                    }
+                h.click();
+            });
+            b.appendChild(c);
+        }
+        x[i].appendChild(b);
+        a.addEventListener("click", function(e) {
+            /* When the select box is clicked, close any other select boxes,
+            and open/close the current select box: */
+            e.stopPropagation();
+            closeAllSelect(this);
+            this.nextSibling.classList.toggle("select-hide");
+            this.classList.toggle("select-arrow-active");
+        });
+        }
+
+        function closeAllSelect(elmnt) {
+        /* A function that will close all select boxes in the document,
+        except the current select box: */
+        var x, y, i, arrNo = [];
+        x = document.getElementsByClassName("select-items");
+        y = document.getElementsByClassName("select-selected");
+        for (i = 0; i < y.length; i++) {
+            if (elmnt == y[i]) {
+            arrNo.push(i)
+            } else {
+            y[i].classList.remove("select-arrow-active");
+            }
+        }
+        for (i = 0; i < x.length; i++) {
+            if (arrNo.indexOf(i)) {
+            x[i].classList.add("select-hide");
+            }
+        }
+        }
+
+        /* If the user clicks anywhere outside the select box,
+        then close all select boxes: */
+        document.addEventListener("click", closeAllSelect);
+ 
+      
+    //  ============================= DRAWING CIRCLES ================================
+      // drawCircle([40.1138, -88.2249], "red", circleLabel);
+
+
+      function drawCircle(coordinates, circleColor, pop, rad) {
+        var circle = L.circle(coordinates, {
+          color: circleColor,
+          fillColor: circleColor,
+          fillOpacity: 0.5,
+          radius: rad,
+        });
+        var rect = L.rectangle([[coordinates[0] - rad/10000, coordinates[1] + rad/10000], [coordinates[0] + rad/10000, coordinates[1] - rad/10000]], {color: circleColor, weight: 1});
+        rect.bindPopup(pop);
+        return rect;
+        // circle.bindPopup(pop);
+        // return circle;
+      }
+
+      function removeCircle(circle) {
+        mymap.removeLayer(circle);
+      }
+
+      // Create stack of circle objects
+      var myList = [];
+
+      // Async function to add circles of random radii to map
+      $(document).ready(function () {
+        //connect to the socket server.
+        var socket = io.connect(
+          "http://" + document.domain + ":" + location.port + "/test"
+        );
+
+        var numbers_received = [];
+
+        //receive details from server
+        socket.on("newnumber", function (msg) {
+          console.log("Received number" + msg.number);
+          //maintain a list of ten numbers
+          if (numbers_received.length >= 10) {
+            numbers_received.shift();
+          }
+          numbers_received.push(msg.number);
+          numbers_string = "";
+          for (var i = 0; i < numbers_received.length; i++) {
+            numbers_string =
+              numbers_string + "<p>" + numbers_received[i].toString() + "</p>";
+          }
+
+          // Log the randomly generated numbers to bottom of screen
+          $("#log").html(numbers_string);
+
+          // Pop the one elem on stack and replace it w/ another circle
+          if (myList.length > 0) {
+            removeCircle(myList.pop());
+          }
+          // Create new circle object
+          var circle = drawCircle(
+            [40.1138, -88.2249],
+            "red",
+            popUp,
+            parseInt(msg.number)
+          );
+          // Add circle to stack and map
+          myList.push(circle);
+          circle.addTo(mymap);
+        });
+      });
+
+      // mymap.on("click", function (ev) {
+      //   // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+      //   drawCircle(ev.latlng, "blue", "I added something here", 150).addTo(
+      //     mymap
+      //   );
+      // });
+
+      // ----------------- PAGE FUNCTIONALITY -----------------
+
+      document.getElementById("crimeTypeBtn").click();
+      document.getElementById("crimeFreqBtn").click();
+
+      // Accordion
+      function displayDropdown(listTitle) {
+        console.log(listTitle);
+        var x = document.getElementById(listTitle);
+        if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+        } else {
+          x.className = x.className.replace(" w3-show", "");
+        }
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+<!-- ================================================================== -->
+<!-- ==================== CSS STYLING =========================== -->
+<style type="text/css">
+  /* Set the size of the div element that contains the map */
+  #mapid {
+    /* height: 500px; */
+    z-index:1; 
+  }
+  #modal{ z-index:2; }
+
+  #log {
+    height: 500px;
+    font-family: "Montserrat", sans-serif;
+    color: black;
+  }
+
+  .w3-sidebar a {
+    font-family: "Roboto", sans-serif;
+  }
+
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .w3-wide {
+    font-family: "Montserrat", sans-serif;
+  }
+
+  /* -------------checkbox styling----------------- */
+
+  .checkbox-label {
+    display: inline-block;
+    position: relative;
+    margin: auto;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 24px;
+    height: 24px;
+    width: 24px;
+    clear: both;
+    vertical-align: middle;
+    padding-right: 30px;
+  }
+
+  .checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .checkbox-label .checkbox-custom {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+    border-radius: 5px;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom {
+    background-color: #ff8052;
+    border-radius: 5px;
+    -webkit-transform: rotate(0deg) scale(1);
+    -ms-transform: rotate(0deg) scale(1);
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label .checkbox-custom::after {
+    position: absolute;
+    content: "";
+    left: 12px;
+    top: 12px;
+    height: 0px;
+    width: 0px;
+    border-radius: 5px;
+    border: solid #009bff;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(0deg) scale(0);
+    -ms-transform: rotate(0deg) scale(0);
+    transform: rotate(0deg) scale(0);
+    opacity: 1;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom::after {
+    -webkit-transform: rotate(45deg) scale(1);
+    -ms-transform: rotate(45deg) scale(1);
+    transform: rotate(45deg) scale(1);
+    opacity: 1;
+    left: 8px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  /* For Ripple Effect */
+  .checkbox-label .checkbox-custom::before {
+    position: absolute;
+    content: "";
+    left: 10px;
+    top: 10px;
+    width: 0px;
+    height: 0px;
+    border-radius: 5px;
+    border: 2px solid #ffffff;
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0);
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom::before {
+    left: -3px;
+    top: -3px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    -webkit-transform: scale(3);
+    -ms-transform: scale(3);
+    transform: scale(3);
+    opacity: 0;
+    z-index: 999;
+    transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+  }
+
+  /* Style for Circular Radio Button */
+
+  .checkbox-label .checkbox-custom.circular {
+    border-radius: 50%;
+    border: 2px solid #ff8052;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom.circular {
+    background-color: #ff8052;
+    border-radius: 50%;
+    border: 2px solid #ff8052;
+  }
+  .checkbox-label input:checked ~ .checkbox-custom.circular::after {
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+  }
+  .checkbox-label .checkbox-custom.circular::after {
+    border-radius: 50%;
+  }
+
+  .checkbox-label .checkbox-custom.circular::before {
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+  }
+
+  .checkbox-label input:checked ~ .checkbox-custom.circular::before {
+    border-radius: 50%;
+  }
+
+
+  /* ---------------table stuff--------------- */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  tr:hover {background-color:#f5f5f5;}
+
+
+  /* --------------button stuff -------------*/
+  .button {
+      background-color: #ff8052;
+      border: none;
+      color: white;
+      padding: 10px 24px;
+      text-align: center;
+      text-decoration: none;
+      margin: 10px;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .button:hover {
+      background-color: white;
+      color: #ff8052;
+      border: 2px solid #ff8052;
+      border-radius: 8px;
+  }
+
+  /* ----------------popup modal stuff------------------  */
+  /* The Modal (background) */
+    body {
+        font-family: "Montserrat", sans-serif;
+    }
+
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        padding-left: 20%;
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: 0 auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 40%;
+        border-radius: 8px;
+        border-top-right-radius: 10px;
+        border-top-left-radius:  10px;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {top:-300px; opacity:0} 
+        to {top:0; opacity:1}
+    }
+
+    @keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #ff8052;
+        color: white;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .modal-body {padding: 2px 16px;}
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #ff8052;
+        color: white;
+    }
+
+    /* ----------- custom dropdown select box --------------  */
+    /* The container must be positioned relative: */
+    .custom-select {
+        position: relative;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 15px;
+    }
+
+    .custom-select select {
+     display: none; /*hide original SELECT element: */
+    }
+
+    .select-selected {
+      background-color: #ff8052;
+    }
+
+    /* Style the arrow inside the select element: */
+    .select-selected:after {
+        position: absolute;
+        content: "";
+        top: 40px;
+        right: 10px;
+        width: 0;
+        height: 0;
+        border: 5px solid transparent;
+        border-color: #fff transparent transparent transparent;
+    }
+
+    /* Point the arrow upwards when the select box is open (active): */
+    .select-selected.select-arrow-active:after {
+        border-color: transparent transparent #fff transparent;
+        top: 7px;
+    }
+
+    /* style the items (options), including the selected item: */
+    .select-items div,.select-selected {
+        color: #ffffff;
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    /* Style items (options): */
+    .select-items {
+        position: absolute;
+        background-color: #ff8052;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 99;
+    }
+
+    /* Hide the items when the select box is closed: */
+    .select-hide {
+     display: none;
+    }
+
+    .select-items div:hover, .same-as-selected {
+     background-color: rgba(0, 0, 0, 0.1);
+    }
+
+
+    /* ----------- custom datetime --------------  */
+    /* The container must be positioned relative: */
+    .custom-datetime label {
+        display: none; /*hide original SELECT element: */
+        display: block;
+        font-family: "Montserrat", sans-serif;
+    }
+    
+    .custom-datetime input {
+        /* margin: .4rem 0; */
+        font-family: "Montserrat", sans-serif;
+        background-color: #ff8052;
+        color: #fff;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+</style>
