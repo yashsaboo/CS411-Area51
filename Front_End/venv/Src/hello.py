@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, jsonify
 from flask_socketio import SocketIO, emit
 from random import random
 from time import sleep
@@ -48,10 +48,18 @@ def index():
     # return redirect(url_for('predicted'))
 
 
+# TODO: Jonathan will add Xin's predictions to site
 @app.route('/predicted')
 def predicted():
     # only by sending this page first will the client be connected to the socketio instance
     return render_template('predicted.html')
+
+# To rec'v data passed from Javascript
+@app.route('/_get_post_json/', methods=['POST'])
+def get_post_json():    
+    data = request.get_json()
+    print('FROM JAVASCRIPT: ', data)
+    return jsonify(status="success", data=data)
 
 
 @socketio.on('connect', namespace='/test')
