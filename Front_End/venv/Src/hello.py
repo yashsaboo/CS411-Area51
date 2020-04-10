@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 from random import random
 from time import sleep
 from threading import Thread, Event
+import MySQLdb as mdb
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -18,6 +19,11 @@ socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
 thread = Thread()
 thread_stop_event = Event()
 
+# GLOBAL DB variables
+DBNAME = "dbtest"
+DBHOST = "localhost"
+DBPASS = ""
+DBUSER = "root"
 
 def randomNumberGenerator():
     """
@@ -33,10 +39,12 @@ def randomNumberGenerator():
         socketio.sleep(5)
 
 
+# -------------------- main page data ------------------------
 @app.route('/', methods=['POST', 'GET'])
 def index():
     # only by sending this page first will the client be connected to the socketio instance
-    return render_template('track1index.html')
+    crimeDBData = sendDBData()
+    return render_template('track1index.html', crimeDBData=crimeDBData)
     # return redirect(url_for('predicted'))
 
 
@@ -56,6 +64,111 @@ def test_connect():
     if not thread.isAlive():
         print("Starting Thread")
         thread = socketio.start_background_task(randomNumberGenerator)
+
+
+# ---------------------- DATABASE FUNCTIONS ----------------------------- 
+
+
+def connectToDatabase():
+    try:
+        db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME, charset='utf8', port=3308)
+        print("Database Connected Successfully")
+        return db
+    except mdb.Error as e:
+        print(e)
+        print("Database Not Connected Successfully")
+        return None
+    
+def closeDatabase(db):
+    try:
+        db.close()
+        print("Database Closed Successfully")
+    except mdb.Error as e:
+        print(e)
+        print("Database Not Closed Successfully")
+
+
+def executeSingleQuery(sqlquery):
+    
+    db = connectToDatabase()
+    
+    try:
+        cur = db.cursor()
+
+        # execute query
+        cur.execute(sqlquery)
+        print("Query Successfully Executed")
+        
+        db.commit()
+
+    except mdb.Error as e:
+        print(e)
+        print("Query Not Successfully Executed" + sqlquery)
+        
+    closeDatabase(db)
+    
+def executeSingleQueryWhichReturns(sqlquery):
+    
+    db = connectToDatabase()
+    
+    try:
+        cur = db.cursor()
+
+        # execute query
+        number_of_rows = cur.execute(sqlquery)
+        result = cur.fetchall()
+        print("Query Successfully Executed and Fetched")
+        
+        db.commit()
+
+    except mdb.Error as e:
+        print(e)
+        print("Query Not Successfully Executed and Fetched" + sqlquery)
+        
+    closeDatabase(db)
+    
+    return result
+
+# function to send DB as list of lists
+def sendDBData():
+
+    sqlQeueryForMap = """
+                    select c.crimeTypeID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
+                    from 
+                    Crime c
+                    INNER JOIN
+                        CrimeType ct ON
+                        c.crimeTypeID = ct.crimeTypeID
+                    INNER JOIN
+                        happensAt h ON
+                        c.incidentID = h.incidentID
+                    INNER JOIN
+                        BlockLocation bl ON
+                        h.blockID = bl.blockID;  
+
+                    """
+    tupleOfTupleForMap = executeSingleQueryWhichReturns(sqlQeueryForMap)
+
+    listOfListForMap = []
+
+    for row in tupleOfTupleForMap:
+        crimeID = row[0]
+        crimeType = row[1]
+        dateTimeList = [row[2].year, row[2].month, row[2].day, row[2].hour, row[2].minute]
+        coord1 = row[3]
+        coord2 = row[4]
+        coord3 = row[5]
+        coord4 = row[6]
+        coord5 = row[7]
+        coord6 = row[8]
+        coord7 = row[9]
+        coord8 = row[10]
+        listRow = [crimeID, crimeType, dateTimeList, coord1, coord2, coord3, coord4, coord5, coord6, coord7, coord8]
+        listOfListForMap.append(listRow)
+        
+    # listOfListForMap
+
+    return listOfListForMap
 
 
 @socketio.on('disconnect', namespace='/test')
