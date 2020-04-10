@@ -260,7 +260,7 @@
                     <label for="crimeType">Change attribute:</label>
 
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="checkbox" id="crimeIDRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="incidentID"/><span class="checkbox-custom circular"></span></label>
                         <label for="crimeIDRadio">Update incident ID:
                             <div class="custom-form" style="width:300px;">
                                 <input type="text" id="newCrimeID" placeholder="8-character ID">
@@ -270,37 +270,33 @@
 
                                           
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="checkbox" id="crimeDateRadio"><span class="checkbox-custom rectangular"></span></label>
-                        <label for="crimeDateRadio">Update date:
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="occuredAt"/><span class="checkbox-custom circular"></span></label>
+                        <label for="crimeDateRadio">Update date/time:
                             <div class="custom-form" style="width:300px;">
-                                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD">
+                                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS">
                             </div>
                         </label>
                     </div>
-                    
+<!--                     
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="checkbox" id="crimeTimeRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="crimeTimeRadio"/><span class="checkbox-custom circular"></span></label>
                         <label for="crimeTimeRadio">Update time:
                             <div class="custom-form" style="width:300px;">
                                 <input type="text" id="newCrimeTime" placeholder="HH:MM">
                             </div>
                         </label>
-                    </div>
+                    </div> -->
 
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="checkbox" id="crimeTypeRadio"><span class="checkbox-custom rectangular"></span></label>
-                        <label for="crimeTypeRadio">Select crime type:
-                            <select id="newCrimeType">
-                                <option value="theft">Theft</option>
-                                <option value="drug possession">Drug Possession</option>
-                                <option value="trespass">Trespass</option>
-                                <option value="accident">Accident</option>
-                                <option value="assault">Assault</option>
-                                <option value="alcohol">Alcohol</option>
-                                <option value="vandalism">Vandalism</option>
-                                <option value="stalking">Stalking</option>
-                                <option value="missing person">Missing Person</option>
-                                <option value="traffic offense">Traffic Offense</option>
+                        <label class="checkbox-label"><input type="radio" id="disposition"/><span class="checkbox-custom circular"></span></label>
+                        <label for="crimeDispRadio">Change disposition:
+                            <select id="newDispType">
+                                <option value="arrest">Arrest</option>
+                                <option value="admin close">Admin Close</option>
+                                <option value="student discipline">Student Discipline</option>
+                                <option value="reported to other">Reported to Other</option>
+                                <option value="pending">Pending</option>
+                                <option value="cleared except pros">Cleared Except Pros</option>
                                 </select>
                         </label>
                       </div>
@@ -328,7 +324,7 @@
                     <input type="text" id="deleteID">
                 </div>
 
-                <div class="custom-select" style="width:200px;">
+                <!-- <div class="custom-select" style="width:200px;">
                     <label for="selected-delete">Delete all crimes of type:
                         <select id="selected-delete">
                             <option value="none">None</option>
@@ -344,7 +340,7 @@
                             <option value="traffic offense">Traffic Offense</option>
                             </select>
                     </label>
-                    </div>
+                    </div> -->
 
                 <button id="submitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME(S)</button>
 
@@ -816,21 +812,17 @@
 
           $.ajax({
             type: "POST",
-            url: "{{ url_for('get_post_json') }}",
+            url: "{{ url_for('insert') }}",
             contentType: "application/json",
             data: JSON.stringify({crimeType, crimeDateTime, lat: crimeCoords[0], lon: crimeCoords[1]}),
             dataType: "json",
-            success: function() {
-                console.log("Succeeded!");
-            },
+            // success: function() {
+            //     console.log("Succeeded!");
+            // },
             error: function(err) {
                 console.log(err);
             }
           });
-
-        //   console.log("Crime Type:", crimeType);
-        //   console.log("Crime Time:", crimeTime);
-        //   updatePopupTable(crimeType, crimeTime);
 
           // close the modal
           modal.style.display = "none";
@@ -842,22 +834,55 @@
       function editCrime(){
         var modal = document.getElementById("editCrimeModal");   
 
-        var crimeIDRadio   = document.getElementById("crimeIDRadio");
-        var crimeDateRadio = document.getElementById("crimeDateRadio");
-        var crimeTimeRadio = document.getElementById("crimeTimeRadio");
-        var crimeTypeRadio = document.getElementById("crimeTypeRadio");
+        // var crimeIDRadio   = document.getElementById("crimeIDRadio");
+        // var crimeDateRadio = document.getElementById("crimeDateRadio");
+        // var crimeTimeRadio = document.getElementById("crimeTimeRadio");
+        // var crimeTypeRadio = document.getElementById("crimeTypeRadio");
 
         var oldID   = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
        
-        if (crimeIDRadio.checked)   var newID   = document.getElementById("newCrimeID").value;
-        if (crimeDateRadio.checked) var newDate = document.getElementById("newCrimeDate").value;
-        if (crimeTimeRadio.checked) var newTime = document.getElementById("newCrimeTime").value;
-        if (crimeTypeRadio.checked) var newType = document.getElementById("newCrimeType").value.toUpperCase();
+        // if (crimeIDRadio.checked)   var newID   = document.getElementById("newCrimeID").value;
+        // if (crimeDateRadio.checked) var newDate = document.getElementById("newCrimeDate").value;
+        // if (crimeTimeRadio.checked) var newTime = document.getElementById("newCrimeTime").value;
+        // if (crimeTypeRadio.checked) var newType = document.getElementById("newCrimeType").value.toUpperCase();
+
+        var columns = document.getElementsByName("editRadio");
+        var columnToBeUpdated = '';
+        var newColumnValue = '';
+
+        for (i=0; i<columns.length; i++){
+            if(columns[i].checked){
+                columnToBeUpdated = columns[i].id;
+                newColumnValue = columns[i].value;
+            }
+        }
+
+        if (columnToBeUpdated == '' && newColumnValue == ''){
+            window.alert("you didn't do anything");
+            return
+        }
+
+        console.log("update Column: ", columnToBeUpdated);
+        console.log("incidentID: ", oldID);
+        console.log("new val:", newColumnValue);
 
         // please send these to DB:
         // oldID (ID of the crime to be updated)
         // newID, newDate, newTime, newType
         // if the user does not select an attribute to update, it will return "undefined"
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('edit') }}",
+            contentType: "application/json",
+            data: JSON.stringify({updateColumn: columnToBeUpdated, incidentID: oldID, newVal: newColumnValue}),
+            dataType: "json",
+            // success: function() {
+            //     console.log("Succeeded!");
+            // },
+            error: function(err) {
+                console.log(err);
+            }
+          });
         
         modal.style.display = "none";  // close the modal
 
@@ -870,9 +895,10 @@
         var modal = document.getElementById("deleteCrimeModal");
 
         var deleteID = document.getElementById("deleteID").value;
-        if (document.getElementById("selected-delete").value != 'none'){
-            var typeToDelete = document.getElementById("selected-delete").value.toUpperCase();
-        }
+        var typeToDelete = 'incidentID'
+        // if (document.getElementById("selected-delete").value != 'none'){
+        //     var typeToDelete = document.getElementById("selected-delete").value.toUpperCase();
+        // }
 
         console.log(deleteID);
         console.log(typeToDelete);
@@ -880,6 +906,22 @@
         // send to DB:
         // deleteID (incident ID of the crime to be deleted)
         // typeToDelete (delete all crimes of this type if something is entered, otherwise undefined)
+
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('delete') }}",
+            contentType: "application/json",
+            data: JSON.stringify({deleteColumn: typeToDelete , deleteValue: deleteID}),
+            dataType: "json",
+            // success: function() {
+            //     console.log("Succeeded!");
+            // },
+            error: function(err) {
+                console.log(err);
+            }
+          });
+
+
         modal.style.display = "none";  // close the modal
       }
 

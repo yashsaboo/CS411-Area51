@@ -64,8 +64,8 @@ def predicted():
     return render_template('predicted.html')
 
 # To rec'v data passed from Javascript
-@app.route('/_get_post_json/', methods=['POST'])
-def get_post_json():
+@app.route('/insert/', methods=['POST'])
+def insert():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
     res = WebsiteToDB.insertNewData({'incidentID': ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)),
@@ -82,8 +82,40 @@ def get_post_json():
         print('insertion successful')
         # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
         return render_template('track1index.html', crimeDBData=sendDBData())
-    return jsonify(status="success", data=data)
+    # return jsonify(status="success", data=data)
+    return None
 
+
+@app.route('/edit/', methods=['POST'])
+def edit():
+    data = request.get_json()
+    print('FROM JAVASCRIPT: ', data)
+    # res = WebsiteToDB.updateData(data['crimeTypeID'], data['oldVal'], data['newVal'])
+
+    res = WebsiteToDB.updateDataUsingIncidentID(data['updateColumn'], data['incidentID'], data['newVal'])
+    
+    # Emit updated data if insertion succesful
+    if res:
+        print('editsuccessful')
+        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
+        return render_template('track1index.html', crimeDBData=sendDBData())
+    # return jsonify(status="success", data=data)
+    return None
+
+@app.route('/delete/', methods=['POST'])
+def delete():
+    data = request.get_json()
+    print('FROM JAVASCRIPT: ', data)
+
+    res = WebsiteToDB.deleteData(data['deleteColumn'], data['deleteValue'])
+    
+    # Emit updated data if insertion succesful
+    if res:
+        print('deletion successful')
+        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
+        return render_template('track1index.html', crimeDBData=sendDBData())
+    # return jsonify(status="success", data=data)
+    return None
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
@@ -169,7 +201,7 @@ def executeSingleQueryWhichReturns(sqlquery):
 def sendDBData():
 
     sqlQeueryForMap = """
-                    select c.crimeTypeID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
+                    select c.incidentID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
                     from 
                     Crime c
                     INNER JOIN
