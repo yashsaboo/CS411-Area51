@@ -221,9 +221,9 @@
                 </div>
                 <div class="custom-datetime" style="width: 180px;">
                     <label for="birthdaytime">Date and Time:</label>
-                    <input type="datetime-local" id="crimetime" name="crimetime">
+                    <input type="datetime-local" id="addForm-crimeTime" name="addForm-crimeTime">
                 </div>
-                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+                <button id="submitAddBtn" class="submit-button" onclick="addCrime()">ADD CRIME</button>
             </div> <!-- end modal body -->
         </div>
     </div>
@@ -282,7 +282,7 @@
 
                 </div>
 
-                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+                <button id="submitEditBtn" class="submit-button" onclick="editCrime()">EDIT CRIME</button>
             </div> <!-- end modal body -->
         </div>
     </div>
@@ -298,23 +298,11 @@
                 <h3>Delete Crime</h3>
             </div>
             <div class="modal-body">
-                <div class="custom-select" style="width:200px;">
-                    <label for="crimeType">Select a crime type:</label>
-                        <select id="selected-crime">
-                        <option value="theft">Theft</option>
-                        <option value="drug possession">Drug Possession</option>
-                        <option value="trespass">Trespass</option>
-                        <option value="accident">Accident</option>
-                        <option value="assault">Assault</option>
-                        <option value="alcohol">Alcohol</option>
-                        <option value="vandalism">Vandalism</option>
-                        </select>
+                <div class="custom-form" style="width:300px;">
+                    <label for="addForm-crimeType">Type of Crime:</label>
+                    <input type="text" id="addForm-crimeType">
                 </div>
-                <div class="custom-datetime">
-                    <label for="birthdaytime">Date and Time:</label>
-                    <input type="datetime-local" id="crimetime" name="crimetime">
-                </div>
-                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+                <button id="subitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME</button>
             </div> <!-- end modal body -->
         </div>
     </div>
@@ -728,8 +716,8 @@
        * Function to add a new crime to the database
        */
       function addCrime(){
-          var crimeType = document.getElementById("selected-crime").value;
-          var crimeTime = document.getElementById("crimetime").value;
+          var crimeType = document.getElementById("addForm-crimeType").value;
+          var crimeTime = document.getElementById("addForm-crimeTime").value;
           var modal = document.getElementById("addCrimeModal");
 
           $.ajax({
@@ -758,6 +746,8 @@
        * Function to edit a crime
        */
       function editCrime(){
+        var modal = document.getElementById("editCrimeModal");          
+        modal.style.display = "none";  // close the modal
 
       }
 
@@ -765,7 +755,8 @@
        * Function to delete a crime
        */
       function deleteCrime(){
-
+        var modal = document.getElementById("deleteCrimeModal");
+        modal.style.display = "none";  // close the modal
       }
 
 
@@ -1077,6 +1068,50 @@
       border-radius: 8px;
   }
 
+  .submit-button {
+      background-color: #7cbb18;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      text-align: center;
+      text-decoration: none;
+      margin: 20px;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .submit-button:hover {
+      background-color: white;
+      color: #7cbb18;
+      /* outline: 2px solid #ff8052; */
+      border: 2px solid #7cbb18;
+      border-radius: 8px;
+  }
+
+  .delete-button {
+      background-color: #ee2c46;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      text-align: center;
+      text-decoration: none;
+      margin: 20px;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .delete-button:hover {
+      background-color: white;
+      color: #ee2c46;
+      /* outline: 2px solid #ff8052; */
+      border: 2px solid #ee2c46;
+      border-radius: 8px;
+  }
+
   /* ----------------popup modal stuff------------------  */
   /* The Modal (background) */
     body {
@@ -1166,7 +1201,7 @@
     .custom-select {
         position: relative;
         font-family: "Montserrat", sans-serif;
-        margin: 15px;
+        
     }
 
     .custom-select select {
@@ -1198,6 +1233,7 @@
     /* style the items (options), including the selected item: */
     .select-items div,.select-selected {
         color: #ffffff;
+        margin-top: 3px;
         padding: 8px 16px;
         border: 1px solid transparent;
         border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;

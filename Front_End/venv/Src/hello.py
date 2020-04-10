@@ -4,6 +4,9 @@ from random import random
 from time import sleep
 from threading import Thread, Event
 import MySQLdb as mdb
+import sys
+sys.path.append("../../..")  # Adds higher directory to python modules path
+import Src.Convert_CSV as convCSV
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -60,6 +63,14 @@ def predicted():
 def get_post_json():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
+    convCSV.WebsiteToDB.insertNewData({'incidentID': 'joo999999',
+                                       'reportedAt': '2013-1-1 11:39:00',
+                                       'occuredAt': '2013-1-1 11:39:00',
+                                       'disposition': 'ARREST',
+                                       'type': 'POSSESSION OF CANNABIs and KillADFADFA',
+                                       'genLocation': 'CIRCLE K',
+                                       'lat': '40.1081487',
+                                       'lon': '-88.2293074'})
     return jsonify(status="success", data=data)
 
 
