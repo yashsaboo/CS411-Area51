@@ -215,6 +215,67 @@
                 <h3>Add New Crime</h3>
             </div>
             <div class="modal-body">
+                <div class="custom-form" style="width:300px;">
+                    <label for="addForm-crimeType">Type of Crime:</label>
+                    <input type="text" id="addForm-crimeType">
+                </div>
+                <div class="custom-datetime" style="width: 180px;">
+                    <label for="birthdaytime">Date and Time:</label>
+                    <input type="datetime-local" id="crimetime" name="crimetime">
+                </div>
+                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+            </div> <!-- end modal body -->
+        </div>
+    </div>
+
+    <!--------------------------------- Edit Crime Modal  ------------------------------------->
+
+    <div id="editCrimeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Edit Crime</h3>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form" style="width:300px;">
+                    <label for="editForm-crimeID">Enter Incident ID:</label>
+                    <input type="text" id="editForm-crimeID">
+                </div>
+                <div class="custom-select" style="width:200px;">
+                    <label for="crimeType">Change attribute:</label>
+                    <div class="checkbox-container">
+                        <label class="checkbox-label"><input type="checkbox" id="crimeTypeRadio"><span class="checkbox-custom rectangular"></span></label>
+                        Crime Type<input type="text" id="editForm-crimeType">
+                      </div>
+
+                        <!-- <select id="selected-crime">
+                        <option value="theft">Incident ID</option>
+                        <option value="drug possession">Date</option>
+                        <option value="trespass">Time</option>
+                        <option value="accident">Accident</option>
+                        <option value="assault">Assault</option>
+                        <option value="alcohol">Alcohol</option>
+                        <option value="vandalism">Vandalism</option>
+                        </select> -->
+                </div>
+
+                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+            </div> <!-- end modal body -->
+        </div>
+    </div>
+
+
+    <!--------------------------------- Delete Crime Modal  ------------------------------------->
+
+    <div id="deleteCrimeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Delete Crime</h3>
+            </div>
+            <div class="modal-body">
                 <div class="custom-select" style="width:200px;">
                     <label for="crimeType">Select a crime type:</label>
                         <select id="selected-crime">
@@ -235,14 +296,6 @@
             </div> <!-- end modal body -->
         </div>
     </div>
-
-    <!--------------------------------- Edit Crime Modal  ------------------------------------->
-
-
-
-    <!--------------------------------- Delete Crime Modal  ------------------------------------->
-
-
 
     <!-- ============================== JAVASCRIPT ============================== -->
 
@@ -294,9 +347,9 @@
 
     // end of table HTML
     var tableClosingHTML = `</table></div> <br>  
-        <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>
-        <button id="editCrimeBtn" class="button" onclick="editCrime()">EDIT CRIME</button>
-        <button id="deleteCrimeBtn" class="button" onclick="deleteCrime()">DELETE CRIME</button>`;
+        <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>
+        <button id="editCrimeBtn" class="button" onclick="editCrimePopup()">EDIT CRIME</button>
+        <button id="deleteCrimeBtn" class="button" onclick="deleteCrimePopup()">DELETE CRIME</button>`;
     
 
 
@@ -502,10 +555,10 @@
           </tr>`
 
     var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div> <br> 
-        <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+        <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
 
     
-    function popupFunction() {
+    function addCrimePopup() {
       // window.alert("YEET");
       // ----------------add crime popup modal JS----------------
       // Get the modal
@@ -522,9 +575,45 @@
 
       // When the user clicks on <span> (x), close the modal
       span.onclick = function() {
-      modal.style.display = "none";
+         modal.style.display = "none";
       }
 
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+      }
+    }
+
+    function editCrimePopup() {
+      var modal = document.getElementById("editCrimeModal");
+      var span = document.getElementsByClassName("close")[1];
+      // When the user clicks the button, open the modal 
+      modal.style.display = "block";
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+      }
+    }
+
+    function deleteCrimePopup() {
+      var modal = document.getElementById("deleteCrimeModal");
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[2];
+
+      // When the user clicks the button, open the modal 
+      modal.style.display = "block";
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
       // When the user clicks anywhere outside of the modal, close it
       window.onclick = function(event) {
       if (event.target == modal) {
@@ -611,7 +700,7 @@
 
 
 
-      //  ============================== ADD CRIME ==============================
+      //  ============================== CRIME MODIFICATION FUNCTIONS ==============================
 
       /**
        * Function to add a new crime to the database
@@ -620,6 +709,20 @@
           var crimeType = document.getElementById("selected-crime").value;
           var crimeTime = document.getElementById("crimetime").value;
           var modal = document.getElementById("addCrimeModal");
+
+          $.ajax({
+            type: "POST",
+            url: "{{ url_for('get_post_json') }}",
+            contentType: "application/json",
+            data: JSON.stringify({crimeType: crimeType}),
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+          });
 
         //   console.log("Crime Type:", crimeType);
         //   console.log("Crime Time:", crimeTime);
@@ -648,7 +751,7 @@
           newTableString = addTableItem(crimeType, crimeTime, tableString);
           tableString = newTableString;
           popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader +  tableString + `</table></div>
-          <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+          <br> <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
           // console.log(popUp);
       }
 
@@ -1113,9 +1216,29 @@
         font-family: "Montserrat", sans-serif;
         background-color: #ff8052;
         color: #fff;
+        width: 100%;
+        height: 40px;
         border-radius: 8px;
         margin-bottom: 10px;
     }
+
+    /* ----------------- custom entry form ------------------- */
+
+    .custom-form {
+        position: relative;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 15px;
+    }
+    
+    .custom-form input[type=text]{
+        width: 100%;
+        padding: 3px 5px;
+        margin: 4px 0;
+        border: 1px solid #ff8052;
+        border-radius: 4px;
+    }
+
+
 
 
     /* ----------------- custom scrollbar ------------------- */
