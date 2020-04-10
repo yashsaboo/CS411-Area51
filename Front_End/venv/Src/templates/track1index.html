@@ -240,24 +240,46 @@
             <div class="modal-body">
                 <div class="custom-form" style="width:300px;">
                     <label for="editForm-crimeID">Enter Incident ID:</label>
-                    <input type="text" id="editForm-crimeID">
+                    <input type="text" id="oldcrimeID">
                 </div>
+
                 <div class="custom-select" style="width:200px;">
                     <label for="crimeType">Change attribute:</label>
-                    <div class="checkbox-container">
+
+                    <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="checkbox" id="crimeIDRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label for="crimeIDRadio">Update incident ID:
+                            <div class="custom-form" style="width:300px;">
+                                <input type="text" id="newcrimeID">
+                            </div>
+                        </label>
+                    </div>
+
+                                          
+                    <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="checkbox" id="crimeTimeRadio"><span class="checkbox-custom rectangular"></span></label>
+                        <label for="crimeTimeRadio">Update date/time:
+                            <div class="custom-form" style="width:300px;">
+                                <input type="text" id="newCrimeTime" placeholder="MM/DD/YYYY">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-container"> 
                         <label class="checkbox-label"><input type="checkbox" id="crimeTypeRadio"><span class="checkbox-custom rectangular"></span></label>
-                        Crime Type<input type="text" id="editForm-crimeType">
+                        <label for="crimeTypeRadio">Select crime type:
+                            <select id="selected-crime">
+                                <option value="theft">Theft</option>
+                                <option value="drug possession">Drug Possession</option>
+                                <option value="trespass">Trespass</option>
+                                <option value="accident">Accident</option>
+                                <option value="assault">Assault</option>
+                                <option value="alcohol">Alcohol</option>
+                                <option value="vandalism">Vandalism</option>
+                                </select>
+                        </label>
                       </div>
 
-                        <!-- <select id="selected-crime">
-                        <option value="theft">Incident ID</option>
-                        <option value="drug possession">Date</option>
-                        <option value="trespass">Time</option>
-                        <option value="accident">Accident</option>
-                        <option value="assault">Assault</option>
-                        <option value="alcohol">Alcohol</option>
-                        <option value="vandalism">Vandalism</option>
-                        </select> -->
                 </div>
 
                 <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
@@ -870,12 +892,13 @@
 
   /* -------------checkbox styling----------------- */
 
+  
   .checkbox-label {
     display: inline-block;
     position: relative;
     margin: auto;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 12px;
     line-height: 24px;
     height: 24px;
     width: 24px;
@@ -1143,7 +1166,7 @@
     .custom-select {
         position: relative;
         font-family: "Montserrat", sans-serif;
-        margin-bottom: 15px;
+        margin: 15px;
     }
 
     .custom-select select {
