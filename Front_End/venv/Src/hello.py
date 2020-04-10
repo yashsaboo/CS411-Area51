@@ -117,6 +117,18 @@ def delete():
     # return jsonify(status="success", data=data)
     return None
 
+@app.route('/search/', methods=['POST'])
+def search():
+    if request.method == 'POST':
+        print('FROM JAVASCRIPT: ', request.form['search'])
+        res = WebsiteToDB.searchData(request.form['search'])
+        # Dynamically reaload if search succesful
+        if res:
+            print('search successful')
+            return render_template('track1index.html', search_res = res)
+    # return jsonify(status="success", data=data)
+    return None
+
 @socketio.on('connect', namespace='/test')
 def test_connect():
     # need visibility of the global thread object
