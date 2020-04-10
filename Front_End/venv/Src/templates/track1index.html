@@ -206,7 +206,7 @@
     
     <!-- ============================== MODALS ============================== -->
 
-    <!-- Add Crime Modal  -->
+    <!--------------------------------- Add Crime Modal  ------------------------------------->
     <div id="addCrimeModal" class="modal">
         <!-- Modal content -->
         <div class="modal-content">
@@ -231,10 +231,16 @@
                     <label for="birthdaytime">Date and Time:</label>
                     <input type="datetime-local" id="crimetime" name="crimetime">
                 </div>
-                <button id="submitBtn" class="button" onclick="addCrime()">ADD CRIME</button>
+                <button id="submitAddBtn" class="button" onclick="addCrime()">ADD CRIME</button>
             </div> <!-- end modal body -->
         </div>
     </div>
+
+    <!--------------------------------- Edit Crime Modal  ------------------------------------->
+
+
+
+    <!--------------------------------- Delete Crime Modal  ------------------------------------->
 
 
 
@@ -278,7 +284,7 @@
     var markers = L.layerGroup();
 
     // the table header html 
-    var tableHeader = `<div style="height: 200px; width: 300px; overflow: auto"><table>
+    var tableHeader = `<div style="height: 300px; overflow: auto"><table>
          <tr>
               <th>ID</th>
               <th>Crime</th>
@@ -287,8 +293,10 @@
           </tr>`;
 
     // end of table HTML
-    var tableClosingHTML = `</table></div>
-      <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+    var tableClosingHTML = `</table></div> <br>  
+        <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>
+        <button id="editCrimeBtn" class="button" onclick="editCrime()">EDIT CRIME</button>
+        <button id="deleteCrimeBtn" class="button" onclick="deleteCrime()">DELETE CRIME</button>`;
     
 
 
@@ -307,7 +315,7 @@
 
         let colorIndex = 0;
 
-        var crimeDictionary = makeCrimeDict(crimeData);
+        var crimeDictionary = makeCrimeDict(crimeData); 
         // console.log("crime dictionary: ", crimeDictionary);
         // for every crime block in crimeDictionary, draw the block and bind its popup
         Object.keys(crimeDictionary).forEach(function(key){
@@ -365,7 +373,7 @@
             weight: 1,
         });
 
-        block.bindPopup(popupContents); // bind popup
+        block.bindPopup(popupContents, {maxWidth: 560}); // bind popup
         markers.addLayer(block);
         // blockList.push(block); // push to stack
         // block.addTo(mymap);  // draw the block
@@ -386,6 +394,13 @@
             let crimeDate = blockData[i][2].slice(0,3);    // [year, month, day]
             let crimeTime = blockData[i][2].slice(3);      // [hour, minute]
 
+
+            // fix time formatting
+            for (j=0; j<crimeTime.length; j++){
+                if (crimeTime[j] == '0'){
+                    crimeTime[j] = '00';
+                }
+            }
             // create html
             let crimeIDHTML   = '<td>' + crimeID + '</td>';
             let crimeTypeHTML = '<td>' + crimeType + '</td>';
@@ -486,8 +501,8 @@
               <td> 9:22</td>
           </tr>`
 
-    var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div>
-      <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
+    var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div> <br> 
+        <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
 
     
     function popupFunction() {
@@ -598,18 +613,36 @@
 
       //  ============================== ADD CRIME ==============================
 
+      /**
+       * Function to add a new crime to the database
+       */
       function addCrime(){
           var crimeType = document.getElementById("selected-crime").value;
           var crimeTime = document.getElementById("crimetime").value;
           var modal = document.getElementById("addCrimeModal");
 
-          console.log("Crime Type:", crimeType);
-          console.log("Crime Time:", crimeTime);
-          updatePopupTable(crimeType, crimeTime);
+        //   console.log("Crime Type:", crimeType);
+        //   console.log("Crime Time:", crimeTime);
+        //   updatePopupTable(crimeType, crimeTime);
 
           // close the modal
           modal.style.display = "none";
       }
+
+      /**
+       * Function to edit a crime
+       */
+      function editCrime(){
+
+      }
+
+      /**
+       * Function to delete a crime
+       */
+      function deleteCrime(){
+
+      }
+
 
       function updatePopupTable(crimeType, crimeTime){
           newTableString = addTableItem(crimeType, crimeTime, tableString);
@@ -900,10 +933,10 @@
       background-color: #ff8052;
       border: none;
       color: white;
-      padding: 10px 24px;
+      padding: 6px 12px;
       text-align: center;
       text-decoration: none;
-      margin: 10px;
+      margin: 15px;
       display: inline-block;
       font-size: 14px;
       border-radius: 8px;
@@ -913,6 +946,7 @@
   .button:hover {
       background-color: white;
       color: #ff8052;
+      /* outline: 2px solid #ff8052; */
       border: 2px solid #ff8052;
       border-radius: 8px;
   }
