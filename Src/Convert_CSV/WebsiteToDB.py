@@ -71,18 +71,7 @@ Created on Thu Apr 9
 
 # # Update Format
 
-# **Function Name**: updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
-#     
-# **Input**: 3 String values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
-#     
-# **Output**: True/False whether the new data was inserted successfully or not
-#     
-# **Example**: 
-# 
-#             columnNameOfUpdateRecord = "disposition"
-#             oldValueOfUpdateRecord = "ARREST"
-#             newValueOfUpdateRecord = "ARREST with Guns"
-#             updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+# #### Please go to the update section
 
 # # The Code
 
@@ -275,7 +264,7 @@ def insertNewData(msg):
         
         print("Inserted the new row")
         return True
-    except Exception as e:
+    except e:
         print("Couldn't insert the new row")
         print(e)
         return False
@@ -360,12 +349,37 @@ def deleteData(columnNameOfDeleteRecord, valueOfDeleteRecord):
 
 # ## Update Data
 
+# ### **Note**: User can't directly update the primary key Columns of any tables: blockID, crimeTypeID, incidentID 
+
 # ### Only one column
 
-# In[20]:
+# **Function Name**: updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+#     
+# **Input**: 3 String values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
+#     
+# **Output**: True/False whether the new data was inserted successfully or not
+#     
+# **Example**: 
+# 
+#             columnNameOfUpdateRecord = "disposition"
+#             oldValueOfUpdateRecord = "ARREST"
+#             newValueOfUpdateRecord = "ARREST with Guns"
+#             updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+
+# In[74]:
+
+
+columnsWhichCantBeUpdated = ["blockID", "crimeTypeID", "incidentID"]
+
+
+# In[75]:
 
 
 def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord):
+    
+    if columnNameOfUpdateRecord in columnsWhichCantBeUpdated:
+        print("Unupdatable Columns. Read rules to update.")
+        return False
     
     tableNameOfUpdateRecord = getTableName(columnNameOfUpdateRecord)
     if tableNameOfUpdateRecord == None:
@@ -385,13 +399,206 @@ def updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdat
         return True
 
 
-# In[23]:
+# In[77]:
+
+
+# columnNameOfUpdateRecord = "disposition"
+# oldValueOfUpdateRecord = "REPORTED TO OTHER"
+# newValueOfUpdateRecord = "ARREST "
+# updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+
+
+# ### Only one column using Like operator
+
+# **Function Name**: updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+#     
+# **Input**: 3 String values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
+#     
+# **Output**: True/False whether the new data was inserted successfully or not
+#     
+# **Example**: 
+# 
+#             columnNameOfUpdateRecord = "disposition"
+#             oldValueOfUpdateRecord = "ARREST"
+#             newValueOfUpdateRecord = "REPORTED TO OTHER"
+#             updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+
+# In[78]:
+
+
+def updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord):
+    
+    if columnNameOfUpdateRecord in columnsWhichCantBeUpdated:
+        print("Unupdatable Columns. Read rules to update.")
+        return False
+    
+    tableNameOfUpdateRecord = getTableName(columnNameOfUpdateRecord)
+    if tableNameOfUpdateRecord == None:
+        return False
+    
+    # Update Table
+    sqlqueryForDeleteFromTable = "Update {tableName} set {columnName} = \"{newValue}\" where {columnName} like \"%{oldValue}%\""
+
+    querySuccessOrNot = dbhelp.executeSingleQuery(sqlqueryForDeleteFromTable.format(tableName = tableNameOfUpdateRecord, 
+                                                                columnName = columnNameOfUpdateRecord,
+                                                                oldValue = oldValueOfUpdateRecord,
+                                                                newValue = newValueOfUpdateRecord
+                                                                ))
+    if not querySuccessOrNot:
+        return False
+    else:
+        return True
+
+
+# In[79]:
 
 
 # columnNameOfUpdateRecord = "disposition"
 # oldValueOfUpdateRecord = "ARREST"
-# newValueOfUpdateRecord = "ARREST with Guns"
-# updateData(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+# newValueOfUpdateRecord = "REPORTED TO OTHER"
+# updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
 
 
-# ### Two columns
+# ### Two columns using IncidentID as Base
+
+# **Function Name**: updateDataUsingLike(columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord)
+#     
+# **Input**: 3 String/**Dictionary** values - columnNameOfUpdateRecord, oldValueOfUpdateRecord, newValueOfUpdateRecord                
+#     
+# **Output**: True/False whether the new data was inserted successfully or not
+#     
+# **Example**: 
+#             
+#             Case 1: When column is Crime Table and not "crimeTypeID"
+#                 columnNameOfUpdateRecord = "disposition"
+#                 incidentIDValueOfUpdateRecord = "II1300002"
+#                 newValueOfUpdateRecord = "DISARM AN OFFICER bleh test"
+#                 updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
+#                 
+#             Case 2: When column is "type"
+#                 columnNameOfUpdateRecord = "type"
+#                 incidentIDValueOfUpdateRecord = "II1300002"
+#                 newValueOfUpdateRecord = "RESIST/OBSTRUCT/DISARM AN OFFICER bleh test"
+#                 updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
+#                 
+#             Case 3: When column is "genLocation"; newValueOfUpdateRecord is a dictionary of {genLocation, lat, lon} columns
+#                 columnNameOfUpdateRecord = "genLocation"
+#                 incidentIDValueOfUpdateRecord = "II1300002"
+#                 newValueOfUpdateRecord = {}
+#                 newValueOfUpdateRecord["genLocation"] = "CIRCLE K"
+#                 newValueOfUpdateRecord["lat"] = "40.1081487"
+#                 newValueOfUpdateRecord["lon"] = "-88.2293074"
+#                 updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
+
+# In[80]:
+
+
+def updateCrimeTable(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecordForCrimeTable):
+    
+    # Update Crime Table
+    sqlqueryForDeleteFromTable = "Update Crime set {columnName} = \"{newValue}\" where incidentID = \"{incidentIDVal}\""
+
+    querySuccessOrNot = dbhelp.executeSingleQuery(sqlqueryForDeleteFromTable.format( 
+                                                                columnName = columnNameOfUpdateRecord,
+                                                                incidentIDVal = incidentIDValueOfUpdateRecord,
+                                                                newValue = newValueOfUpdateRecordForCrimeTable
+                                                                ))
+    print(sqlqueryForDeleteFromTable.format(columnName = columnNameOfUpdateRecord,
+                                            incidentIDVal = incidentIDValueOfUpdateRecord,
+                                            newValue = newValueOfUpdateRecordForCrimeTable
+                                            )) 
+    return querySuccessOrNot
+
+def updateHappensAtTable(blockIDValue, genLocationValue, incidentIDVal):
+    # Update happensAt Table
+    sqlqueryForDeleteFromTable = """Update happensAt set 
+                                    blockID = \"{blockIDValue}\",
+                                    genLocation = \"{genLocationValue}\"
+                                    where incidentID = \"{incidentIDVal}\"
+                                 """
+
+    querySuccessOrNot = dbhelp.executeSingleQuery(sqlqueryForDeleteFromTable.format( 
+                                                                blockIDValue = blockIDValue,
+                                                                genLocationValue = genLocationValue,
+                                                                incidentIDVal = incidentIDVal
+                                                                ))
+    return querySuccessOrNot
+
+
+# In[84]:
+
+
+def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord):
+    
+    if columnNameOfUpdateRecord in columnsWhichCantBeUpdated:
+        print("Unupdatable Columns. Read rules to update.")
+        return False
+    
+    tableNameOfUpdateRecord = getTableName(columnNameOfUpdateRecord)
+    if tableNameOfUpdateRecord == None:
+        return False
+
+    newValueOfUpdateRecordForCrimeTable = None
+    columnNameOfUpdateRecordForCrimeTable = None
+    querySuccessOrNot = False
+
+    #Case 1: No extra processing required if change is in Crime table
+    if columnNameOfUpdateRecord in columnsOfCrime:
+        print("Case 1")
+        newValueOfUpdateRecordForCrimeTable = newValueOfUpdateRecord
+        columnNameOfUpdateRecordForCrimeTable = columnNameOfUpdateRecord
+        #Update
+        querySuccessOrNot = updateCrimeTable(columnNameOfUpdateRecordForCrimeTable, incidentIDValueOfUpdateRecord, newValueOfUpdateRecordForCrimeTable)
+
+    #Case 2: Change crime type
+    elif columnNameOfUpdateRecord == "type":
+        print("Case 2")
+        #Get crimeTypeID
+        newValueOfUpdateRecordForCrimeTable = findCrimeTypeID_InsertIfNotPresent(newValueOfUpdateRecord)
+        print("Got new ID")
+        if newValueOfUpdateRecordForCrimeTable == None:
+            return False
+        columnNameOfUpdateRecordForCrimeTable = "crimeTypeID"
+        #Update 
+        querySuccessOrNot = updateCrimeTable(columnNameOfUpdateRecordForCrimeTable, incidentIDValueOfUpdateRecord, newValueOfUpdateRecordForCrimeTable)
+    
+    #Case 3: Change genLocation
+    #newValueOfUpdateRecord is a dictionary of {genLocation, lat, lon} columns
+    elif columnNameOfUpdateRecord == "genLocation":
+        print("Case 3")
+        blockIDOfUpdatedRecord = search(float(newValueOfUpdateRecord["lat"]), float(newValueOfUpdateRecord["lon"]))
+        #Update 
+        querySuccessOrNot = updateHappensAtTable(blockIDOfUpdatedRecord, newValueOfUpdateRecord["genLocation"], incidentIDValueOfUpdateRecord)
+        
+    else:
+        return False
+
+    if not querySuccessOrNot:
+        return False
+    else:
+        return True
+
+
+# In[82]:
+
+
+# columnNameOfUpdateRecord = "genLocation"
+# incidentIDValueOfUpdateRecord = "II1300002"
+# # newValueOfUpdateRecord = "RESIST/OBSTRUCT/DISARM AN OFFICER bleh test"
+# newValueOfUpdateRecord = {}
+# newValueOfUpdateRecord["genLocation"] = "CIRCLE K"
+# newValueOfUpdateRecord["lat"] = "40.1081487"
+# newValueOfUpdateRecord["lon"] = "-88.2293074"
+
+
+# In[83]:
+
+
+# updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateRecord, newValueOfUpdateRecord)
+
+
+# In[ ]:
+
+
+
+
