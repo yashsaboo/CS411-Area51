@@ -53,10 +53,12 @@ def executeSingleQuery(sqlquery):
         print("Query Successfully Executed")
         
         db.commit()
+        return True
 
     except mdb.Error as e:
         print(e)
         print("Query Not Successfully Executed" + sqlquery)
+        return False
         
     closeDatabase(db)
     
