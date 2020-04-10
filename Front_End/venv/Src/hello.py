@@ -79,7 +79,9 @@ def get_post_json():
     
     # Emit updated data if insertion succesful
     if res:
-        socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
+        print('insertion successful')
+        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
+        return render_template('track1index.html', crimeDBData=sendDBData())
     return jsonify(status="success", data=data)
 
 

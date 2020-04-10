@@ -50,7 +50,6 @@
   <!-- ============================== CONTENT ============================== -->
   
   <body class="w3-content" style="max-width: 1200px;">
-    <h3>Leaflet Map Demo</h3>
     <!-- Sidebar/menu -->
     <nav
       class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
@@ -217,7 +216,7 @@
             <div class="modal-body">
                 <div class="custom-form" style="width:300px;">
                     <label for="addForm-crimeType">Type of Crime:</label>
-                    <input type="text" id="addForm-crimeType">
+                    <input type="text" id="addForm-crimeType" onkeyup="this.value = this.value.toUpperCase();">
                 </div>
                 <div class="custom-datetime" style="width: 180px;">
                     <label for="addForm-crimeTime">Date and Time:</label>
@@ -358,15 +357,14 @@
 
     <script>
 
-      // Add listener to 'log' div
-      $('body').on('DOMSubtreeModified', 'log', function(){
-        console.log('DIV CHANGED');
-        // Live update crimeDBData
-        crimeDBList = document.getElementById('log').innerHTML;
-        // Repopulate map
-        populateMap(crimeDBList);
-
-      });
+      // // Add listener to 'log' div
+      // $('body').on('DOMSubtreeModified', 'log', function(){
+      //   console.log('DIV CHANGED');
+      //   // Live update crimeDBData
+      //   crimeDBList = document.getElementById('log').innerHTML;
+      //   // Repopulate map
+      //   populateMap(crimeDBList);
+      // });
             //  ============================= INSTANTIATE MAP ================================
 
       var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
@@ -562,7 +560,7 @@
 
         // add closing HTML to table string and return it
         newTableString = newTableString + tableClosingHTML;
-        console.log
+        // console.log
         return newTableString
     }
 
@@ -822,8 +820,8 @@
             contentType: "application/json",
             data: JSON.stringify({crimeType, crimeDateTime, lat: crimeCoords[0], lon: crimeCoords[1]}),
             dataType: "json",
-            success: function(response) {
-                console.log(response);
+            success: function() {
+                console.log("Succeeded!");
             },
             error: function(err) {
                 console.log(err);
@@ -987,10 +985,9 @@
   #modal{ z-index:2; }
 
   #log {
-    display: none 
-    /* height: 500px;
+    height: 500px;
     font-family: "Montserrat", sans-serif;
-    color: black; */
+    color: black;
   }
 
   .w3-sidebar a {
