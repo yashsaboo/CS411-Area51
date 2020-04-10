@@ -69,7 +69,7 @@ def get_post_json():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
     res = WebsiteToDB.insertNewData({'incidentID': ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)),
-        'reportedAt': datetime.now().strftime(r"%Y-%m-%d %H:%M"),
+        'reportedAt': datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"),
         'occuredAt': data['crimeDateTime'],
         'disposition': 'ARREST',
         'type': data['crimeType'],

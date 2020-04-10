@@ -538,9 +538,16 @@
 
             // fix time formatting
             for (j=0; j<crimeTime.length; j++){
-                if (crimeTime[j] == '0'){
-                    crimeTime[j] = '00';
-                }
+                if (crimeTime[j] == '0') crimeTime[j] = '00';
+                else if (crimeTime[j] == '1') crimeTime[j] = '01';
+                else if (crimeTime[j] == '2') crimeTime[j] = '02';
+                else if (crimeTime[j] == '3') crimeTime[j] = '03';
+                else if (crimeTime[j] == '4') crimeTime[j] = '04';
+                else if (crimeTime[j] == '5') crimeTime[j] = '05';
+                else if (crimeTime[j] == '6') crimeTime[j] = '06';
+                else if (crimeTime[j] == '7') crimeTime[j] = '07';
+                else if (crimeTime[j] == '8') crimeTime[j] = '08';
+                else if (crimeTime[j] == '9') crimeTime[j] = '09';
             }
             // create html
             let crimeIDHTML   = '<td>' + crimeID + '</td>';
@@ -800,12 +807,11 @@
           var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
           var modal = document.getElementById("addCrimeModal");
 
-          let crimeDateTime = crimeTime.replace('T', ' ');      // YYYY-nn-dd hh:mm
+          let crimeDateTime = crimeTime.replace('T', ' ') + ':00'; // YYYY-nn-dd hh:mm:ss    
           let crimeCoords = [clickCoords.lat, clickCoords.lng]; // coordinates to send to DB
+        
+          console.log("crime coords: ", crimeCoords);
 
-          // time and date formatted for DB insertion
-          // let crimeDate    = crimeTimeSplit[0]; //
-          // let crimeHourMin = crimeTimeSplit[1]; //hh:mm
 
           // please use: 
           // crimeType, crimeDisp, crimeDateTime, crimeCoords
