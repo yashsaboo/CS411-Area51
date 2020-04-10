@@ -10,8 +10,10 @@ import os
 import sys
 import csv
 import numpy as np
+import pandas as pd
 from pathlib import Path
 from random import random
+import matplotlib.pyplot as plt
 from statsmodels.tsa.ar_model import AR
 from statsmodels.tsa.arima_model import ARMA
 np.set_printoptions(threshold=sys.maxsize)
@@ -54,6 +56,24 @@ with open('prediction.csv','w', encoding = "latin-1") as f:
             model_fit = model.fit(disp=False)
             # make prediction
             predict = model_fit.predict(len(data), len(data))
+            """data_new = np.hstack([data, predict])
+            fc, se, conf = model_fit.forecast(2, alpha=0.05)
+            tr_series = pd.Series(data_new, [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020])
+            pr_series = pd.Series(fc, [2020, 2021])
+            lower_series = pd.Series(conf[:, 0], [2020, 2021])
+            upper_series = pd.Series(conf[:, 1], [2020, 2021])
+            
+            # Plot
+            plt.figure(figsize=(12,5), dpi=100)
+            plt.plot(pr_series, label='prediction')
+            plt.plot(tr_series, label='previous')
+            plt.fill_between(lower_series.index, lower_series, upper_series, 
+                             color='k', alpha=.15)
+            plt.title('Count of Crimes')
+            plt.xlabel('Year')
+            plt.ylabel('Crime Count')
+            plt.legend(loc='upper left', fontsize=8)
+            plt.show()"""
         else:
             predict = [0]
         csvwriter.writerow([i, int(count[i,0]), int(count[i,1]), int(count[i,2]), int(count[i,3])
