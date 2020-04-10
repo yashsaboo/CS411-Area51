@@ -97,7 +97,7 @@ import numpy as np
 # In[2]:
 
 
-csvFilePath = r"C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\Convert_CSV\Data"
+csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\Convert_CSV\Data"
 
 
 # ### Sanity Checker
@@ -275,7 +275,7 @@ def insertNewData(msg):
         
         print("Inserted the new row")
         return True
-    except e:
+    except Exception as e:
         print("Couldn't insert the new row")
         print(e)
         return False

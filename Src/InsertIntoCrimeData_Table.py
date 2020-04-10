@@ -18,7 +18,7 @@ except mdb.Error as e:
     print("Database Not Connected Successfully")
  
 # Insert into Database
-csvFilePath = r"C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Data\CSVs"
+csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\Convert_CSV\Data\CSVs"
 csvName = r"Partial Edited 2013.csv"
 
 csvData = pd.read_csv(csvFilePath+"\\"+csvName)

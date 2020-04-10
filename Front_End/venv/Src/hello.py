@@ -4,7 +4,10 @@ from random import random
 from time import sleep
 from threading import Thread, Event
 import MySQLdb as mdb
-import WebsiteToDB as web2DB
+import sys
+import os
+sys.path.insert(0, os.path.abspath('../../../Src/Convert_CSV'))
+import WebsiteToDB
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -61,11 +64,11 @@ def predicted():
 def get_post_json():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
-    web2DB.insertNewData({'incidentID': 'joo999999',
+    WebsiteToDB.insertNewData({'incidentID': 'joo99998',
                                        'reportedAt': '2013-1-1 11:39:00',
                                        'occuredAt': '2013-1-1 11:39:00',
                                        'disposition': 'ARREST',
-                                       'type': 'POSSESSION OF CANNABIs and KillADFADFA',
+                                       'type': 'YOOO',
                                        'genLocation': 'CIRCLE K',
                                        'lat': '40.1081487',
                                        'lon': '-88.2293074'})

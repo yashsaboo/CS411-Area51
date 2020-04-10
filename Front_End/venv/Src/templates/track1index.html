@@ -5,7 +5,7 @@
     <!--============================== RESOURCES ============================== -->
 
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script
+    <scrsipt
       type="text/javascript"
       src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"
     ></script>
@@ -330,6 +330,7 @@
       ).addTo(mymap);
 
 
+
     //  ============================= POPULATE MAP ================================
 
     // Retreives database crime data. Should be in the form:
@@ -345,6 +346,14 @@
 
     // marker group 
     var markers = L.layerGroup();
+
+    //  =========================== ON-CLICK COORDINATES ===========================
+    var clickCoords = [];
+    mymap.on("click", function (clickEvent) {
+    // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
+        clickCoords = clickEvent.latlng;
+        console.log("you clicked at: ", clickCoords);
+    });
 
     // the table header html 
     var tableHeader = `<div style="height: 300px; overflow: auto"><table>
@@ -379,10 +388,10 @@
         let colorIndex = 0;
 
         var crimeDictionary = makeCrimeDict(crimeData); 
-        // console.log("crime dictionary: ", crimeDictionary);
+
         // for every crime block in crimeDictionary, draw the block and bind its popup
         Object.keys(crimeDictionary).forEach(function(key){
-            console.log("key:", key);
+            
             blockData = crimeDictionary[key];
             blockTableHTML = getTableString(blockData);
             blockCoordList = key.split(',');
@@ -709,6 +718,7 @@
       document.addEventListener("click", closeAllSelect);
 
 
+      
 
       //  ============================== CRIME MODIFICATION FUNCTIONS ==============================
 
