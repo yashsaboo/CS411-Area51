@@ -288,7 +288,7 @@
                     </div> -->
 
                     <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="radio" id="disposition"/><span class="checkbox-custom circular"></span></label>
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="disposition"/><span class="checkbox-custom circular"></span></label>
                         <label for="crimeDispRadio">Change disposition:
                             <select id="newDispType">
                                 <option value="arrest">Arrest</option>
@@ -807,9 +807,7 @@
           console.log("crime coords: ", crimeCoords);
 
 
-          // please use: 
-          // crimeType, crimeDisp, crimeDateTime, crimeCoords
-
+          // send to DB
           $.ajax({
             type: "POST",
             url: "{{ url_for('insert') }}",
@@ -828,23 +826,14 @@
           modal.style.display = "none";
       }
 
+
       /**
        * Function to edit a crime
        */
       function editCrime(){
         var modal = document.getElementById("editCrimeModal");   
 
-        // var crimeIDRadio   = document.getElementById("crimeIDRadio");
-        // var crimeDateRadio = document.getElementById("crimeDateRadio");
-        // var crimeTimeRadio = document.getElementById("crimeTimeRadio");
-        // var crimeTypeRadio = document.getElementById("crimeTypeRadio");
-
         var oldID   = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
-       
-        // if (crimeIDRadio.checked)   var newID   = document.getElementById("newCrimeID").value;
-        // if (crimeDateRadio.checked) var newDate = document.getElementById("newCrimeDate").value;
-        // if (crimeTimeRadio.checked) var newTime = document.getElementById("newCrimeTime").value;
-        // if (crimeTypeRadio.checked) var newType = document.getElementById("newCrimeType").value.toUpperCase();
 
         var columns = document.getElementsByName("editRadio");
         var columnToBeUpdated = '';
@@ -853,12 +842,15 @@
         for (i=0; i<columns.length; i++){
             if(columns[i].checked){
                 columnToBeUpdated = columns[i].id;
-                newColumnValue = columns[i].value;
+                if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
+                else if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
+                else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
+                // newColumnValue = columns[i].value;
             }
         }
 
         if (columnToBeUpdated == '' && newColumnValue == ''){
-            window.alert("you didn't do anything");
+            window.alert("You didn't enter any changes!");
             return
         }
 
@@ -866,10 +858,7 @@
         console.log("incidentID: ", oldID);
         console.log("new val:", newColumnValue);
 
-        // please send these to DB:
-        // oldID (ID of the crime to be updated)
-        // newID, newDate, newTime, newType
-        // if the user does not select an attribute to update, it will return "undefined"
+        // send to DB
         $.ajax({
             type: "POST",
             url: "{{ url_for('edit') }}",
@@ -896,26 +885,17 @@
 
         var deleteID = document.getElementById("deleteID").value;
         var typeToDelete = 'incidentID'
-        // if (document.getElementById("selected-delete").value != 'none'){
-        //     var typeToDelete = document.getElementById("selected-delete").value.toUpperCase();
-        // }
 
         console.log(deleteID);
         console.log(typeToDelete);
 
-        // send to DB:
-        // deleteID (incident ID of the crime to be deleted)
-        // typeToDelete (delete all crimes of this type if something is entered, otherwise undefined)
-
+        // send to DB
         $.ajax({
             type: "POST",
             url: "{{ url_for('delete') }}",
             contentType: "application/json",
             data: JSON.stringify({deleteColumn: typeToDelete , deleteValue: deleteID}),
             dataType: "json",
-            // success: function() {
-            //     console.log("Succeeded!");
-            // },
             error: function(err) {
                 console.log(err);
             }
