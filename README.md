@@ -6,3 +6,5 @@ We got the PDFs of the crimes committed at the University of Illinois at Urbana-
 We converted the above dataset from .pdf to .doc files via this website
 We copied the data of each .doc file to a new excel spreadsheet and cleaned the spreadsheet (to remove the page breaks)
 Lastly, we exported the excel files to .csv files
+
+Machine Learning Model chosen: autoregressive–moving-average (ARMA) which combines two equations below together to describe the stationary stochastic process
