@@ -623,7 +623,7 @@ def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateR
 # In[47]:
 
 
-def serchData(incidentID):
+def searchData(incidentID):
     
     sqlQeueryForSearchUsingIncidentID = """
                 select *

@@ -125,7 +125,7 @@ def search():
         # Dynamically reaload if search succesful
         if res:
             print('search successful')
-            return render_template('track1index.html', search_res = res)
+            return render_template('track1index.html', crimeDBData=sendDBData(), search_res=res)
     # return jsonify(status="success", data=data)
     return None
 
