@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, jsonify
 from flask_socketio import SocketIO, emit
 from random import random
 from time import sleep
@@ -25,6 +25,7 @@ DBHOST = "localhost"
 DBPASS = ""
 DBUSER = "root"
 
+
 def randomNumberGenerator():
     """
     Generate a random number every 1 second and emit to a socketio instance (broadcast)
@@ -48,10 +49,18 @@ def index():
     # return redirect(url_for('predicted'))
 
 
+# TODO: Jonathan will add Xin's predictions to site
 @app.route('/predicted')
 def predicted():
     # only by sending this page first will the client be connected to the socketio instance
     return render_template('predicted.html')
+
+# To rec'v data passed from Javascript
+@app.route('/_get_post_json/', methods=['POST'])
+def get_post_json():
+    data = request.get_json()
+    print('FROM JAVASCRIPT: ', data)
+    return jsonify(status="success", data=data)
 
 
 @socketio.on('connect', namespace='/test')
@@ -66,19 +75,21 @@ def test_connect():
         thread = socketio.start_background_task(randomNumberGenerator)
 
 
-# ---------------------- DATABASE FUNCTIONS ----------------------------- 
+# ---------------------- DATABASE FUNCTIONS -----------------------------
 
 
 def connectToDatabase():
     try:
-        db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME, charset='utf8', port=3308)
+        db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME,
+                         charset='utf8', port=3308)
         print("Database Connected Successfully")
         return db
     except mdb.Error as e:
         print(e)
         print("Database Not Connected Successfully")
         return None
-    
+
+
 def closeDatabase(db):
     try:
         db.close()
@@ -89,28 +100,29 @@ def closeDatabase(db):
 
 
 def executeSingleQuery(sqlquery):
-    
+
     db = connectToDatabase()
-    
+
     try:
         cur = db.cursor()
 
         # execute query
         cur.execute(sqlquery)
         print("Query Successfully Executed")
-        
+
         db.commit()
 
     except mdb.Error as e:
         print(e)
         print("Query Not Successfully Executed" + sqlquery)
-        
+
     closeDatabase(db)
-    
+
+
 def executeSingleQueryWhichReturns(sqlquery):
-    
+
     db = connectToDatabase()
-    
+
     try:
         cur = db.cursor()
 
@@ -118,18 +130,20 @@ def executeSingleQueryWhichReturns(sqlquery):
         number_of_rows = cur.execute(sqlquery)
         result = cur.fetchall()
         print("Query Successfully Executed and Fetched")
-        
+
         db.commit()
 
     except mdb.Error as e:
         print(e)
         print("Query Not Successfully Executed and Fetched" + sqlquery)
-        
+
     closeDatabase(db)
-    
+
     return result
 
 # function to send DB as list of lists
+
+
 def sendDBData():
 
     sqlQeueryForMap = """
@@ -154,7 +168,8 @@ def sendDBData():
     for row in tupleOfTupleForMap:
         crimeID = row[0]
         crimeType = row[1]
-        dateTimeList = [row[2].year, row[2].month, row[2].day, row[2].hour, row[2].minute]
+        dateTimeList = [row[2].year, row[2].month,
+                        row[2].day, row[2].hour, row[2].minute]
         coord1 = row[3]
         coord2 = row[4]
         coord3 = row[5]
@@ -163,9 +178,10 @@ def sendDBData():
         coord6 = row[8]
         coord7 = row[9]
         coord8 = row[10]
-        listRow = [crimeID, crimeType, dateTimeList, coord1, coord2, coord3, coord4, coord5, coord6, coord7, coord8]
+        listRow = [crimeID, crimeType, dateTimeList, coord1,
+                   coord2, coord3, coord4, coord5, coord6, coord7, coord8]
         listOfListForMap.append(listRow)
-        
+
     # listOfListForMap
 
     return listOfListForMap
