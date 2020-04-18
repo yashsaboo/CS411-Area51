@@ -90,7 +90,7 @@ import numpy as np
 # In[3]:
 
 
-csvFilePath = r"C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\Convert_CSV\Data"
+csvFilePath = r"C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\DatabaseInteractionScripts\Data"
 
 
 # ### Sanity Checker
