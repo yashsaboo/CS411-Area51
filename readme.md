@@ -2,17 +2,16 @@
 
 This repo contains team Area51's crime map visualizer project for CS411, taught by Prof. Alawini in the Spring of 2020. 
 
+## Dataset
+
+We received this dataset from Champaign County Police, and we are grateful for it.
+
 #### How CSV Files Were Created:
 
 - We got the PDFs of the crimes committed at the University of Illinois at Urbana-Champaign from 2013 - 2019
 - We converted the above dataset from .pdf to .doc files via this [website](pdf2doc.com)
 - We copied the data of each .doc file to a new excel spreadsheet and cleaned the spreadsheet (to remove the page breaks)
 - Lastly, we exported the excel files to .csv files
-
-## Dataset
-
-We received this dataset from Champaign County Police, and we are grateful for it.
-
 
 ## MySQL 
 
@@ -69,4 +68,13 @@ It provides with the following functions:
 GetDataForWebsiteMap.ipynb: Gets data from database to serve the website requests.
 
 WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete and select. Multiple wrapper functions are written to perform those tasks with various use cases. Please check the input/output instructions given and also it's looks pretty in Jupyter Notebook.
-    
+
+### Contributor: 
+
+[Yash Saboo](https://github.com/yashsaboo)
+
+[Jonathan Osei-Owusu](https://github.com/joseio)
+
+[Stephanie Lin](https://github.com/stephclin)
+
+[Xin Chen](https://github.com/xinc66)
