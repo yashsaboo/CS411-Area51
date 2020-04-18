@@ -27,15 +27,15 @@ To Load the dataset, one needs to perform the following steps:
 - Go to /SRC/DatabaseInteractionScripts
 - Please update the following variables in all the python scripts, wherever applicable:
     The first three variables are the MySQL server credentials. If you haven't made any changes to the database after installation, then you don't need to change the values.
-    DBHOST (default: "localhost") - Host Name of the Server
-    DBPASS (default: "") - Password
-    DBUSER (default: "root") - Username
+    - DBHOST (default: "localhost") - Host Name of the Server
+    - DBPASS (default: "") - Password
+    - DBUSER (default: "root") - Username
     
     Next variable that may need to be changed is the database name.
-    DBNAME (default: "dbtest") - Database Name
+    - DBNAME (default: "dbtest") - Database Name
     
     Last variable that definitely needs a change is the *folder* path to the dataset.
-    csvFilePath - Folder path to the dataset; the dataset is in "\Src\Convert_CSV\Data"
+    - csvFilePath - Folder path to the dataset; the dataset is in "\Src\Convert_CSV\Data"
     
 - If the original dataset has been amended (that is YYYYnew.csv files), then one needs to rerun SplitOriginalDatasetInto3CSVs.ipynb script. This file combines all the crime log from all the years from 2013-2018 and splits into three CSVs which can be loaded into the Database. 
     - For now, those CSV filenames are hardcoded in the script, so one may write an additional function to automatically find the concerned CSVs. 
@@ -43,9 +43,9 @@ To Load the dataset, one needs to perform the following steps:
     
 - The following 2 files needs to be ran in sequence:
     - CreateTable.py (Please rememeber that it drops the table before creating it)
-    CommandLine: python CreateTable.py
+    ```CommandLine: python CreateTable.py```
     - InsertTable.py
-    CommandLine: python InsertTable.py
+    ```CommandLine: python InsertTable.py```
     
 Now, you should have all the data inside your database. Login to the MySQL and check it.
 
