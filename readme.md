@@ -43,8 +43,11 @@ To Load the dataset, one needs to perform the following steps:
     
 - The following 2 files needs to be ran in sequence:
     - CreateTable.py (Please rememeber that it drops the table before creating it)
+
     ```CommandLine: python CreateTable.py```
+
     - InsertTable.py
+    
     ```CommandLine: python InsertTable.py```
     
 Now, you should have all the data inside your database. Login to the MySQL and check it.
