@@ -69,8 +69,7 @@ GetDataForWebsiteMap.ipynb: Gets data from database to serve the website request
 
 WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete and select. Multiple wrapper functions are written to perform those tasks with various use cases. Please check the input/output instructions given and also it's looks pretty in Jupyter Notebook.
 
-### Contributor: 
-
+### Contributors: 
 - [Yash Saboo](https://github.com/yashsaboo)
 - [Jonathan Osei-Owusu](https://github.com/joseio)
 - [Stephanie Lin](https://github.com/stephclin)
