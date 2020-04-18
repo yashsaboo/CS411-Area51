@@ -44,11 +44,11 @@ To Load the dataset, one needs to perform the following steps:
 - The following 2 files needs to be ran in sequence:
     - CreateTable.py (Please rememeber that it drops the table before creating it)
 
-        ```CommandLine: python CreateTable.py```
+        CommandLine: ```python CreateTable.py```
 
     - InsertTable.py
 
-        ```CommandLine: python InsertTable.py```
+        CommandLine: ```python InsertTable.py```
     
 Now, you should have all the data inside your database. Login to the MySQL and check it.
 
@@ -57,6 +57,7 @@ Also, if you wish to reload the dataset, rerun the above two scripts, and you'd 
 ### Running Queries
 
 To run any query on MySQL query using Python, please use the wrapper functions present in /SRC/DatabaseInteractionScripts/DatabaseHelperFunctions.py
+
 It provides with the following functions:
 - connectToDatabase(): Connect the script to MySQL database and returns the database object
 - closeDatabase(db): Closes database
@@ -66,5 +67,6 @@ It provides with the following functions:
 ### Interacting with the Website
 
 GetDataForWebsiteMap.ipynb: Gets data from database to serve the website requests.
+
 WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete and select. Multiple wrapper functions are written to perform those tasks with various use cases. Please check the input/output instructions given and also it's looks pretty in Jupyter Notebook.
     
