@@ -71,10 +71,7 @@ WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete a
 
 ### Contributor: 
 
-[Yash Saboo](https://github.com/yashsaboo)
-
-[Jonathan Osei-Owusu](https://github.com/joseio)
-
-[Stephanie Lin](https://github.com/stephclin)
-
-[Xin Chen](https://github.com/xinc66)
+- [Yash Saboo](https://github.com/yashsaboo)
+- [Jonathan Osei-Owusu](https://github.com/joseio)
+- [Stephanie Lin](https://github.com/stephclin)
+- [Xin Chen](https://github.com/xinc66)
