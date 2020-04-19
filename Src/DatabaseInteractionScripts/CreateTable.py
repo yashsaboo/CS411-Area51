@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[66]:
 
 
 import MySQLdb as mdb
 
 
-# In[2]:
+# In[67]:
 
 
 DBNAME = "dbtest"
@@ -16,7 +16,7 @@ DBPASS = ""
 DBUSER = "root"
 
 
-# In[4]:
+# In[68]:
 
 
 def connectToDatabase():
@@ -38,7 +38,7 @@ def closeDatabase(db):
         print("Database Not Closed Successfully")
 
 
-# In[5]:
+# In[69]:
 
 
 def executeSingleQuery(sqlquery):
@@ -63,7 +63,7 @@ def executeSingleQuery(sqlquery):
 
 # ## Create BlockLocation Table
 
-# In[7]:
+# In[70]:
 
 
 # we are droping the table if it already exists
@@ -71,7 +71,7 @@ sqlqueryForDroppingTable_BlockLocation = "DROP TABLE IF EXISTS BlockLocation"
 executeSingleQuery(sqlqueryForDroppingTable_BlockLocation)
 
 
-# In[9]:
+# In[71]:
 
 
 sqlqueryForCreatingTable_BlockLocation = """
@@ -95,7 +95,7 @@ executeSingleQuery(sqlqueryForCreatingTable_BlockLocation)
 
 # ## Create CrimeType Table
 
-# In[10]:
+# In[72]:
 
 
 # we are droping the table if it already exists
@@ -103,7 +103,7 @@ sqlqueryForDroppingTable_CrimeType = "DROP TABLE IF EXISTS CrimeType"
 executeSingleQuery(sqlqueryForDroppingTable_CrimeType)
 
 
-# In[11]:
+# In[73]:
 
 
 sqlqueryForCreatingTable_CrimeType = """
@@ -120,7 +120,7 @@ executeSingleQuery(sqlqueryForCreatingTable_CrimeType)
 
 # ## Create Crime Table
 
-# In[12]:
+# In[74]:
 
 
 # we are droping the table if it already exists
@@ -128,7 +128,7 @@ sqlqueryForDroppingTable_Crime = "DROP TABLE IF EXISTS Crime"
 executeSingleQuery(sqlqueryForDroppingTable_Crime)
 
 
-# In[13]:
+# In[75]:
 
 
 sqlqueryForCreatingTable_Crime = """
@@ -140,7 +140,9 @@ sqlqueryForCreatingTable_Crime = """
                          disposition varchar(255),
                          crimeTypeID int NOT NULL,
                          PRIMARY KEY (incidentID),
-                         FOREIGN KEY (crimeTypeID) REFERENCES CrimeType(crimeTypeID)
+                         FOREIGN KEY (crimeTypeID) REFERENCES CrimeType(crimeTypeID) 
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
                         ); 
                         """
     
@@ -149,7 +151,7 @@ executeSingleQuery(sqlqueryForCreatingTable_Crime)
 
 # ## Create happensAt Table
 
-# In[14]:
+# In[76]:
 
 
 # we are droping the table if it already exists
@@ -157,7 +159,7 @@ sqlqueryForDroppingTable_happensAt = "DROP TABLE IF EXISTS happensAt"
 executeSingleQuery(sqlqueryForDroppingTable_happensAt)
 
 
-# In[15]:
+# In[77]:
 
 
 sqlqueryForCreatingTable_happensAt = """
@@ -166,13 +168,29 @@ sqlqueryForCreatingTable_happensAt = """
                          incidentID varchar(20) NOT NULL,
                          blockID int NOT NULL,
                          genLocation varchar(255),
-                         FOREIGN KEY (incidentID) REFERENCES Crime(incidentID),
-                         FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID),
+                         FOREIGN KEY (incidentID) REFERENCES Crime(incidentID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
+                         FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
                          PRIMARY KEY (incidentID, blockID)
                         );
                         """
     
 executeSingleQuery(sqlqueryForCreatingTable_happensAt)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
