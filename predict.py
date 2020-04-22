@@ -43,6 +43,7 @@ for File in os.listdir(mappedLocsDir):
                 #print(tok[3].split('}')[0])
     
 with open('prediction.csv','w', encoding = "latin-1") as f:
+    num = 0
     csvwriter = csv.writer(f, delimiter = ',',)
     csvwriter.writerow(['BlockId', '2013 CrimeCount', '2014 CrimeCount', '2015 CrimeCount', '2016 CrimeCount'
                         , '2017 CrimeCount', '2018 CrimeCount', '2019 CrimeCount', 'Prediction CrimeCount'])
@@ -52,6 +53,14 @@ with open('prediction.csv','w', encoding = "latin-1") as f:
         if(data.sum() != 0):
             # fit model
             # fit model
+            data1 = data[[0, 2, 4, 6]]
+            data2 = data[[1, 3, 5]]
+            mean1 = data1.mean()
+            mean2 = data2.mean()
+            std1 = np.std(data1)
+            std2 = np.std(data2)
+            if((2 * abs(mean1 - mean2) / (mean1 + mean2) > 0.5) or (2 * abs(std1 - std2) / (std1 + std2) > 0.5)):
+                num += 1
             model = ARMA(data, order=(0, 1))
             model_fit = model.fit(disp=False)
             # make prediction
@@ -78,3 +87,4 @@ with open('prediction.csv','w', encoding = "latin-1") as f:
             predict = [0]
         csvwriter.writerow([i, int(count[i,0]), int(count[i,1]), int(count[i,2]), int(count[i,3])
         , int(count[i,4]), int(count[i,5]), int(count[i,6]), int(predict[0])])
+    print(num)

@@ -22,6 +22,6 @@ def search(lat, lon):
     print(index)
     return index
 
-search(40.1065086, -88.22124749999999)
+search(40.1122712, -88.2203084)
 
         
