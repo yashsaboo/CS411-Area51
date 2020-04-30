@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[66]:
+# In[1]:
 
 
 import MySQLdb as mdb
 
 
-# In[67]:
+# In[2]:
 
 
 DBNAME = "dbtest"
@@ -16,7 +16,7 @@ DBPASS = ""
 DBUSER = "root"
 
 
-# In[68]:
+# In[3]:
 
 
 def connectToDatabase():
@@ -38,7 +38,7 @@ def closeDatabase(db):
         print("Database Not Closed Successfully")
 
 
-# In[69]:
+# In[4]:
 
 
 def executeSingleQuery(sqlquery):
@@ -63,7 +63,7 @@ def executeSingleQuery(sqlquery):
 
 # ## Create BlockLocation Table
 
-# In[70]:
+# In[5]:
 
 
 # we are droping the table if it already exists
@@ -71,7 +71,7 @@ sqlqueryForDroppingTable_BlockLocation = "DROP TABLE IF EXISTS BlockLocation"
 executeSingleQuery(sqlqueryForDroppingTable_BlockLocation)
 
 
-# In[71]:
+# In[6]:
 
 
 sqlqueryForCreatingTable_BlockLocation = """
@@ -95,7 +95,7 @@ executeSingleQuery(sqlqueryForCreatingTable_BlockLocation)
 
 # ## Create CrimeType Table
 
-# In[72]:
+# In[7]:
 
 
 # we are droping the table if it already exists
@@ -103,7 +103,7 @@ sqlqueryForDroppingTable_CrimeType = "DROP TABLE IF EXISTS CrimeType"
 executeSingleQuery(sqlqueryForDroppingTable_CrimeType)
 
 
-# In[73]:
+# In[8]:
 
 
 sqlqueryForCreatingTable_CrimeType = """
@@ -120,7 +120,7 @@ executeSingleQuery(sqlqueryForCreatingTable_CrimeType)
 
 # ## Create Crime Table
 
-# In[74]:
+# In[9]:
 
 
 # we are droping the table if it already exists
@@ -128,7 +128,7 @@ sqlqueryForDroppingTable_Crime = "DROP TABLE IF EXISTS Crime"
 executeSingleQuery(sqlqueryForDroppingTable_Crime)
 
 
-# In[75]:
+# In[10]:
 
 
 sqlqueryForCreatingTable_Crime = """
@@ -151,7 +151,7 @@ executeSingleQuery(sqlqueryForCreatingTable_Crime)
 
 # ## Create happensAt Table
 
-# In[76]:
+# In[11]:
 
 
 # we are droping the table if it already exists
@@ -159,7 +159,7 @@ sqlqueryForDroppingTable_happensAt = "DROP TABLE IF EXISTS happensAt"
 executeSingleQuery(sqlqueryForDroppingTable_happensAt)
 
 
-# In[77]:
+# In[12]:
 
 
 sqlqueryForCreatingTable_happensAt = """
@@ -181,16 +181,34 @@ sqlqueryForCreatingTable_happensAt = """
 executeSingleQuery(sqlqueryForCreatingTable_happensAt)
 
 
-# In[ ]:
+# ## Create safeCall Table
+
+# In[13]:
 
 
+# we are droping the table if it already exists
+sqlqueryForDroppingTable_safeCall = "DROP TABLE IF EXISTS safeCall"
+executeSingleQuery(sqlqueryForDroppingTable_safeCall)
 
 
-
-# In[ ]:
-
+# In[14]:
 
 
+sqlqueryForCreatingTable_safeCall = """
+                        CREATE TABLE safeCall
+                        (
+                        callId int NOT NULL,
+                        lat real,
+                        lon real,
+                        blockId int NOT NULL,
+                        FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                        PRIMARY KEY (callId)
+                        );
+                        """
+    
+executeSingleQuery(sqlqueryForCreatingTable_safeCall)
 
 
 # In[ ]:
