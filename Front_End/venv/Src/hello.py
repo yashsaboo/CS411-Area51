@@ -1,16 +1,9 @@
-from flask import Flask, redirect, url_for, request, render_template, jsonify
+from flask import Flask, redirect, url_for, request, render_template
 from flask_socketio import SocketIO, emit
-from threading import Thread, Event
-from datetime import datetime
 from random import random
 from time import sleep
+from threading import Thread, Event
 import MySQLdb as mdb
-import string
-import secrets
-import sys
-import os
-sys.path.insert(0, os.path.abspath('Src/Convert_CSV'))
-import WebsiteToDB
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -32,7 +25,6 @@ DBHOST = "localhost"
 DBPASS = ""
 DBUSER = "root"
 
-
 def randomNumberGenerator():
     """
     Generate a random number every 1 second and emit to a socketio instance (broadcast)
@@ -43,7 +35,6 @@ def randomNumberGenerator():
     while not thread_stop_event.isSet():
         number = round(random()*100, 3)
         print(number)
-        
         socketio.emit('newnumber', {'number': number}, namespace='/test')
         socketio.sleep(5)
 
@@ -57,77 +48,11 @@ def index():
     # return redirect(url_for('predicted'))
 
 
-# TODO: Jonathan will add Xin's predictions to site
 @app.route('/predicted')
 def predicted():
     # only by sending this page first will the client be connected to the socketio instance
     return render_template('predicted.html')
 
-# To rec'v data passed from Javascript
-@app.route('/insert/', methods=['POST'])
-def insert():
-    data = request.get_json()
-    print('FROM JAVASCRIPT: ', data)
-    res = WebsiteToDB.insertNewData({'incidentID': ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8)),
-        'reportedAt': datetime.now().strftime(r"%Y-%m-%d %H:%M:%S"),
-        'occuredAt': data['crimeDateTime'],
-        'disposition': data['disposition'],
-        'type': data['crimeType'],
-        'genLocation': 'CIRCLE K',
-        'lat': data['lat'],
-        'lon': data['lon']})
-    
-    # Emit updated data if insertion succesful
-    if res:
-        print('insertion successful')
-        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
-        return render_template('track1index.html', crimeDBData=sendDBData())
-    # return jsonify(status="success", data=data)
-    return None
-
-
-@app.route('/edit/', methods=['POST'])
-def edit():
-    data = request.get_json()
-    print('FROM JAVASCRIPT: ', data)
-    # res = WebsiteToDB.updateData(data['crimeTypeID'], data['oldVal'], data['newVal'])
-
-    res = WebsiteToDB.updateDataUsingIncidentID(data['updateColumn'], data['incidentID'], data['newVal'])
-    
-    # Emit updated data if insertion succesful
-    if res:
-        print('editsuccessful')
-        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
-        return render_template('track1index.html', crimeDBData=sendDBData())
-    # return jsonify(status="success", data=data)
-    return None
-
-@app.route('/delete/', methods=['POST'])
-def delete():
-    data = request.get_json()
-    print('FROM JAVASCRIPT: ', data)
-
-    res = WebsiteToDB.deleteData(data['deleteColumn'], data['deleteValue'])
-    
-    # Emit updated data if insertion succesful
-    if res:
-        print('deletion successful')
-        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
-        return render_template('track1index.html', crimeDBData=sendDBData())
-    # return jsonify(status="success", data=data)
-    return None
-
-@app.route('/search/', methods=['POST'])
-def search():
-    if request.method == 'POST':
-        print('FROM JAVASCRIPT: ', request.form['search'])
-        res = WebsiteToDB.searchData(request.form['search'])
-        # Dynamically reaload if search succesful
-        if res:
-            print('search successful')
-            return render_template('track1index.html', crimeDBData=sendDBData(), search_res=res)
-    # return jsonify(status="success", data=data)
-    return None
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
@@ -141,21 +66,19 @@ def test_connect():
         thread = socketio.start_background_task(randomNumberGenerator)
 
 
-# ---------------------- DATABASE FUNCTIONS -----------------------------
+# ---------------------- DATABASE FUNCTIONS ----------------------------- 
 
 
 def connectToDatabase():
     try:
-        db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME,
-                         charset='utf8', port=3308)
+        db = mdb.connect(DBHOST, DBUSER, DBPASS, DBNAME, charset='utf8', port=3308)
         print("Database Connected Successfully")
         return db
     except mdb.Error as e:
         print(e)
         print("Database Not Connected Successfully")
         return None
-
-
+    
 def closeDatabase(db):
     try:
         db.close()
@@ -166,29 +89,28 @@ def closeDatabase(db):
 
 
 def executeSingleQuery(sqlquery):
-
+    
     db = connectToDatabase()
-
+    
     try:
         cur = db.cursor()
 
         # execute query
         cur.execute(sqlquery)
         print("Query Successfully Executed")
-
+        
         db.commit()
 
     except mdb.Error as e:
         print(e)
         print("Query Not Successfully Executed" + sqlquery)
-
+        
     closeDatabase(db)
-
-
+    
 def executeSingleQueryWhichReturns(sqlquery):
-
+    
     db = connectToDatabase()
-
+    
     try:
         cur = db.cursor()
 
@@ -196,24 +118,22 @@ def executeSingleQueryWhichReturns(sqlquery):
         number_of_rows = cur.execute(sqlquery)
         result = cur.fetchall()
         print("Query Successfully Executed and Fetched")
-
+        
         db.commit()
 
     except mdb.Error as e:
         print(e)
         print("Query Not Successfully Executed and Fetched" + sqlquery)
-
+        
     closeDatabase(db)
-
+    
     return result
 
 # function to send DB as list of lists
-
-
 def sendDBData():
 
     sqlQeueryForMap = """
-                    select c.incidentID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
+                    select c.crimeTypeID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
                     from 
                     Crime c
                     INNER JOIN
@@ -232,14 +152,9 @@ def sendDBData():
     listOfListForMap = []
 
     for row in tupleOfTupleForMap:
-        if None in row:
-            continue
-
         crimeID = row[0]
         crimeType = row[1]
-        # print("row:", row)
-        dateTimeList = [row[2].year, row[2].month,
-                        row[2].day, row[2].hour, row[2].minute]
+        dateTimeList = [row[2].year, row[2].month, row[2].day, row[2].hour, row[2].minute]
         coord1 = row[3]
         coord2 = row[4]
         coord3 = row[5]
@@ -248,10 +163,9 @@ def sendDBData():
         coord6 = row[8]
         coord7 = row[9]
         coord8 = row[10]
-        listRow = [crimeID, crimeType, dateTimeList, coord1,
-                   coord2, coord3, coord4, coord5, coord6, coord7, coord8]
+        listRow = [crimeID, crimeType, dateTimeList, coord1, coord2, coord3, coord4, coord5, coord6, coord7, coord8]
         listOfListForMap.append(listRow)
-
+        
     # listOfListForMap
 
     return listOfListForMap
