@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+    <!--============================== RESOURCES ============================== -->
+
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script
+    <scrsipt
       type="text/javascript"
       src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"
     ></script>
@@ -43,8 +46,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
   </head>
+
+  <!-- ============================== CONTENT ============================== -->
+  
   <body class="w3-content" style="max-width: 1200px;">
-    <h3>Leaflet Map Demo</h3>
     <!-- Sidebar/menu -->
     <nav
       class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
@@ -75,7 +80,7 @@
           id="crimeTypeDropdown"
           class="w3-bar-block w3-hide w3-padding-large w3-medium"
         >
-          <!-- <a href="#" class="w3-bar-item w3-button w3-light-grey"><i class="fa fa-caret-right w3-margin-right"></i>Skinny</a> -->
+        
 
           <a href="#" class="w3-bar-item w3-button">
             <div class="checkbox-container">
@@ -159,7 +164,7 @@
           </a>
         </div>
 
-        <a href="/" class="w3-bar-item w3-button">Return home</a>
+        <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
         <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
       </div>
       <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
@@ -175,20 +180,27 @@
       <!-- Image header -->
       <div class="w3-display-container w3-container">
         <!--The div element for the map -->
-        <div id="mapid" style="width: 1000px; height: 600px;"></div>
+        <div id="mapid" style="width: 1000px; height: 800px;"></div>
       </div>
 
       <div class="container" id="content">
       
     </div>
         <div class="row">
-          <p>Asynchronous page updates will appear here:</p>
-          <h3>Number list:</h3>
-          <div id="log"></div>
-          <!-- /#log -->
+          <!-- Adding search bar -->
+          <div class="topnav">
+            <div class="search-container">
+              <form action="{{ url_for('search') }}" method = "post">
+                <input type="text" placeholder="Search.." name="search">
+                <button type="submit"><i class="fa fa-search" style="color:#ffffff;"></i></button>
+              </form>
+            </div>
+          </div>
+          <p id="search_res"> {{search_res | safe}} </p>  
+         
         </div>
       </div>
-    </div>
+    <!-- </div> -->
 
     <!-- Footer -->
     <!-- <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
@@ -198,46 +210,157 @@
 
         
     
-    <!-- -----add crime pop-up modal html ---- -->
+    <!-- ============================== MODALS ============================== -->
 
-    <!-- The Modal -->
+    <!--------------------------------- Add Crime Modal  ------------------------------------->
     <div id="addCrimeModal" class="modal">
-
         <!-- Modal content -->
         <div class="modal-content">
-        <div class="modal-header">
-            <span class="close">&times;</span>
-            <h3>Add New Crime</h3>
-        </div>
-        <div class="modal-body">
-
-            <div class="custom-select" style="width:200px;">
-                <label for="crimeType">Select a crime type:</label>
-                    <select id="crimes">
-                    <option value="theft">Theft</option>
-                    <option value="drug possession">Drug Possession</option>
-                    <option value="trespass">Trespass</option>
-                    <option value="accident">Accident</option>
-                    <option value="assault">Assault</option>
-                    <option value="alcohol">Alcohol</option>
-                    <option value="vandalism">Vandalism</option>
-                    </select>
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Add New Crime</h3>
             </div>
-            
-            <div class="custom-datetime">
-                <label for="birthdaytime">Date and Time:</label>
-                <input type="datetime-local" id="crimetime" name="crimetime">
-            </div>
-            <button id="submitBtn" class="button">ADD CRIME</button>
-        </div> <!-- end modal body -->
+            <div class="modal-body">
+                <div class="custom-form" style="width:300px;">
+                    <label for="addForm-crimeType">Type of Crime:</label>
+                    <input type="text" id="addForm-crimeType" onkeyup="this.value = this.value.toUpperCase();">
+                </div>
+                <div class="custom-datetime" style="width: 180px;">
+                    <label for="addForm-crimeTime">Date and Time:</label>
+                    <input type="datetime-local" id="addForm-crimeTime" name="addForm-crimeTime">
+                </div>
 
+                <div class="custom-select" style="width:200px;">
+                <label for="selected-disposition">Select disposition:
+                    <select id="selected-disposition">
+                        <option value="arrest">Arrest</option>
+                        <option value="admin close">Admin Close</option>
+                        <option value="student discipline">Student Discipline</option>
+                        <option value="reported to other">Reported to Other</option>
+                        <option value="pending">Pending</option>
+                        <option value="cleared except pros">Cleared Except Pros</option>
+                        </select>
+                </label>
+                </div>
+
+                <button id="submitAddBtn" class="submit-button" onclick="addCrime()">ADD CRIME</button>
+            </div> <!-- end modal body -->
         </div>
-    
     </div>
 
+    <!--------------------------------- Edit Crime Modal  ------------------------------------->
+
+    <div id="editCrimeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Edit Crime</h3>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form" style="width:300px;">
+                    <label for="oldCrimeID">Enter Incident ID:</label>
+                    <input type="text" id="oldCrimeID" placeholder="8-character ID">
+                </div>
+
+                <div class="custom-select" style="width:200px;">
+                    <label for="crimeType">Change attribute:</label>
+
+                    <!-- <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="incidentID"/><span class="checkbox-custom circular"></span></label>
+                        <label for="crimeIDRadio">Update incident ID:
+                            <div class="custom-form" style="width:300px;">
+                                <input type="text" id="newCrimeID" placeholder="8-character ID">
+                            </div>
+                        </label>
+                    </div> -->
+
+                                          
+                    <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="occuredAt"/><span class="checkbox-custom circular"></span></label>
+                        <label for="crimeDateRadio">Update date/time:
+                            <div class="custom-form" style="width:300px;">
+                                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="checkbox-container"> 
+                        <label class="checkbox-label"><input type="radio" name="editRadio" id="disposition"/><span class="checkbox-custom circular"></span></label>
+                        <label for="crimeDispRadio">Change disposition:
+                            <select id="newDispType">
+                                <option value="arrest">Arrest</option>
+                                <option value="admin close">Admin Close</option>
+                                <option value="student discipline">Student Discipline</option>
+                                <option value="reported to other">Reported to Other</option>
+                                <option value="pending">Pending</option>
+                                <option value="cleared except pros">Cleared Except Pros</option>
+                                </select>
+                        </label>
+                      </div>
+
+                </div>
+
+                <button id="submitEditBtn" class="submit-button" onclick="editCrime()">EDIT CRIME</button>
+            </div> <!-- end modal body -->
+        </div>
+    </div>
+
+
+    <!--------------------------------- Delete Crime Modal  ------------------------------------->
+
+    <div id="deleteCrimeModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>Delete Crime</h3>
+            </div>
+            <div class="modal-body">
+                <div class="custom-form" style="width:300px;">
+                    <label for="deleteID">Incident ID to be deleted:</label>
+                    <input type="text" id="deleteID">
+                </div>
+
+                <!-- <div class="custom-select" style="width:200px;">
+                    <label for="selected-delete">Delete all crimes of type:
+                        <select id="selected-delete">
+                            <option value="none">None</option>
+                            <option value="theft">Theft</option>
+                            <option value="drug possession">Drug Possession</option>
+                            <option value="trespass">Trespass</option>
+                            <option value="accident">Accident</option>
+                            <option value="assault">Assault</option>
+                            <option value="alcohol">Alcohol</option>
+                            <option value="vandalism">Vandalism</option>
+                            <option value="stalking">Stalking</option>
+                            <option value="missing person">Missing Person</option>
+                            <option value="traffic offense">Traffic Offense</option>
+                            </select>
+                    </label>
+                    </div> -->
+
+                <button id="submitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME(S)</button>
+
+            </div> <!-- end modal body -->
+        </div>
+    </div>
+
+    <!-- ============================== JAVASCRIPT ============================== -->
+
+
     <script>
-      // **----------- MAP SCRIPT ----------------**
-      // instantiate map
+
+      // // Add listener to 'log' div
+      // $('body').on('DOMSubtreeModified', 'log', function(){
+      //   console.log('DIV CHANGED');
+      //   // Live update crimeDBData
+      //   crimeDBList = document.getElementById('log').innerHTML;
+      //   // Repopulate map
+      //   populateMap(crimeDBList);
+      // });
+            //  ============================= INSTANTIATE MAP ================================
+
       var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
       L.tileLayer(
         "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
@@ -253,19 +376,222 @@
         }
       ).addTo(mymap);
 
-      // circle markers
-      // var circle = L.circle([40.1138, -88.2249], {
-      //   color: "red",
-      //   fillColor: "#f03",
-      //   fillOpacity: 0.5,
-      //   radius: 200
-      // }).addTo(mymap);
 
-      // circle.bindPopup(circleLabel);
 
-      // let circleLabel = "Siebel Center!!! :)";
-      // let popUp = L.popup();
-      // var container = L.DomUtil.create("div");
+    //  ============================= POPULATE MAP ================================
+
+    // Retrieve predicted crimes per block
+    var predictedDBData = {{predictedDBData | safe}};
+    var blockToCoord = {{blockToCoord | safe}};
+
+    // global crime dictionary
+    var crimeDict = {};
+
+    // list of possible block colors [blue, purple, pink, red, orange, yellow, green, teal]
+    var colorList = ['#365eff', '#c636ff', '#ff40b6', '#ff3030', '#ff9430', '#ffd630', '#64f720', '#0ef0ce'];
+
+    // marker group 
+    var markers = L.layerGroup();
+
+
+
+
+    //  =========================== ON-CLICK COORDINATES ===========================
+    
+    // holds the current click coordinates
+    var clickCoords = [];
+
+
+    // get on-click coordinates for anywhere on map
+    mymap.on("click", function (clickEvent) {
+        clickCoords = clickEvent.latlng;
+        // console.log("lat: ", clickCoords.lat);
+        // console.log("long: ", clickCoords.lng);
+    });
+
+
+    // the table header html 
+    var tableHeader = `<div style="height: 300px; width: 500px; overflow: auto"><table>
+         <tr>
+              <th>ID</th>
+              <th>Crime</th>
+              <th>Date</th>
+              <th>Time</th>
+          </tr>`;
+
+    // end of table HTML
+    var tableClosingHTML = `</table></div> <br>  
+        <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>
+        <button id="editCrimeBtn" class="button" onclick="editCrimePopup()">EDIT CRIME</button>
+        <button id="deleteCrimeBtn" class="button" onclick="deleteCrimePopup()">DELETE CRIME</button>`;
+    
+
+     // the predicted crime table header html 
+     var tableHeader = `<div style="height: 300px; width: 500px; overflow: auto"><table>
+         <tr>
+              <th>Predicted # Crimes for 2020</th>
+          </tr>`;
+
+    // end of predicted table HTML
+    var tableClosingHTML = `</table></div> <br>  
+        <button class="button" id="closePopUp">CLOSE</button>`;
+    
+
+
+    // draw the map 
+    // populateMap(crimeDBList, blueLightCoords);
+    populatePredictedMap(blockToCoord, predictedDBData);
+
+    function populatePredictedMap(blockToCoord, predictedDBData) {
+      markers.clearLayers();  // clear the map
+      let colorIndex = 0;
+      // Loop through blockToCoord (= list of dicts)
+      for(row in blockToCoord) {
+        blockCoordList = [row['topLeft_lat'], row['topLeft_lon'], row['topRight_lat'], row['topRight_lon'], row['bottomLeft_lat'],row['bottomLeft_lon'],row['bottomRight_lat'],row['bottomRight_lon']];
+        predictedList = [];
+      }
+
+      markers.addTo(mymap);
+
+    }
+    
+
+
+
+    /**
+     * populates map markers given @param{crimeData} from the database
+     * crimeDict should be of form {blockcoords: data list}
+     */
+    function populateMap(crimeData, blueLightCoords){
+        markers.clearLayers();  // clear the map
+
+        let colorIndex = 0;
+
+        var crimeDictionary = makeCrimeDict(crimeData); 
+
+        // for every crime block in crimeDictionary, draw the block and bind its popup
+        Object.keys(crimeDictionary).forEach(function(key){
+            
+            blockData = crimeDictionary[key];
+            blockTableHTML = getTableString(blockData);
+            blockCoordList = key.split(',');
+            drawBlock(blockCoordList, colorList[colorIndex], blockTableHTML);
+            colorIndex = (colorIndex + 1) % colorList.length;    // change color of block
+        });
+        // draw all the layers in the layer group to populate map 
+        markers.addTo(mymap);
+    }
+
+    /**
+     * Populates map given prediction of crimes
+     */
+     
+
+    
+    /**
+     * Given raw crime data {crimeData}, create a dictionary of form {block coord: crime data list}
+     */
+     function makeCrimeDict(crimeList){
+        var newCrimeDict = {}
+        for (i=0; i < crimeList.length; i++){
+            blockCoords = (crimeList[i].slice(3)).toString();     // block coords are a string
+            crimeDataValues = crimeList[i].slice(0,3);
+            if (!(blockCoords in newCrimeDict)){
+                newCrimeDict[blockCoords] = []; // add to dict if not seen before
+            }
+            
+            newCrimeDict[blockCoords].push(crimeDataValues); // append new data 
+            
+        }
+        return newCrimeDict
+    }
+
+
+    // stack of block polygon objects
+    // var blockList = []
+
+
+    /** 
+     * draws each crime block and attaches popup contents
+     * @param {coords} coordinate list containing top left, top right, bottom left, and bottom right coordinates
+     * @param {popupContents} the HTML string that should draw the table 
+     */
+    function drawBlock(coords, blockColor, popupContents){
+        let topLeft  = coords.slice(0,2);
+        let topRight = coords.slice(2,4);
+        let botLeft  = coords.slice(4,6);
+        let botRight = coords.slice(6);
+
+        var block = L.polygon([topLeft, topRight, botRight, botLeft], {
+            color: blockColor,
+            fillColor: blockColor,
+            fillOpacity: 0.5,
+            weight: 1,
+        });
+
+        block.bindPopup(popupContents, {maxWidth: 560}); // bind popup
+        markers.addLayer(block);
+
+        // get on-click coordinates inside blocks 
+        block.on("click", function (clickEvent) {
+        clickCoords = clickEvent.latlng;
+        });
+    }
+
+    // function getTableString(blockData){
+    //     newTableString = tableHeader;
+    //     // go through entire list of crimes in this BLOCK and turn it into a table
+    //     for (i=0; i<blockData.length; i++){    //  * generates the table string to go inside each popup given the {blockData} for a single block
+    //  * each ELEMENT of {blockData} should be of form [crimeID, crimeType, [year, month, day, hour, minute]]
+    //  */
+    // function getTableString(blockData){
+    //     newTableString = tableHeader;
+        // go through entire list of crimes in this BLOCK and turn it into a table
+        for (i=0; i<blockData.length; i++){
+    //         // get each attribute
+    //         let crimeID   = blockData[i][0];
+    //         let crimeType = blockData[i][1];
+    //         let crimeDate = blockData[i][2].slice(0,3);    // [year, month, day]
+    //         let crimeTime = blockData[i][2].slice(3);      // [hour, minute]
+
+// 
+//     //         // fix time formatting
+    //         for (j=0; j<crimeTime.length; j++){
+    //             if (crimeTime[j] == '0') crimeTime[j] = '00';
+    //             else if (crimeTime[j] == '1') crimeTime[j] = '01';
+    //             else if (crimeTime[j] == '2') crimeTime[j] = '02';
+    //             else if (crimeTime[j] == '3') crimeTime[j] = '03';
+    //             else if (crimeTime[j] == '4') crimeTime[j] = '04';
+    //             else if (crimeTime[j] == '5') crimeTime[j] = '05';
+    //             else if (crimeTime[j] == '6') crimeTime[j] = '06';
+    //             else if (crimeTime[j] == '7') crimeTime[j] = '07';
+    //             else if (crimeTime[j] == '8') crimeTime[j] = '08';
+                else if (crimeTime[j] == '9') crimeTime[j] = '09';
+    //         }
+    //         // create html
+    //         let crimeIDHTML   = '<td>' + crimeID + '</td>';
+    //         let crimeTypeHTML = '<td>' + crimeType + '</td>';
+            let crimeDateHTML = '<td>' + crimeDate[0] + '-' + crimeDate[1] + '-' + crimeDate[2] + '</td>';
+    //         let crimeTimeHTML = '<td>' + crimeTime[0] + ':' + crimeTime[1] + '</td>';
+
+//     //         // combine html and append to new table string
+    //         let newEntry = '<tr>' + crimeIDHTML + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
+    //         newTableString = newTableString + newEntry;
+        }
+      // startBtn = document.createElement("button");
+      // startBtn.innerHTML = "Start from this location";
+      // // div.innerHTML = "" + startBtn;
+      // popUp.setContent("You clicked the map at " + startBtn);
+
+
+      
+      // startBtn = document.createElement("button");
+      // startBtn.innerHTML = "Start from this location";
+      // // div.innerHTML = "" + startBtn;
+      // popUp.setContent("You clicked the map at " + startBtn);
+
+
+      
       // startBtn = document.createElement("button");
       // startBtn.innerHTML = "Start from this location";
       // // div.innerHTML = "" + startBtn;
@@ -275,208 +601,358 @@
       
       //=============================== POP UP CODE ===================================
       // ----------------draw table inside map marker----------------//
-      var tableString = `<tr>
-                <th>Crime</th>
-                <th>Location</th>
-                <th>Time</th>
-            </tr>
-            <tr>
-                <td>Theft</td>
-                <td>Siebel Center</td>
-                <td>6-Apr-2020 12:30PM</td>
-            </tr>
-            <tr>
-                <td>Assault</td>
-                <td>Siebel Center</td>
-                <td>2-Feb-2020 9:45PM</td>
-            </tr>
-            <tr>
-                <td>Alcohol</td>
-                <td>Siebel Center</td>
-                <td>20-Dec-2019 11:34PM</td>
-            </tr>
-            <tr>
-                <td>Theft</td>
-                <td>Siebel Center</td>
-                <td>11-Nov-2019 9:22AM</td>
-            </tr>`
 
-      var popUp = '<table>' + tableString + `</table>
-        <br> <button class="button" id="addCrimeBtn" onclick="popupFunction()">ADD CRIME</button>`;
 
-      
-      function popupFunction() {
-        // window.alert("YEET");
-        // ----------------add crime popup modal JS----------------
-        // Get the modal
-        var modal = document.getElementById("addCrimeModal");
+    function addTableItem(crimeType, crimeTime, tableString){
+      let timeSplit     = crimeTime.split("T");       // reformat timestamp
+      let crimeTypeHTML = '<td>' + crimeType.toUpperCase() + '</td>';
+      let crimeDateHTML = '<td>' + timeSplit[0] + '</td>';
+      let crimeTimeHTML = '<td>' + timeSplit[1] + '</td>';
 
-        // Get the button that opens the modal
-        // var btn = document.getElementById("addCrimeBtn");
+      let newEntry      = '<tr>' + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
+      tableString       = tableString + newEntry;
 
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+      return tableString;
+    }
+    
+    var tableString = `<tr>
+              <td>THEFT</td>
+              <td>2020-04-06 </td>
+              <td> 12:30</td>
+          </tr>
+          <tr>
+              <td>ASSAULT</td>
+              <td>2020-02-02</td>
+              <td>21:45</td>
+          </tr>
+          <tr>
+              <td>ALCOHOL</td>
+              <td>2019-12-23</td>
+              <td> 23:30</td>
+          </tr>
+          <tr>
+              <td>ACCIDENT</td>
+              <td>2019-11-23</td>
+              <td> 9:22</td>
+          </tr>`
 
-        // When the user clicks the button, open the modal 
-        modal.style.display = "block";
+    var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div> <br> 
+        <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
 
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
+    
+    function addCrimePopup() {
+      // window.alert("YEET");
+      // ----------------add crime popup modal JS----------------
+      // Get the modal
+      var modal = document.getElementById("addCrimeModal");
+
+      // Get the button that opens the modal
+      // var btn = document.getElementById("addCrimeBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks the button, open the modal 
+      modal.style.display = "block";
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+         modal.style.display = "none";
+      }
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+      }
+    }
+
+    function editCrimePopup() {
+      var modal = document.getElementById("editCrimeModal");
+      var span = document.getElementsByClassName("close")[1];
+      // When the user clicks the button, open the modal 
+      modal.style.display = "block";
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
         modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-        }
       }
-
-      // dropdown select list 
-        var x, i, j, selElmnt, a, b, c;
-        /* Look for any elements with the class "custom-select": */
-        x = document.getElementsByClassName("custom-select");
-        for (i = 0; i < x.length; i++) {
-            selElmnt = x[i].getElementsByTagName("select")[0];
-            /* For each element, create a new DIV that will act as the selected item: */
-            a = document.createElement("DIV");
-            a.setAttribute("class", "select-selected");
-            a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-            x[i].appendChild(a);
-            /* For each element, create a new DIV that will contain the option list: */
-            b = document.createElement("DIV");
-            b.setAttribute("class", "select-items select-hide");
-            for (j = 1; j < selElmnt.length; j++) {
-                /* For each option in the original select element,
-                create a new DIV that will act as an option item: */
-                c = document.createElement("DIV");
-                c.innerHTML = selElmnt.options[j].innerHTML;
-                c.addEventListener("click", function(e) {
-                    /* When an item is clicked, update the original select box,
-                    and the selected item: */
-                    var y, i, k, s, h;
-                    s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-                    h = this.parentNode.previousSibling;
-                    for (i = 0; i < s.length; i++) {
-                    if (s.options[i].innerHTML == this.innerHTML) {
-                        s.selectedIndex = i;
-                        h.innerHTML = this.innerHTML;
-                        y = this.parentNode.getElementsByClassName("same-as-selected");
-                        for (k = 0; k < y.length; k++) {
-                        y[k].removeAttribute("class");
-                        }
-                        this.setAttribute("class", "same-as-selected");
-                        break;
-                    }
-                    }
-                h.click();
-            });
-            b.appendChild(c);
-        }
-        x[i].appendChild(b);
-        a.addEventListener("click", function(e) {
-            /* When the select box is clicked, close any other select boxes,
-            and open/close the current select box: */
-            e.stopPropagation();
-            closeAllSelect(this);
-            this.nextSibling.classList.toggle("select-hide");
-            this.classList.toggle("select-arrow-active");
-        });
-        }
-
-        function closeAllSelect(elmnt) {
-        /* A function that will close all select boxes in the document,
-        except the current select box: */
-        var x, y, i, arrNo = [];
-        x = document.getElementsByClassName("select-items");
-        y = document.getElementsByClassName("select-selected");
-        for (i = 0; i < y.length; i++) {
-            if (elmnt == y[i]) {
-            arrNo.push(i)
-            } else {
-            y[i].classList.remove("select-arrow-active");
-            }
-        }
-        for (i = 0; i < x.length; i++) {
-            if (arrNo.indexOf(i)) {
-            x[i].classList.add("select-hide");
-            }
-        }
-        }
-
-        /* If the user clicks anywhere outside the select box,
-        then close all select boxes: */
-        document.addEventListener("click", closeAllSelect);
- 
-      
-    //  ============================= DRAWING CIRCLES ================================
-      // drawCircle([40.1138, -88.2249], "red", circleLabel);
-
-
-      function drawCircle(coordinates, circleColor, pop, rad) {
-        var circle = L.circle(coordinates, {
-          color: circleColor,
-          fillColor: circleColor,
-          fillOpacity: 0.5,
-          radius: rad,
-        });
-        var rect = L.rectangle([[coordinates[0] - rad/10000, coordinates[1] + rad/10000], [coordinates[0] + rad/10000, coordinates[1] - rad/10000]], {color: circleColor, weight: 1});
-        rect.bindPopup(pop);
-        return rect;
-        // circle.bindPopup(pop);
-        // return circle;
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
       }
-
-      function removeCircle(circle) {
-        mymap.removeLayer(circle);
       }
+    }
 
-      // Create stack of circle objects
-      var myList = [];
+    function deleteCrimePopup() {
+      var modal = document.getElementById("deleteCrimeModal");
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[2];
 
-      // Async function to add circles of random radii to map
-      $(document).ready(function () {
-        //connect to the socket server.
-        var socket = io.connect(
-          "http://" + document.domain + ":" + location.port + "/test"
-        );
+      // When the user clicks the button, open the modal 
+      modal.style.display = "block";
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+      }
+    }
 
-        var numbers_received = [];
-
-        //receive details from server
-        socket.on("newnumber", function (msg) {
-          console.log("Received number" + msg.number);
-          //maintain a list of ten numbers
-          if (numbers_received.length >= 10) {
-            numbers_received.shift();
-          }
-          numbers_received.push(msg.number);
-          numbers_string = "";
-          for (var i = 0; i < numbers_received.length; i++) {
-            numbers_string =
-              numbers_string + "<p>" + numbers_received[i].toString() + "</p>";
-          }
-
-          // Log the randomly generated numbers to bottom of screen
-          $("#log").html(numbers_string);
-
-          // Pop the one elem on stack and replace it w/ another circle
-          if (myList.length > 0) {
-            removeCircle(myList.pop());
-          }
-          // Create new circle object
-          var circle = drawCircle(
-            [40.1138, -88.2249],
-            "red",
-            popUp,
-            parseInt(msg.number)
-          );
-          // Add circle to stack and map
-          myList.push(circle);
-          circle.addTo(mymap);
-        });
+    // dropdown select list 
+      var x, i, j, selElmnt, a, b, c;
+      /* Look for any elements with the class "custom-select": */
+      x = document.getElementsByClassName("custom-select");
+      for (i = 0; i < x.length; i++) {
+          selElmnt = x[i].getElementsByTagName("select")[0];
+          /* For each element, create a new DIV that will act as the selected item: */
+          a = document.createElement("DIV");
+          a.setAttribute("class", "select-selected");
+          a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+          x[i].appendChild(a);
+          /* For each element, create a new DIV that will contain the option list: */
+          b = document.createElement("DIV");
+          b.setAttribute("class", "select-items select-hide");
+          for (j = 1; j < selElmnt.length; j++) {
+              /* For each option in the original select element,
+              create a new DIV that will act as an option item: */
+              c = document.createElement("DIV");
+              c.innerHTML = selElmnt.options[j].innerHTML;
+              c.addEventListener("click", function(e) {
+                  /* When an item is clicked, update the original select box,
+                  and the selected item: */
+                  var y, i, k, s, h;
+                  s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                  h = this.parentNode.previousSibling;
+                  for (i = 0; i < s.length; i++) {
+                  if (s.options[i].innerHTML == this.innerHTML) {
+                      s.selectedIndex = i;
+                      h.innerHTML = this.innerHTML;
+                      y = this.parentNode.getElementsByClassName("same-as-selected");
+                      for (k = 0; k < y.length; k++) {
+                      y[k].removeAttribute("class");
+                      }
+                      this.setAttribute("class", "same-as-selected");
+                      break;
+                  }
+                  }
+              h.click();
+          });
+          b.appendChild(c);
+      }
+      x[i].appendChild(b);
+      a.addEventListener("click", function(e) {
+          /* When the select box is clicked, close any other select boxes,
+          and open/close the current select box: */
+          e.stopPropagation();
+          closeAllSelect(this);
+          this.nextSibling.classList.toggle("select-hide");
+          this.classList.toggle("select-arrow-active");
       });
+      }
+
+      function closeAllSelect(elmnt) {
+      /* A function that will close all select boxes in the document,
+      except the current select box: */
+      var x, y, i, arrNo = [];
+      x = document.getElementsByClassName("select-items");
+      y = document.getElementsByClassName("select-selected");
+      for (i = 0; i < y.length; i++) {
+          if (elmnt == y[i]) {
+          arrNo.push(i)
+          } else {
+          y[i].classList.remove("select-arrow-active");
+          }
+      }
+      for (i = 0; i < x.length; i++) {
+          if (arrNo.indexOf(i)) {
+          x[i].classList.add("select-hide");
+          }
+      }
+      }
+
+      /* If the user clicks anywhere outside the select box,
+      then close all select boxes: */
+      document.addEventListener("click", closeAllSelect);
+
+
+      
+
+      //  ============================== CRIME MODIFICATION FUNCTIONS ==============================
+
+      /**
+       * Function to add a new crime to the database
+       */
+      function addCrime(){
+          var crimeType = document.getElementById("addForm-crimeType").value;       // string holding crime type -- can be sent to DB
+          var crimeDisp = document.getElementById("selected-disposition").value.toUpperCase();   // holds disposition type -- can be sent to DB
+          var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
+          var modal = document.getElementById("addCrimeModal");
+
+          let crimeDateTime = crimeTime.replace('T', ' ') + ':00'; // YYYY-nn-dd hh:mm:ss    
+          let crimeCoords = [clickCoords.lat, clickCoords.lng]; // coordinates to send to DB
+        
+          console.log("crime coords: ", crimeCoords);
+
+
+          // send to DB
+          $.ajax({
+            type: "POST",
+            url: "{{ url_for('insert') }}",
+            contentType: "application/json",
+            data: JSON.stringify({crimeType, crimeDateTime, disposition: crimeDisp, lat: crimeCoords[0], lon: crimeCoords[1]}),
+            dataType: "json",
+            // success: function() {
+            //     console.log("Succeeded!");
+            // },
+            error: function(err) {
+                console.log(err);
+            }
+          });
+
+          // close the modal
+          modal.style.display = "none";
+      }
+
+
+      /**
+       * Function to edit a crime
+       */
+      function editCrime(){
+        var modal = document.getElementById("editCrimeModal");   
+
+        var oldID   = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
+
+        var columns = document.getElementsByName("editRadio");
+        var columnToBeUpdated = '';
+        var newColumnValue = '';
+
+        for (i=0; i<columns.length; i++){
+            if(columns[i].checked){
+                columnToBeUpdated = columns[i].id;
+                // if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
+                if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
+                else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
+                // newColumnValue = columns[i].value;
+            }
+        }
+
+        if (columnToBeUpdated == '' && newColumnValue == ''){
+            window.alert("You didn't enter any changes!");
+            return
+        }
+
+        console.log("update Column: ", columnToBeUpdated);
+        console.log("incidentID: ", oldID);
+        console.log("new val:", newColumnValue);
+
+        // send to DB
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('edit') }}",
+            contentType: "application/json",
+            data: JSON.stringify({updateColumn: columnToBeUpdated, incidentID: oldID, newVal: newColumnValue}),
+            dataType: "json",
+            // success: function() {
+            //     console.log("Succeeded!");
+            // },
+            error: function(err) {
+                console.log(err);
+            }
+          });
+        
+        modal.style.display = "none";  // close the modal
+
+      }
+
+      /**
+       * Function to delete a crime
+       */
+      function deleteCrime(){
+        var modal = document.getElementById("deleteCrimeModal");
+
+        var deleteID = document.getElementById("deleteID").value;
+        var typeToDelete = 'incidentID'
+
+        console.log(deleteID);
+        console.log(typeToDelete);
+
+        // send to DB
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('delete') }}",
+            contentType: "application/json",
+            data: JSON.stringify({deleteColumn: typeToDelete , deleteValue: deleteID}),
+            dataType: "json",
+            error: function(err) {
+                console.log(err);
+            }
+          });
+
+
+        modal.style.display = "none";  // close the modal
+      }
+
+
+      function updatePopupTable(crimeType, crimeTime){
+          newTableString = addTableItem(crimeType, crimeTime, tableString);
+          tableString = newTableString;
+          popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader +  tableString + `</table></div>
+          <br> <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
+          // console.log(popUp);
+      }
+
+
+
+      //   ============================== ASYNCHRONOUS ==============================
+
+    //   // Async function to add circles of random radii to map
+    //   $(document).ready(function () {
+    //     //connect to the socket server.
+    //     var socket = io.connect(
+    //       "http://" + document.domain + ":" + location.port + "/test"
+    //     );
+
+    //     var numbers_received = [];
+
+    //     //receive details from server
+    //     socket.on("newnumber", function (msg) {
+    //       console.log("Received number" + msg.number);
+    //       //maintain a list of ten numbers
+    //       if (numbers_received.length >= 10) {
+    //         numbers_received.shift();
+    //       }
+    //       numbers_received.push(msg.number);
+    //       numbers_string = "";
+    //       for (var i = 0; i < numbers_received.length; i++) {
+    //         numbers_string =
+    //           numbers_string + "<p>" + numbers_received[i].toString() + "</p>";
+    //       }
+
+    //       // Log the randomly generated numbers to bottom of screen
+    //       $("#log").html(numbers_string);
+
+    //       // Pop the one elem on stack and replace it w/ another circle
+    //       if (myList.length > 0) {
+    //         removeCircle(myList.pop());
+    //       }
+    //       // Create new circle object
+    //       var circle = drawCircle(
+    //         [40.1138, -88.2249],
+    //         "red",
+    //         popUp,
+    //         parseInt(msg.number)
+    //       );
+    //       // Add circle to stack and map
+    //       myList.push(circle);
+    //       circle.addTo(mymap);
+    //     });
+    //   });
 
       // mymap.on("click", function (ev) {
       //   // alert(ev.latlng); // ev is an event object (MouseEvent in this case)
@@ -485,7 +961,8 @@
       //   );
       // });
 
-      // ----------------- PAGE FUNCTIONALITY -----------------
+
+      // ============================== PAGE FUNCTIONALITY ==============================
 
       document.getElementById("crimeTypeBtn").click();
       document.getElementById("crimeFreqBtn").click();
@@ -504,13 +981,17 @@
   </body>
 </html>
 
+<!-- END JAVASCRIPT -->
 
 
 
 
-<!-- ================================================================== -->
-<!-- ==================== CSS STYLING =========================== -->
+<!-- ============================== CSS STYLING ===================================== -->
+
 <style type="text/css">
+
+/* -------- Content ordering --------- */
+
   /* Set the size of the div element that contains the map */
   #mapid {
     /* height: 500px; */
@@ -541,12 +1022,13 @@
 
   /* -------------checkbox styling----------------- */
 
+  
   .checkbox-label {
     display: inline-block;
     position: relative;
     margin: auto;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 12px;
     line-height: 24px;
     height: 24px;
     width: 24px;
@@ -707,10 +1189,10 @@
       background-color: #ff8052;
       border: none;
       color: white;
-      padding: 10px 24px;
+      padding: 6px 12px;
       text-align: center;
       text-decoration: none;
-      margin: 10px;
+      margin: 15px;
       display: inline-block;
       font-size: 14px;
       border-radius: 8px;
@@ -720,7 +1202,56 @@
   .button:hover {
       background-color: white;
       color: #ff8052;
+      /* outline: 2px solid #ff8052; */
       border: 2px solid #ff8052;
+      border-radius: 8px;
+  }
+
+  .submit-button {
+      background-color: #7cbb18;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      text-align: left;
+      text-decoration: none;
+      margin: auto;
+      margin-bottom: 15px;
+      margin-top: 5px;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .submit-button:hover {
+      background-color: white;
+      color: #7cbb18;
+      /* outline: 2px solid #ff8052; */
+      border: 2px solid #7cbb18;
+      border-radius: 8px;
+  }
+
+  .delete-button {
+      background-color: #ee2c46;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      text-align: left;
+      text-decoration: none;
+      margin: auto;
+      margin-bottom: 15px;
+      margin-top: 5px;
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+  }
+
+  .delete-button:hover {
+      background-color: white;
+      color: #ee2c46;
+      /* outline: 2px solid #ff8052; */
+      border: 2px solid #ee2c46;
       border-radius: 8px;
   }
 
@@ -806,12 +1337,15 @@
         color: white;
     }
 
-    /* ----------- custom dropdown select box --------------  */
+
+    /* -------------- custom dropdown select box -----------------  */
+
     /* The container must be positioned relative: */
     .custom-select {
         position: relative;
         font-family: "Montserrat", sans-serif;
-        margin-bottom: 15px;
+    
+        
     }
 
     .custom-select select {
@@ -843,6 +1377,8 @@
     /* style the items (options), including the selected item: */
     .select-items div,.select-selected {
         color: #ffffff;
+        margin-top: 3px;
+        margin-bottom: 10px;
         padding: 8px 16px;
         border: 1px solid transparent;
         border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
@@ -870,7 +1406,8 @@
     }
 
 
-    /* ----------- custom datetime --------------  */
+    /* ----------------- custom datetime --------------------  */
+
     /* The container must be positioned relative: */
     .custom-datetime label {
         display: none; /*hide original SELECT element: */
@@ -883,7 +1420,131 @@
         font-family: "Montserrat", sans-serif;
         background-color: #ff8052;
         color: #fff;
+        width: 100%;
+        height: 40px;
         border-radius: 8px;
         margin-bottom: 10px;
     }
+
+    /* ----------------- custom entry form ------------------- */
+
+    .custom-form {
+        position: relative;
+        font-family: "Montserrat", sans-serif;
+        margin-bottom: 15px;
+    }
+    
+    .custom-form input[type=text]{
+        width: 100%;
+        padding: 3px 5px;
+        margin: 4px 0;
+        border: 1px solid #ff8052;
+        border-radius: 4px;
+    }
+
+
+
+
+    /* ----------------- custom scrollbar ------------------- */
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #ff8052; 
+      border-radius: 8px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffc252; 
+    }
+
+    /* ----------------- custom search bar ------------------- */
+
+    .topnav {
+      overflow: hidden;
+      background-color: #ffffff;
+      width: 100%;
+      height: 100px;
+      padding: 3px;
+    }
+
+    .topnav a {
+      float: left;
+      display: block;
+      color: black;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .topnav .search-container {
+      float: right;
+    }
+
+    .topnav input[type=text] {
+      padding: 6px;
+      margin-top: 8px;
+      font-size: 17px;
+      border: none;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+      background: #ddd;
+    }
+
+    .topnav .search-container button {
+      float: right;
+      padding: 6px 10px;
+      margin-top: 8px;
+      margin-right: 16px;
+      background: #ff8052;
+      font-size: 17px;
+      border: none;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      cursor: pointer;
+    }
+
+    .topnav .search-container button:hover {
+      background: #ccc;
+    }
+
+    @media screen and (max-width: 600px) {
+      .topnav .search-container {
+        float: none;
+      }
+      .topnav a, .topnav input[type=text], .topnav .search-container button {
+        float: none;
+        display: block;
+        text-align: left;
+        width: 100%;
+        margin: 0;
+        padding: 14px;
+      }
+      .topnav input[type=text] {
+        border: 1px solid #ccc;  
+      }
+    }
+
 </style>
+<!-- END CSS STYLING  -->

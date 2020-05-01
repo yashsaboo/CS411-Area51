@@ -34,35 +34,23 @@ DBPASS = ""
 DBUSER = "root"
 
 
-def randomNumberGenerator():
-    """
-    Generate a random number every 1 second and emit to a socketio instance (broadcast)
-    Ideally to be run in a separate thread?
-    """
-    # infinite loop of magical random numbers
-    print("Making random numbers")
-    while not thread_stop_event.isSet():
-        number = round(random()*100, 3)
-        print(number)
-        
-        socketio.emit('newnumber', {'number': number}, namespace='/test')
-        socketio.sleep(5)
-
-
 # -------------------- main page data ------------------------
 @app.route('/', methods=['POST', 'GET'])
 def index():
     # only by sending this page first will the client be connected to the socketio instance
-    crimeDBData = sendDBData()
-    return render_template('track1index.html', crimeDBData=crimeDBData)
-    # return redirect(url_for('predicted'))
+    crimeDBData  = sendDBData()
+    # blueLightData = sendBluelightData()
+    return render_template('track1index.html', crimeDBData=crimeDBData) #, blueLightData=blueLightData)
+
 
 
 # TODO: Jonathan will add Xin's predictions to site
 @app.route('/predicted')
 def predicted():
+    # Get (1) dictionary mapping block ID to coords and (2) dictionary mapping block ID to crime predictions
+    blockDict, predictDict = getBlockAndPredictionDicts()
     # only by sending this page first will the client be connected to the socketio instance
-    return render_template('predicted.html')
+    return render_template('predicted.html', blockToCoord=blockDict, predictedDBData=predictDict)
 
 # To rec'v data passed from Javascript
 @app.route('/insert/', methods=['POST'])
@@ -208,9 +196,23 @@ def executeSingleQueryWhichReturns(sqlquery):
 
     return result
 
-# function to send DB as list of lists
+# function to generate random numbers
+def randomNumberGenerator():
+    """
+    Generate a random number every 1 second and emit to a socketio instance (broadcast)
+    Ideally to be run in a separate thread?
+    """
+    # infinite loop of magical random numbers
+    print("Making random numbers")
+    while not thread_stop_event.isSet():
+        number = round(random()*100, 3)
+        print(number)
+        
+        socketio.emit('newnumber', {'number': number}, namespace='/test')
+        socketio.sleep(5)
 
 
+# function to query DB for crime data and return as list of lists
 def sendDBData():
 
     sqlQeueryForMap = """
@@ -253,10 +255,38 @@ def sendDBData():
                    coord2, coord3, coord4, coord5, coord6, coord7, coord8]
         listOfListForMap.append(listRow)
 
-    # listOfListForMap
-
     return listOfListForMap
 
+# function to query safecall DB and get blue light coordinates 
+# def sendBluelightData():
+#     blueLightQuery = """
+#                 select lat, lon
+#                 from 
+#                 safecall
+#                 """
+#     queryTuple = executeSingleQueryWhichReturns(blueLightQuery)    
+#     blueLightList = []
+#     for row in queryTuple:
+#         if None in row:
+#             continue
+        
+#         lat = row[0]
+#         lon = row[1]
+#         blueLightList.append(lat)
+#         blueLightList.append(lon)
+    
+#     return blueLightList
+
+
+# Function to map block locations to block coords
+def getBlockAndPredictionDicts():
+    import csv 
+    with open(r'\Src\DatabaseInteractionScripts\Data\BlockLocation.csv', 'r') as f:
+        blockCoordDict = csv.DictReader(f)
+    with open(r'\Src\DatabaseInteractionScripts\Data\predictions.csv', 'r') as f:
+        predictionDict = csv.DictReader(f)
+    return blockCoordDict, predictionDict
+    
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
@@ -269,48 +299,4 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app)
-
-# socketio = SocketIO(app)
-
-
-# @app.route('/', methods=['POST', 'GET'])
-# def home():
-#     # return 'hello world'
-#     return render_template('track1index.html')
-
-# # Decorator to catch an event called "my event":
-# @socketio.on('my event', namespace='/test')
-# # test_message() is the event callback function.
-# def test_message(message):
-#     # Trigger a new event called "my response"
-#     emit('my response', {'data': 'got it!'})
-#     # that can be caught by another callback later in the program.
-
-
-# @app.route('/success/<name>')
-# def success(name):
-#     return 'welcome %s' % name
-
-
-# @app.route('/login', methods=['POST', 'GET'])
-# def login():
-#     err = ''
-#     try:
-#         if request.method == "POST":
-#             attempted_username = request.form['username']
-#             attempted_password = request.form['password']
-#             if attempted_username == "admin" and attempted_password == "password":
-#                 return redirect(url_for('success', name='admin'))
-#             else:
-#                 err = "Invalid credentials. Try Again."
-#         return render_template('login.html')
-
-#     except Exception as e:
-#         return render_template("login.html", error=err)
-
-#
-
-if __name__ == '__main__':
-    # app.run(debug=True)
     socketio.run(app)

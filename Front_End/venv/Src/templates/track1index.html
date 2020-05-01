@@ -164,6 +164,14 @@
           </a>
         </div>
 
+        <!-- Rounded switch -->
+        Show Blue Lights
+        <label class="switch">
+            <input type="checkbox" id="blueLightSwitch" onClick="toggleBlueLights()"> 
+            <span class="slider round"></span>
+        </label>
+
+
         <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
         <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
       </div>
@@ -384,7 +392,9 @@
     // [crimeID, crimeType, [year, month, day, hour, minute], topLeft lat, topLeft lon, topRight lat, topRight lon, botLeft lat, botLeft lon, botRight lat, botRightlong]
     var crimeDBList = {{crimeDBData | safe}};
 
-    // console.log(crimeDBList);
+    //blue light data (list of lat, lon)
+    // var blueLightCoords = {{blueLightData}};
+    var blueLightCoords = '40.115336,-88.226786,40.115549,-88.224243,40.115343,-88.223932,40.114481,-88.227709,40.114481,-88.225563,40.114563,-88.224951,40.113669,-88.227215,40.113464,-88.225101,40.112849,-88.227204,40.112627,-88.225745,40.111424,-88.229845,40.111644,-88.227678,40.111513,-88.225747,40.112014,-88.223891,40.110668,-88.222571,40.109166,-88.230006,40.108895,-88.230693,40.108107,-88.23124,40.108509,-88.229094,40.108927,-88.227882,40.108829,-88.225779,40.107926,-88.224502,40.109190,-88.220253,40.108181,-88.221476,40.107180,-88.220693,40.106737,-88.230424,40.105424,-88.233407,40.106310,-88.227549,40.105440,-88.226862,40.106444,-88.225585,40.106026,-88.224836,40.105376,-88.225024,40.105371,-88.221447,40.103973,-88.241351,40.101158,-88.238701,40.097284,-88.239355,40.095909,-88.240589,40.103065,-88.234419,40.101571,-88.233614,40.104200,-88.23155,40.104085,-88.230477,40.102857,-88.230124,40.103922,-88.229145,40.100747,-88.230093,40.103176,-88.228055,40.101414,-88.227939,40.095318,-88.231928,40.096344,-88.228216,40.095745,-88.227604,40.094259,-88.22814,40.096373,-88.225778,40.102657,-88.225627,40.103125,-88.224647,40.104298,-88.223931,40.100742,-88.222953,40.103499,-88.222619,40.103581,-88.22175,40.101509,-88.221691,40.102387,-88.219363,40.101722,-88.220361,40.101361,-88.220093,40.102334,-88.220973,40.097993,-88.220855,40.092355,-88.221745,40.092298,-88.22079';
 
     // global crime dictionary
     var crimeDict = {};
@@ -394,6 +404,7 @@
 
     // marker group 
     var markers = L.layerGroup();
+    var blueLightMarkers = L.layerGroup();
 
     //  =========================== ON-CLICK COORDINATES ===========================
     
@@ -428,10 +439,18 @@
 
     // draw the map 
     populateMap(crimeDBList);
+
+    // function to toggle blue lights when switch is flipped 
+    function toggleBlueLights(){
+        blueLightFlag = document.getElementById("blueLightSwitch").checked;
+        drawBlueLightMarker(blueLightCoords);
+        if (!blueLightFlag){
+            blueLightMarkers.clearLayers();
+        }
+        blueLightMarkers.addTo(mymap);
+    }
+
     
-
-
-
     /**
      * populates map markers given @param{crimeData} from the database
      * crimeDict should be of form {blockcoords: data list}
@@ -512,6 +531,24 @@
         // block.addTo(mymap);  // draw the block
     }
 
+    
+    /** 
+     * draws each bluelight marker 
+     * @param {coords} coordinate list containing lat, lon
+     */
+     function drawBlueLightMarker(blueLightCoords){
+        blueLightList = blueLightCoords.split(',');
+        for (i=0; i<blueLightList.length-1; i++){
+            lat = blueLightList[i];
+            lon = blueLightList[i+1];
+            blueLightMarkers.addLayer(L.marker([lat, lon]));
+        }
+        // console.log("hi");
+        // L.marker([lat, lon]).addTo(mymap);
+    }
+
+
+
 
     /**
      * generates the table string to go inside each popup given the {blockData} for a single block
@@ -558,52 +595,6 @@
         return newTableString
     }
 
-
-        
-
-
-    //  ============================= DRAWING CIRCLES ================================
-    // drawCircle([40.1138, -88.2249], "red", circleLabel);
-      function drawCircle(coordinates, circleColor, pop, rad) {
-        var circle = L.circle(coordinates, {
-          color: circleColor,
-          fillColor: circleColor,
-          fillOpacity: 0.5,
-          radius: rad,
-        });
-        var rect = L.rectangle([[coordinates[0] - rad/10000, coordinates[1] + rad/10000], [coordinates[0] + rad/10000, coordinates[1] - rad/10000]], {color: circleColor, weight: 1});
-        rect.bindPopup(pop);
-        return rect;
-        // circle.bindPopup(pop);
-        // return circle;
-      }
-
-      function removeCircle(circle) {
-        mymap.removeLayer(circle);
-      }
-
-      // Create stack of circle objects
-      var myList = [];
-      // circle markers
-      // var circle = L.circle([40.1138, -88.2249], {
-      //   color: "red",
-      //   fillColor: "#f03",
-      //   fillOpacity: 0.5,
-      //   radius: 200
-      // }).addTo(mymap);
-
-      // circle.bindPopup(circleLabel);
-
-      // let circleLabel = "Siebel Center!!! :)";
-      // let popUp = L.popup();
-      // var container = L.DomUtil.create("div");
-      // startBtn = document.createElement("button");
-      // startBtn.innerHTML = "Start from this location";
-      // // div.innerHTML = "" + startBtn;
-      // popUp.setContent("You clicked the map at " + startBtn);
-
-
-      
       //=============================== POP UP CODE ===================================
       // ----------------draw table inside map marker----------------//
 
@@ -1549,6 +1540,72 @@
       .topnav input[type=text] {
         border: 1px solid #ccc;  
       }
+    }
+
+    /* ----------------- custom toggle switch button ------------------- */
+
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 25px;
+        margin: 15px;
+    }
+
+    /* Hide default HTML checkbox */
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #ff8052;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #ff8052;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(20px);
+        -ms-transform: translateX(20px);
+        transform: translateX(20px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
     }
 
 </style>
