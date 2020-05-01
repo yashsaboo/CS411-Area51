@@ -16,7 +16,7 @@ DBPASS = ""
 DBUSER = "root"
 
 
-# In[4]:
+# In[3]:
 
 
 def connectToDatabase():
@@ -38,7 +38,7 @@ def closeDatabase(db):
         print("Database Not Closed Successfully")
 
 
-# In[5]:
+# In[4]:
 
 
 def executeSingleQuery(sqlquery):
@@ -63,7 +63,7 @@ def executeSingleQuery(sqlquery):
 
 # ## Create BlockLocation Table
 
-# In[7]:
+# In[5]:
 
 
 # we are droping the table if it already exists
@@ -71,7 +71,7 @@ sqlqueryForDroppingTable_BlockLocation = "DROP TABLE IF EXISTS BlockLocation"
 executeSingleQuery(sqlqueryForDroppingTable_BlockLocation)
 
 
-# In[9]:
+# In[6]:
 
 
 sqlqueryForCreatingTable_BlockLocation = """
@@ -95,7 +95,7 @@ executeSingleQuery(sqlqueryForCreatingTable_BlockLocation)
 
 # ## Create CrimeType Table
 
-# In[10]:
+# In[7]:
 
 
 # we are droping the table if it already exists
@@ -103,7 +103,7 @@ sqlqueryForDroppingTable_CrimeType = "DROP TABLE IF EXISTS CrimeType"
 executeSingleQuery(sqlqueryForDroppingTable_CrimeType)
 
 
-# In[11]:
+# In[8]:
 
 
 sqlqueryForCreatingTable_CrimeType = """
@@ -120,7 +120,7 @@ executeSingleQuery(sqlqueryForCreatingTable_CrimeType)
 
 # ## Create Crime Table
 
-# In[12]:
+# In[9]:
 
 
 # we are droping the table if it already exists
@@ -128,7 +128,7 @@ sqlqueryForDroppingTable_Crime = "DROP TABLE IF EXISTS Crime"
 executeSingleQuery(sqlqueryForDroppingTable_Crime)
 
 
-# In[13]:
+# In[10]:
 
 
 sqlqueryForCreatingTable_Crime = """
@@ -140,7 +140,9 @@ sqlqueryForCreatingTable_Crime = """
                          disposition varchar(255),
                          crimeTypeID int NOT NULL,
                          PRIMARY KEY (incidentID),
-                         FOREIGN KEY (crimeTypeID) REFERENCES CrimeType(crimeTypeID)
+                         FOREIGN KEY (crimeTypeID) REFERENCES CrimeType(crimeTypeID) 
+                             ON DELETE CASCADE
+                             ON UPDATE CASCADE
                         ); 
                         """
     
@@ -149,7 +151,7 @@ executeSingleQuery(sqlqueryForCreatingTable_Crime)
 
 # ## Create happensAt Table
 
-# In[14]:
+# In[11]:
 
 
 # we are droping the table if it already exists
@@ -157,7 +159,7 @@ sqlqueryForDroppingTable_happensAt = "DROP TABLE IF EXISTS happensAt"
 executeSingleQuery(sqlqueryForDroppingTable_happensAt)
 
 
-# In[15]:
+# In[12]:
 
 
 sqlqueryForCreatingTable_happensAt = """
@@ -166,13 +168,47 @@ sqlqueryForCreatingTable_happensAt = """
                          incidentID varchar(20) NOT NULL,
                          blockID int NOT NULL,
                          genLocation varchar(255),
-                         FOREIGN KEY (incidentID) REFERENCES Crime(incidentID),
-                         FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID),
+                         FOREIGN KEY (incidentID) REFERENCES Crime(incidentID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
+                         FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
                          PRIMARY KEY (incidentID, blockID)
                         );
                         """
     
 executeSingleQuery(sqlqueryForCreatingTable_happensAt)
+
+
+# ## Create safeCall Table
+
+# In[13]:
+
+
+# we are droping the table if it already exists
+sqlqueryForDroppingTable_safeCall = "DROP TABLE IF EXISTS safeCall"
+executeSingleQuery(sqlqueryForDroppingTable_safeCall)
+
+
+# In[14]:
+
+
+sqlqueryForCreatingTable_safeCall = """
+                        CREATE TABLE safeCall
+                        (
+                        callId int NOT NULL,
+                        lat real,
+                        lon real,
+                        blockId int NOT NULL,
+                        FOREIGN KEY (blockID) REFERENCES BlockLocation(blockID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                        PRIMARY KEY (callId)
+                        );
+                        """
+    
+executeSingleQuery(sqlqueryForCreatingTable_safeCall)
 
 
 # In[ ]:

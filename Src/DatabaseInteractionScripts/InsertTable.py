@@ -4,7 +4,7 @@
 # Assumptions:
 #     1. The column names won't have any whitespace or period in it. If the CSV file columns have it, then it will be replaced with underscore.
 
-# In[47]:
+# In[1]:
 
 
 import MySQLdb as mdb
@@ -12,7 +12,7 @@ import csv
 import pandas as pd
 
 
-# In[48]:
+# In[2]:
 
 
 DBNAME = "dbtest"
@@ -21,13 +21,13 @@ DBPASS = ""
 DBUSER = "root"
 
 
-# In[49]:
+# In[3]:
 
 
 csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\Convert_CSV\Data"
 
 
-# In[50]:
+# In[4]:
 
 
 def connectToDatabase():
@@ -49,7 +49,7 @@ def closeDatabase(db):
         print("Database Not Closed Successfully")
 
 
-# In[51]:
+# In[5]:
 
 
 def executeSingleQuery(sqlquery):
@@ -72,7 +72,7 @@ def executeSingleQuery(sqlquery):
     closeDatabase(db)
 
 
-# In[53]:
+# In[6]:
 
 
 def getListOfInsertQueries(csvName, tableName):
@@ -107,7 +107,7 @@ def getListOfInsertQueries(csvName, tableName):
 
 # ## Insert into BlockLocation Table
 
-# In[54]:
+# In[7]:
 
 
 csvName = r"BlockLocation.csv"
@@ -116,14 +116,14 @@ listOfInsertQueries = getListOfInsertQueries(csvName, tableName)
 listOfInsertQueries
 
 
-# In[55]:
+# In[8]:
 
 
 for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
     executeSingleQuery(sqlqueryForInsertIntoTable_BlockLocation)
 
 
-# In[38]:
+# In[9]:
 
 
 # sqlqueryForInsertIntoTable_BlockLocation =   """
@@ -141,7 +141,7 @@ for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
 
 # ## Insert into CrimeType Table
 
-# In[56]:
+# In[10]:
 
 
 csvName = r"CrimeType.csv"
@@ -150,7 +150,7 @@ listOfInsertQueries = getListOfInsertQueries(csvName, tableName)
 listOfInsertQueries
 
 
-# In[57]:
+# In[11]:
 
 
 for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
@@ -165,7 +165,7 @@ for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
 
 # ## Insert into Crime Table
 
-# In[58]:
+# In[12]:
 
 
 csvName = r"Crime.csv"
@@ -174,16 +174,16 @@ listOfInsertQueries = getListOfInsertQueries(csvName, tableName)
 listOfInsertQueries
 
 
-# In[59]:
+# In[13]:
 
 
-for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
-    executeSingleQuery(sqlqueryForInsertIntoTable_BlockLocation)
+for sqlqueryForInsertIntoTable_Crime in listOfInsertQueries:
+    executeSingleQuery(sqlqueryForInsertIntoTable_Crime)
 
 
 # ## Insert into happensAt Table
 
-# In[60]:
+# In[14]:
 
 
 csvName = r"happensAt.csv"
@@ -192,17 +192,35 @@ listOfInsertQueries = getListOfInsertQueries(csvName, tableName)
 listOfInsertQueries
 
 
-# In[61]:
+# In[15]:
 
 
-for sqlqueryForInsertIntoTable_BlockLocation in listOfInsertQueries:
-    executeSingleQuery(sqlqueryForInsertIntoTable_BlockLocation)
+for sqlqueryForInsertIntoTable_happensAt in listOfInsertQueries:
+    executeSingleQuery(sqlqueryForInsertIntoTable_happensAt)
 
 
 # In[ ]:
 
 
 
+
+
+# ## Insert into safeCall Table
+
+# In[16]:
+
+
+csvName = r"safeCall.csv"
+tableName = "safeCall"
+listOfInsertQueries = getListOfInsertQueries(csvName, tableName)
+listOfInsertQueries
+
+
+# In[17]:
+
+
+for sqlqueryForInsertIntoTable_safeCall in listOfInsertQueries:
+    executeSingleQuery(sqlqueryForInsertIntoTable_safeCall)
 
 
 # In[ ]:
