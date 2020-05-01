@@ -1,0 +1,74 @@
+Prof. Abdu wants to move with his family somewhere on campus and he starts looking for houses. Now, he contact us to help him identify blocks where the crime rate was minimum in Fall 2019. We give him block-wise crime rate in Fall 2019, which is ordered ascendingly on number of crimes.
+
+select h.blockID as blockID, count(h.incidentID) as numberOfCrimes
+from Crime c inner join happensAt h on c.incidentID = h.incidentID
+where c.occuredAt between '2019-08-01' and '2019-12-31' and h.blockID != 0
+group by h.blockID
+order by count(h.incidentID)
+
+
+Crimes are increasing rapidly and the university has asked police to educate the students on the most frequent crimes. Police aims to perform a campus drive to educate students on top 3 crimes that have occured since the year 2015.
+
+select ct.type as crimeType, count(c.incidentID) as numberOfCrimes
+from Crime c
+INNER JOIN
+    CrimeType ct ON
+    c.crimeTypeID = ct.crimeTypeID
+INNER JOIN
+    happensAt h ON
+    c.incidentID = h.incidentID
+where h.blockID != 0 and c.occuredAt >= '2015-01-01'
+group by ct.type
+order by count(h.incidentID) desc
+LIMIT 3
+
+
+Crimes are continously on rise and Police chooses to increase their patrolling, and wants to make a specialised task force based on the crimes that are occuring on campus and wants to station them at different patrol stations. Thus, Police asks us to identify the top 10 crimes that occur on campus and the most affected block by each crime.
+
+
+
+select c
+
+select ct.type, h.blockID
+Crime c
+INNER JOIN
+    CrimeType ct ON
+    c.crimeTypeID = ct.crimeTypeID
+INNER JOIN
+    happensAt h ON
+    c.incidentID = h.incidentID
+group by ct.type, h.blockID
+having count()
+
+
+select c.crimeTypeID, count(h.incidentID)
+from Crime c inner join happensAt h on c.incidentID = h.incidentID
+group by c.crimeTypeID
+order by count(h.incidentID) desc
+LIMIT 10
+
+
+
+select ct.type, h.blockID, count(c.incidentID)
+from Crime c
+INNER JOIN
+    CrimeType ct ON
+    c.crimeTypeID = ct.crimeTypeID
+INNER JOIN
+    happensAt h ON
+    c.incidentID = h.incidentID
+where h.blockID != 0
+group by ct.type, h.blockID
+having count(c.incidentID) = SELECT MAX(y.num) FROM 
+							(
+								select count(c2.incidentID) as num
+								from Crime c2
+								INNER JOIN
+								    CrimeType ct2 ON
+								    c2.crimeTypeID = ct2.crimeTypeID
+								INNER JOIN
+								    happensAt h2 ON
+								    c2.incidentID = h2.incidentID
+								where h2.blockID != 0 and c2.crimeTypeID = c.crimeTypeID
+								group by ct.type, h.blockID
+							) y

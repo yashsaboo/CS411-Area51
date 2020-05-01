@@ -9,14 +9,15 @@ import string
 import secrets
 import sys
 import os
-sys.path.insert(0, os.path.abspath('Src/Convert_CSV'))
+sys.path.insert(0, os.path.abspath('Src/DatabaseInteractionScripts'))
 import WebsiteToDB
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
 # Sources:
-# https://github.com/shanealynn/async_flask
+# https://github.
+# com/shanealynn/async_flask
 # https://www.shanelynn.ie/asynchronous-updates-to-a-webpage-with-flask-and-socket-io/
 
 # turn the flask app into a socketio app
