@@ -8,11 +8,8 @@
   <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
   <scrsipt type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js">
   </script>
-  <script src="static/js/application.js"></script>
+  <!-- <script src="static/js/application.js"></script> -->
 
-  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css">
-  <link rel="stylesheet" href="css/leaflet.awesome-markers.css">
-  <script src="js/leaflet.awesome-markers.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
     integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
     crossorigin="" />
@@ -167,6 +164,22 @@
         <button id="submitQuery2" class="submit-button" onclick="sendQuery2()">SHOW TOP CRIMES</button>
       </form>
 
+      <!-- draw top crime table here -->
+      <div style="height: 200px; width: 300px; overflow: auto">
+        <table>
+          <tr>
+            <th>Crime Type</th>
+            <th>Number</th>
+          </tr>
+          {% for row in query2CrimeList %}
+          <tr>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+
       <!-- ====================== BLUE LIGHTS ======================-->
       <h2>Show Blue Lights</h2>
       <label class="switch">
@@ -178,7 +191,7 @@
       <!-- ====================== COMPLEX QUERY 1: CRIME TOTALS ======================-->
       <h2>Show Crime Totals per Block</h2>
       <label class="switch">
-        <input type="checkbox" id="query1Switch" onClick="toggleBlueLights()">
+        <input type="checkbox" id="query1Switch" onClick="toggleQuery1()">
         <span class="slider round"></span>
       </label>
 
@@ -215,7 +228,55 @@
           </form>
         </div>
       </div>
-      <p id="search_res"> {{search_res | safe}} </p>
+      <!-- <p id="search_res"> -->
+      <div id="formatted" style="margin-left: 100px;"></div>
+      <script>
+        document.getElementById('formatted').innerHTML = formatSearchResults("{{ search_res | safe}}");
+
+        /**
+         * Formats search results
+         */
+        function formatSearchResults(resStr) {
+          console.log(resStr);
+          resHtml = ''
+          resArr = resStr.split(', ');
+          let count = 0;
+          resArr.forEach((ele) => {
+            ele = ele.replace(/'/g, '');
+            // Format incident ID
+            if (count == 0)
+              resHtml += '<h5> Incident ID: ' + ele.substring(2) + '</h5>';
+            // Format date
+            else if (count == 1 || count == 6)
+              resHtml += '<h5> Date: ' + ele.substring(ele.length - 4) + '-';
+            else if (count == 2 || count == 7)
+              resHtml += ele + '-';
+            else if (count == 3 || count == 8)
+              resHtml += ele + '</h5>';
+            // Format time
+            else if (count == 4)
+              resHtml += '<h5> Happened at: ' + ele + ':'
+            else if (count == 9)
+              resHtml += '<h5> Reported at: ' + ele + ':'
+            else if (count == 5 || count == 10) {
+              ele = ele.replace(')', '');
+              if (ele.length == 1)
+                ele += '0';
+              resHtml += ele + '</h5>';
+            }
+            // Format case type
+            else if (count == 11)
+              resHtml += '<h5> Status: ' + ele + '</h5>';
+            // Format crime location
+            else if (count == 17)
+              resHtml += '<h5> Location: ' + ele.substring(0, ele.length - 3) + '</h5>';
+            count += 1;
+          });
+          console.log(resHtml);
+          return resHtml;
+        }
+      </script>
+      <!-- </p> -->
 
     </div>
   </div>
@@ -299,8 +360,11 @@
             <label class="checkbox-label"><input type="radio" name="editRadio" id="occuredAt" /><span
                 class="checkbox-custom circular"></span></label>
             <label for="crimeDateRadio">Update date/time:
-              <div class="custom-form" style="width:300px;">
-                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS">
+
+              <!-- <div class="custom-form" style="width:300px;"> -->
+              <div class="custom-datetime" style="width: 180px;">
+                <!-- <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS"> -->
+                <input type="datetime-local" id="newCrimeDate" name="editForm-crimeTime">
               </div>
             </label>
           </div>
@@ -464,15 +528,24 @@
       blueLightMarkers.addTo(mymap);
     }
 
+    query1MarkerCoords = {{ query1Coords | safe }};
+    query1Totals = {{ query1Count | safe }};
+    // console.log(query1MarkerCoords);
+    // console.log("query1totals: ", query1Totals);
+
     // function to toggle complex query 1 crime total markers 
     function toggleQuery1() {
       query1Flag = document.getElementById("query1Switch").checked;
-      drawBlueLightMarker(query1Coords);
+      drawQuery1Marker(query1MarkerCoords);
       if (!query1Flag) {
         query1Markers.clearLayers();
       }
       query1Markers.addTo(mymap);
+
+      console.log("added query1");
     }
+
+
 
 
     /**
@@ -560,33 +633,53 @@
     //   markerColor: 'blue'
     // });
 
+    var blueIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
     /** 
      * draws each bluelight marker 
      * @param {coords} coordinate list containing lat, lon
      */
     function drawBlueLightMarker(blueLightCoords) {
       blueLightList = blueLightCoords.split(',');
-      for (i = 0; i < blueLightList.length - 1; i++) {
+      for (i = 0; i < blueLightList.length - 1; i = i + 2) {
         lat = blueLightList[i];
         lon = blueLightList[i + 1];
-        blueLightMarkers.addLayer(L.marker([lat, lon]));
+        blueLightMarkers.addLayer(L.marker([lat, lon], { icon: blueIcon }));
       }
     }
+
+    var redIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
 
     /** 
      * draws each query 1 marker 
      * @param {coords} coordinate list containing lat, lon
      */
     function drawQuery1Marker(query1Coords) {
-      //   blueLightList = blueLightCoords.split(',');
-      for (i = 0; i < query1Coords.length - 1; i++) {
+      for (i = 0; i < query1Coords.length - 2; i = i + 2) {
+        display = '<h5>Total crimes: '
         lat = query1Coords[i];
         lon = query1Coords[i + 1];
-        blueLightMarkers.addLayer(L.marker([lat, lon]));
+        console.log(query1Totals[i / 2]);
+        crimeCount = query1Totals[i / 2].toString();
+        display = display + crimeCount + '</h5>';
+        query1Markers.addLayer(L.marker([lat, lon], { icon: redIcon }).bindPopup(display));
       }
-      // console.log("hi");
-      // L.marker([lat, lon]).addTo(mymap);
     }
+
+
 
 
     /**
@@ -872,6 +965,10 @@
       var oldID = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
 
       var columns = document.getElementsByName("editRadio");
+      var crimeTime = document.getElementById("newCrimeDate").value;
+      console.log(crimeTime);
+      var crimeTime = crimeTime.replace('T', ' ');
+
       var columnToBeUpdated = '';
       var newColumnValue = '';
 
@@ -879,7 +976,7 @@
         if (columns[i].checked) {
           columnToBeUpdated = columns[i].id;
           // if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
-          if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
+          if (columnToBeUpdated == 'occuredAt') newColumnValue = crimeTime; //document.getElementById("newCrimeDate").value;
           else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
           // newColumnValue = columns[i].value;
         }

@@ -42,6 +42,7 @@ def index():
     # only by sending this page first will the client be connected to the socketio instance
     crimeDBData  = sendDBData()     
     query1Coords, query1Count = complexQuery1()
+    # print(query1Coords)
     return render_template('track1index.html', crimeDBData=crimeDBData, query1Coords=query1Coords, query1Count=query1Count, query2CrimeList=query2CrimeList)
 
 
@@ -109,19 +110,21 @@ def delete():
 # SEARCH for data tuple in DB
 @app.route('/search/', methods=['POST'])
 def search():
+    query1Coords, query1Count = complexQuery1()
     if request.method == 'POST':
         print('FROM JAVASCRIPT: ', request.form['search'])
         res = WebsiteToDB.searchData(request.form['search'])
         # Dynamically reaload if search succesful
         if res:
             print('search successful')
-            return render_template('track1index.html', crimeDBData=sendDBData(), search_res=res)
+            return render_template('track1index.html', crimeDBData=sendDBData(), search_res=res, query1Coords=query1Coords, query1Count=query1Count, query2CrimeList=query2CrimeList)
 
     return None
 
 # COMPLEX QUERY 2
 @app.route('/query2/', methods=['POST'])
 def query2():
+    query1Coords, query1Count = complexQuery1()
     if request.method == 'POST':
         print("Executing Complex Query 2")
         
@@ -134,7 +137,7 @@ def query2():
         query2CrimeList = complexQuery2(numCrimes, crimeAfterDate)
         # print(query2CrimeList)
         if query2CrimeList:
-            return render_template('track1index.html', crimeDBData=sendDBData(), query2CrimeList=query2CrimeList)
+            return render_template('track1index.html', crimeDBData=sendDBData(), query1Coords=query1Coords, query1Count=query1Count, query2CrimeList=query2CrimeList)
     return None
 
 

@@ -114,7 +114,7 @@
         </a>
       </div>
 
-      <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
+      <a href="./" class="w3-bar-item w3-button">Return to home page</a>
       <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
     </div>
     <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
@@ -134,19 +134,6 @@
     </div>
 
     <div class="container" id="content">
-
-    </div>
-    <div class="row">
-      <!-- Adding search bar -->
-      <div class="topnav">
-        <div class="search-container">
-          <form action="{{ url_for('search') }}" method="post">
-            <input type="text" placeholder="Search.." name="search">
-            <button type="submit"><i class="fa fa-search" style="color:#ffffff;"></i></button>
-          </form>
-        </div>
-      </div>
-      <p id="search_res"> {{search_res | safe}} </p>
 
     </div>
   </div>
