@@ -11,7 +11,7 @@ Steps to install Wamp and connect MySQL with Python
 	Uncheck Internet Information Services.
 4. Make Python work with Wamp (https://codeloop.org/python-mysql-database-for-beginners/)
 	Install Python 3.x (I'm using 3.8)
-	Upgrade pip
+	Upgrade pip: python -m pip install --upgrade pip
 	Install SetupTools: pip install --upgrade setuptools
 	pip install MySQL-python / pip install mysqlclient
 		Windows C++ 14.0 error (https://stackoverflow.com/questions/29846087/microsoft-visual-c-14-0-is-required-unable-to-find-vcvarsall-bat): 
