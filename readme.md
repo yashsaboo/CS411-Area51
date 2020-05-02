@@ -41,7 +41,7 @@ To Load the dataset, one needs to perform the following steps:
     - Also, this approach of creating three intermediate CSVs for each table out of the logs is not the most appropriate and efficient way to load data if the dataset is large, because it unnecessary. This optimisation be easily done by combining SplitOriginalDatasetInto3CSVs.ipynb and InsertTable.ipynb into single file.
     
 - The following 2 files needs to be ran in sequence:
-    - CreateTable.py (Please rememeber that it drops the table before creating it)
+    - CreateTable.py (Please remember that it drops the table before creating it)
 
         CommandLine: ```python CreateTable.py```
 
