@@ -1,74 +1,49 @@
 <!DOCTYPE html>
 <html>
-  <head>
 
-    <!--============================== RESOURCES ============================== -->
+<head>
 
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <scrsipt
-      type="text/javascript"
-      src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"
-    ></script>
-    <script src="static/js/application.js"></script>
+  <!--============================== RESOURCES ============================== -->
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script> -->
-    <!-- <link
+  <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+  <scrsipt type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js">
+  </script>
+  <script src="static/js/application.js"></script>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script> -->
+  <!-- <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/track1.css') }}"
     /> -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-      integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-      crossorigin=""
-    />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
 
-    <script
-      src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-      integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-      crossorigin=""
-    ></script>
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Montserrat"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-  </head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
 
-  <!-- ============================== CONTENT ============================== -->
-  
-  <body class="w3-content" style="max-width: 1200px;">
-    <!-- Sidebar/menu -->
-    <nav
-      class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top"
-      style="z-index: 3; width: 250px;"
-      id="mySidebar"
-    >
-      <div class="w3-container w3-display-container w3-padding-16">
-        <i
-          onclick="w3_close()"
-          class="fa fa-remove w3-hide-large w3-button w3-display-topright"
-        ></i>
-        <h3 class="w3-wide"><b>UIUC Crime Map</b></h3>
-      </div>
-      <div
-        class="w3-padding-64 w3-large w3-text-grey"
-        style="font-weight: bold;"
-      >
-        <!-- Dropdown button -->
-        <a
+<!-- ============================== CONTENT ============================== -->
+
+<body class="w3-content" style="max-width: 1200px;">
+  <!-- Sidebar/menu -->
+  <nav class="w3-sidebar w3-bar-block w3-white w3-collapse w3-top" style="z-index: 3; width: 300px;" id="mySidebar">
+    <div class="w3-container w3-display-container w3-padding-16">
+      <i onclick="w3_close()" class="fa fa-remove w3-hide-large w3-button w3-display-topright"></i>
+      <h3 class="w3-wide"><b>UIUC Crime Map</b></h3>
+    </div>
+    <div class="w3-padding-64 w3-large w3-text-grey" style="font-weight: bold;">
+      <!-- Dropdown button -->
+      <!-- <a
           onclick="displayDropdown('crimeTypeDropdown');"
           href="javascript:void(0)"
           class="w3-button w3-block w3-white w3-left-align"
@@ -162,119 +137,146 @@
               High
             </div>
           </a>
-        </div>
+        </div> -->
 
-        <!-- Rounded switch -->
-        Show Blue Lights
-        <label class="switch">
-            <input type="checkbox" id="blueLightSwitch" onClick="toggleBlueLights()"> 
-            <span class="slider round"></span>
+      <!-- ====================== TOP CRIMES ====================== -->
+      <h2>Top Crimes </h2>
+      <h5>Number of crimes to display</h5>
+      <div class="custom-select" style="width:70px; height:50px;">
+        <label for="numTopCrimes">
+          <select id="numTopCrimes">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
         </label>
-
-
-        <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
-        <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
       </div>
-      <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
+      <h5>Display crimes from after:</h5>
+      <div class="custom-datetime" style="width: 180px;">
+        <label for="topCrimeTime"></label>
+        <input type="datetime-local" id="topCrimeTime" name="topCrimeTime">
+      </div>
+      <button id="submitQuery2" class="submit-button" onclick="sendQuery2()">SHOW TOP CRIMES</button>
+
+
+      <!-- ====================== BLUE LIGHTS ======================-->
+      <h2>Show Blue Lights</h2>
+      <label class="switch">
+        <input type="checkbox" id="blueLightSwitch" onClick="toggleBlueLights()">
+        <span class="slider round"></span>
+      </label>
+
+
+      <a href="predicted" class="w3-bar-item w3-button">See predicted crimes</a>
+      <!-- <a href="#" class="w3-bar-item w3-button">Prof Abdu is gr8!</a> -->
+    </div>
+    <!-- <a href="#footer" class="w3-bar-item w3-button w3-padding">Contact</a> 
       <a href="javascript:void(0)" class="w3-bar-item w3-button w3-padding" onclick="document.getElementById('newsletter').style.display='block'">Newsletter</a> 
       <a href="#footer"  class="w3-bar-item w3-button w3-padding">Subscribe</a> -->
-    </nav>
+  </nav>
 
-    <!-- !PAGE CONTENT! -->
-    <div class="w3-main" style="margin-left: 250px;">
-      <!-- Push down content on small screens -->
-      <div class="w3-hide-large" style="margin-top: 83px;"></div>
+  <!-- !PAGE CONTENT! -->
+  <div class="w3-main" style="margin-left: 250px;">
+    <!-- Push down content on small screens -->
+    <div class="w3-hide-large" style="margin-top: 83px;"></div>
 
-      <!-- Image header -->
-      <div class="w3-display-container w3-container">
-        <!--The div element for the map -->
-        <div id="mapid" style="width: 1000px; height: 800px;"></div>
-      </div>
-
-      <div class="container" id="content">
-      
+    <!-- Image header -->
+    <div class="w3-display-container w3-container">
+      <!--The div element for the map -->
+      <div id="mapid" style="width: 1000px; height: 800px;"></div>
     </div>
-        <div class="row">
-          <!-- Adding search bar -->
-          <div class="topnav">
-            <div class="search-container">
-              <form action="{{ url_for('search') }}" method = "post">
-                <input type="text" placeholder="Search.." name="search">
-                <button type="submit"><i class="fa fa-search" style="color:#ffffff;"></i></button>
-              </form>
-            </div>
-          </div>
-          <p id="search_res"> {{search_res | safe}} </p>  
-         
+
+    <div class="container" id="content">
+
+    </div>
+    <div class="row">
+      <!-- Adding search bar -->
+      <div class="topnav">
+        <div class="search-container">
+          <form action="{{ url_for('search') }}" method="post">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><i class="fa fa-search" style="color:#ffffff;"></i></button>
+          </form>
         </div>
       </div>
-    </div>
+      <p id="search_res"> {{search_res | safe}} </p>
 
-    <!-- Footer -->
-    <!-- <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
+    </div>
+  </div>
+  </div>
+
+  <!-- Footer -->
+  <!-- <footer class="w3-padding-64 w3-light-grey w3-small w3-center" id="footer">
       <h4>WHAT</h4>
       
     </footer> -->
 
-        
-    
-    <!-- ============================== MODALS ============================== -->
 
-    <!--------------------------------- Add Crime Modal  ------------------------------------->
-    <div id="addCrimeModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h3>Add New Crime</h3>
-            </div>
-            <div class="modal-body">
-                <div class="custom-form" style="width:300px;">
-                    <label for="addForm-crimeType">Type of Crime:</label>
-                    <input type="text" id="addForm-crimeType" onkeyup="this.value = this.value.toUpperCase();">
-                </div>
-                <div class="custom-datetime" style="width: 180px;">
-                    <label for="addForm-crimeTime">Date and Time:</label>
-                    <input type="datetime-local" id="addForm-crimeTime" name="addForm-crimeTime">
-                </div>
 
-                <div class="custom-select" style="width:200px;">
-                <label for="selected-disposition">Select disposition:
-                    <select id="selected-disposition">
-                        <option value="arrest">Arrest</option>
-                        <option value="admin close">Admin Close</option>
-                        <option value="student discipline">Student Discipline</option>
-                        <option value="reported to other">Reported to Other</option>
-                        <option value="pending">Pending</option>
-                        <option value="cleared except pros">Cleared Except Pros</option>
-                        </select>
-                </label>
-                </div>
+  <!-- ============================== MODALS ============================== -->
 
-                <button id="submitAddBtn" class="submit-button" onclick="addCrime()">ADD CRIME</button>
-            </div> <!-- end modal body -->
+  <!--------------------------------- Add Crime Modal  ------------------------------------->
+  <div id="addCrimeModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h3>Add New Crime</h3>
+      </div>
+      <div class="modal-body">
+        <div class="custom-form" style="width:300px;">
+          <label for="addForm-crimeType">Type of Crime:</label>
+          <input type="text" id="addForm-crimeType" onkeyup="this.value = this.value.toUpperCase();">
         </div>
+        <div class="custom-datetime" style="width: 180px;">
+          <label for="addForm-crimeTime">Date and Time:</label>
+          <input type="datetime-local" id="addForm-crimeTime" name="addForm-crimeTime">
+        </div>
+
+        <div class="custom-select" style="width:200px;">
+          <label for="selected-disposition">Select disposition:
+            <select id="selected-disposition">
+              <option value="arrest">Arrest</option>
+              <option value="admin close">Admin Close</option>
+              <option value="student discipline">Student Discipline</option>
+              <option value="reported to other">Reported to Other</option>
+              <option value="pending">Pending</option>
+              <option value="cleared except pros">Cleared Except Pros</option>
+            </select>
+          </label>
+        </div>
+
+        <button id="submitAddBtn" class="submit-button" onclick="addCrime()">ADD CRIME</button>
+      </div> <!-- end modal body -->
     </div>
+  </div>
 
-    <!--------------------------------- Edit Crime Modal  ------------------------------------->
+  <!--------------------------------- Edit Crime Modal  ------------------------------------->
 
-    <div id="editCrimeModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h3>Edit Crime</h3>
-            </div>
-            <div class="modal-body">
-                <div class="custom-form" style="width:300px;">
-                    <label for="oldCrimeID">Enter Incident ID:</label>
-                    <input type="text" id="oldCrimeID" placeholder="8-character ID">
-                </div>
+  <div id="editCrimeModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h3>Edit Crime</h3>
+      </div>
+      <div class="modal-body">
+        <div class="custom-form" style="width:300px;">
+          <label for="oldCrimeID">Enter Incident ID:</label>
+          <input type="text" id="oldCrimeID" placeholder="8-character ID">
+        </div>
 
-                <div class="custom-select" style="width:200px;">
-                    <label for="crimeType">Change attribute:</label>
+        <div class="custom-select" style="width:200px;">
+          <label for="crimeType">Change attribute:</label>
 
-                    <!-- <div class="checkbox-container"> 
+          <!-- <div class="checkbox-container"> 
                         <label class="checkbox-label"><input type="radio" name="editRadio" id="incidentID"/><span class="checkbox-custom circular"></span></label>
                         <label for="crimeIDRadio">Update incident ID:
                             <div class="custom-form" style="width:300px;">
@@ -283,54 +285,56 @@
                         </label>
                     </div> -->
 
-                                          
-                    <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="radio" name="editRadio" id="occuredAt"/><span class="checkbox-custom circular"></span></label>
-                        <label for="crimeDateRadio">Update date/time:
-                            <div class="custom-form" style="width:300px;">
-                                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS">
-                            </div>
-                        </label>
-                    </div>
 
-                    <div class="checkbox-container"> 
-                        <label class="checkbox-label"><input type="radio" name="editRadio" id="disposition"/><span class="checkbox-custom circular"></span></label>
-                        <label for="crimeDispRadio">Change disposition:
-                            <select id="newDispType">
-                                <option value="arrest">Arrest</option>
-                                <option value="admin close">Admin Close</option>
-                                <option value="student discipline">Student Discipline</option>
-                                <option value="reported to other">Reported to Other</option>
-                                <option value="pending">Pending</option>
-                                <option value="cleared except pros">Cleared Except Pros</option>
-                                </select>
-                        </label>
-                      </div>
+          <div class="checkbox-container">
+            <label class="checkbox-label"><input type="radio" name="editRadio" id="occuredAt" /><span
+                class="checkbox-custom circular"></span></label>
+            <label for="crimeDateRadio">Update date/time:
+              <div class="custom-form" style="width:300px;">
+                <input type="text" id="newCrimeDate" placeholder="YYYY-MM-DD HH:MM:SS">
+              </div>
+            </label>
+          </div>
 
-                </div>
+          <div class="checkbox-container">
+            <label class="checkbox-label"><input type="radio" name="editRadio" id="disposition" /><span
+                class="checkbox-custom circular"></span></label>
+            <label for="crimeDispRadio">Change disposition:
+              <select id="newDispType">
+                <option value="arrest">Arrest</option>
+                <option value="admin close">Admin Close</option>
+                <option value="student discipline">Student Discipline</option>
+                <option value="reported to other">Reported to Other</option>
+                <option value="pending">Pending</option>
+                <option value="cleared except pros">Cleared Except Pros</option>
+              </select>
+            </label>
+          </div>
 
-                <button id="submitEditBtn" class="submit-button" onclick="editCrime()">EDIT CRIME</button>
-            </div> <!-- end modal body -->
         </div>
+
+        <button id="submitEditBtn" class="submit-button" onclick="editCrime()">EDIT CRIME</button>
+      </div> <!-- end modal body -->
     </div>
+  </div>
 
 
-    <!--------------------------------- Delete Crime Modal  ------------------------------------->
+  <!--------------------------------- Delete Crime Modal  ------------------------------------->
 
-    <div id="deleteCrimeModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h3>Delete Crime</h3>
-            </div>
-            <div class="modal-body">
-                <div class="custom-form" style="width:300px;">
-                    <label for="deleteID">Incident ID to be deleted:</label>
-                    <input type="text" id="deleteID">
-                </div>
+  <div id="deleteCrimeModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h3>Delete Crime</h3>
+      </div>
+      <div class="modal-body">
+        <div class="custom-form" style="width:300px;">
+          <label for="deleteID">Incident ID to be deleted:</label>
+          <input type="text" id="deleteID">
+        </div>
 
-                <!-- <div class="custom-select" style="width:200px;">
+        <!-- <div class="custom-select" style="width:200px;">
                     <label for="selected-delete">Delete all crimes of type:
                         <select id="selected-delete">
                             <option value="none">None</option>
@@ -348,41 +352,41 @@
                     </label>
                     </div> -->
 
-                <button id="submitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME(S)</button>
+        <button id="submitDeleteBtn" class="delete-button" onclick="deleteCrime()">DELETE CRIME(S)</button>
 
-            </div> <!-- end modal body -->
-        </div>
+      </div> <!-- end modal body -->
     </div>
+  </div>
 
-    <!-- ============================== JAVASCRIPT ============================== -->
+  <!-- ============================== JAVASCRIPT ============================== -->
 
 
-    <script>
+  <script>
 
-      // // Add listener to 'log' div
-      // $('body').on('DOMSubtreeModified', 'log', function(){
-      //   console.log('DIV CHANGED');
-      //   // Live update crimeDBData
-      //   crimeDBList = document.getElementById('log').innerHTML;
-      //   // Repopulate map
-      //   populateMap(crimeDBList);
-      // });
-            //  ============================= INSTANTIATE MAP ================================
+    // // Add listener to 'log' div
+    // $('body').on('DOMSubtreeModified', 'log', function(){
+    //   console.log('DIV CHANGED');
+    //   // Live update crimeDBData
+    //   crimeDBList = document.getElementById('log').innerHTML;
+    //   // Repopulate map
+    //   populateMap(crimeDBList);
+    // });
+    //  ============================= INSTANTIATE MAP ================================
 
-      var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
-      L.tileLayer(
-        "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
-        {
-          attribution:
-            'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          maxZoom: 18,
-          id: "mapbox/streets-v11",
-          tileSize: 512,
-          zoomOffset: -1,
-          accessToken:
-            "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA",
-        }
-      ).addTo(mymap);
+    var mymap = L.map("mapid").setView([40.102, -88.2272], 14);
+    L.tileLayer(
+      "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+      {
+        attribution:
+          'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: "mapbox/streets-v11",
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken:
+          "pk.eyJ1Ijoic2NsaW40IiwiYSI6ImNrN2k2YmcxdTA4ZXAzbW1wYmljcTdhcTkifQ.iwGK5SXk_xMdBfaqHvNSqA",
+      }
+    ).addTo(mymap);
 
 
 
@@ -390,7 +394,10 @@
 
     // Retreives database crime data. Should be in the form:
     // [crimeID, crimeType, [year, month, day, hour, minute], topLeft lat, topLeft lon, topRight lat, topRight lon, botLeft lat, botLeft lon, botRight lat, botRightlong]
-    var crimeDBList = {{crimeDBData | safe}};
+    var crimeDBList = {{ crimeDBData | safe}};
+
+    // get data from the query
+
 
     //blue light data (list of lat, lon)
     // var blueLightCoords = {{blueLightData}};
@@ -407,16 +414,16 @@
     var blueLightMarkers = L.layerGroup();
 
     //  =========================== ON-CLICK COORDINATES ===========================
-    
+
     // holds the current click coordinates
     var clickCoords = [];
 
 
     // get on-click coordinates for anywhere on map
     mymap.on("click", function (clickEvent) {
-        clickCoords = clickEvent.latlng;
-        // console.log("lat: ", clickCoords.lat);
-        // console.log("long: ", clickCoords.lng);
+      clickCoords = clickEvent.latlng;
+      // console.log("lat: ", clickCoords.lat);
+      // console.log("long: ", clickCoords.lng);
     });
 
 
@@ -434,65 +441,65 @@
         <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>
         <button id="editCrimeBtn" class="button" onclick="editCrimePopup()">EDIT CRIME</button>
         <button id="deleteCrimeBtn" class="button" onclick="deleteCrimePopup()">DELETE CRIME</button>`;
-    
+
 
 
     // draw the map 
     populateMap(crimeDBList);
 
     // function to toggle blue lights when switch is flipped 
-    function toggleBlueLights(){
-        blueLightFlag = document.getElementById("blueLightSwitch").checked;
-        drawBlueLightMarker(blueLightCoords);
-        if (!blueLightFlag){
-            blueLightMarkers.clearLayers();
-        }
-        blueLightMarkers.addTo(mymap);
+    function toggleBlueLights() {
+      blueLightFlag = document.getElementById("blueLightSwitch").checked;
+      drawBlueLightMarker(blueLightCoords);
+      if (!blueLightFlag) {
+        blueLightMarkers.clearLayers();
+      }
+      blueLightMarkers.addTo(mymap);
     }
 
-    
+
     /**
      * populates map markers given @param{crimeData} from the database
      * crimeDict should be of form {blockcoords: data list}
      */
-    function populateMap(crimeData){
-        markers.clearLayers();  // clear the map
+    function populateMap(crimeData) {
+      markers.clearLayers();  // clear the map
 
-        let colorIndex = 0;
+      let colorIndex = 0;
 
-        var crimeDictionary = makeCrimeDict(crimeData); 
+      var crimeDictionary = makeCrimeDict(crimeData);
 
-        // for every crime block in crimeDictionary, draw the block and bind its popup
-        Object.keys(crimeDictionary).forEach(function(key){
-            
-            blockData = crimeDictionary[key];
-            blockTableHTML = getTableString(blockData);
-            blockCoordList = key.split(',');
-            drawBlock(blockCoordList, colorList[colorIndex], blockTableHTML);
-            colorIndex = (colorIndex + 1) % colorList.length;    // change color of block
-        });
+      // for every crime block in crimeDictionary, draw the block and bind its popup
+      Object.keys(crimeDictionary).forEach(function (key) {
 
-        // draw all the layers in the layer group to populate map 
-        markers.addTo(mymap);
+        blockData = crimeDictionary[key];
+        blockTableHTML = getTableString(blockData);
+        blockCoordList = key.split(',');
+        drawBlock(blockCoordList, colorList[colorIndex], blockTableHTML);
+        colorIndex = (colorIndex + 1) % colorList.length;    // change color of block
+      });
+
+      // draw all the layers in the layer group to populate map 
+      markers.addTo(mymap);
     }
 
-    
+
     /**
      * Given raw crime data {crimeData}, create a dictionary of form {block coord: crime data list}
      */
-     function makeCrimeDict(crimeList){
-        var newCrimeDict = {}
-        for (i=0; i < crimeList.length; i++){
-            blockCoords = (crimeList[i].slice(3)).toString();     // block coords are a string
-            crimeDataValues = crimeList[i].slice(0,3);
-            if (!(blockCoords in newCrimeDict)){
-                newCrimeDict[blockCoords] = []; // add to dict if not seen before
-            }
-            
-            newCrimeDict[blockCoords].push(crimeDataValues); // append new data 
-            
+    function makeCrimeDict(crimeList) {
+      var newCrimeDict = {}
+      for (i = 0; i < crimeList.length; i++) {
+        blockCoords = (crimeList[i].slice(3)).toString();     // block coords are a string
+        crimeDataValues = crimeList[i].slice(0, 3);
+        if (!(blockCoords in newCrimeDict)) {
+          newCrimeDict[blockCoords] = []; // add to dict if not seen before
         }
-        return newCrimeDict
+
+        newCrimeDict[blockCoords].push(crimeDataValues); // append new data 
+
+      }
+      return newCrimeDict
     }
 
 
@@ -505,112 +512,110 @@
      * @param {coords} coordinate list containing top left, top right, bottom left, and bottom right coordinates
      * @param {popupContents} the HTML string that should draw the table 
      */
-    function drawBlock(coords, blockColor, popupContents){
-        let topLeft  = coords.slice(0,2);
-        let topRight = coords.slice(2,4);
-        let botLeft  = coords.slice(4,6);
-        let botRight = coords.slice(6);
+    function drawBlock(coords, blockColor, popupContents) {
+      let topLeft = coords.slice(0, 2);
+      let topRight = coords.slice(2, 4);
+      let botLeft = coords.slice(4, 6);
+      let botRight = coords.slice(6);
 
-        var block = L.polygon([topLeft, topRight, botRight, botLeft], {
-            color: blockColor,
-            fillColor: blockColor,
-            fillOpacity: 0.5,
-            weight: 1,
-        });
+      var block = L.polygon([topLeft, topRight, botRight, botLeft], {
+        color: blockColor,
+        fillColor: blockColor,
+        fillOpacity: 0.5,
+        weight: 1,
+      });
 
-        block.bindPopup(popupContents, {maxWidth: 560}); // bind popup
-        markers.addLayer(block);
+      block.bindPopup(popupContents, { maxWidth: 560 }); // bind popup
+      markers.addLayer(block);
 
-        // get on-click coordinates inside blocks 
-        block.on("click", function (clickEvent) {
+      // get on-click coordinates inside blocks 
+      block.on("click", function (clickEvent) {
         clickCoords = clickEvent.latlng;
         // console.log("lat: ", clickCoords.lat);
         // console.log("long: ", clickCoords.lng);
-    });
-        // blockList.push(block); // push to stack
-        // block.addTo(mymap);  // draw the block
+      });
+      // blockList.push(block); // push to stack
+      // block.addTo(mymap);  // draw the block
     }
 
-    
+
     /** 
      * draws each bluelight marker 
      * @param {coords} coordinate list containing lat, lon
      */
-     function drawBlueLightMarker(blueLightCoords){
-        blueLightList = blueLightCoords.split(',');
-        for (i=0; i<blueLightList.length-1; i++){
-            lat = blueLightList[i];
-            lon = blueLightList[i+1];
-            blueLightMarkers.addLayer(L.marker([lat, lon]));
-        }
-        // console.log("hi");
-        // L.marker([lat, lon]).addTo(mymap);
+    function drawBlueLightMarker(blueLightCoords) {
+      blueLightList = blueLightCoords.split(',');
+      for (i = 0; i < blueLightList.length - 1; i++) {
+        lat = blueLightList[i];
+        lon = blueLightList[i + 1];
+        blueLightMarkers.addLayer(L.marker([lat, lon]));
+      }
+      // console.log("hi");
+      // L.marker([lat, lon]).addTo(mymap);
     }
-
-
 
 
     /**
      * generates the table string to go inside each popup given the {blockData} for a single block
      * each ELEMENT of {blockData} should be of form [crimeID, crimeType, [year, month, day, hour, minute]]
      */
-    function getTableString(blockData){
-        newTableString = tableHeader;
-        // go through entire list of crimes in this BLOCK and turn it into a table
-        for (i=0; i<blockData.length; i++){
-            // get each attribute
-            let crimeID   = blockData[i][0];
-            let crimeType = blockData[i][1];
-            let crimeDate = blockData[i][2].slice(0,3);    // [year, month, day]
-            let crimeTime = blockData[i][2].slice(3);      // [hour, minute]
+    function getTableString(blockData) {
+      newTableString = tableHeader;
+      // go through entire list of crimes in this BLOCK and turn it into a table
+      for (i = 0; i < blockData.length; i++) {
+        // get each attribute
+        let crimeID = blockData[i][0];
+        let crimeType = blockData[i][1];
+        let crimeDate = blockData[i][2].slice(0, 3);    // [year, month, day]
+        let crimeTime = blockData[i][2].slice(3);      // [hour, minute]
 
 
-            // fix time formatting
-            for (j=0; j<crimeTime.length; j++){
-                if (crimeTime[j] == '0') crimeTime[j] = '00';
-                else if (crimeTime[j] == '1') crimeTime[j] = '01';
-                else if (crimeTime[j] == '2') crimeTime[j] = '02';
-                else if (crimeTime[j] == '3') crimeTime[j] = '03';
-                else if (crimeTime[j] == '4') crimeTime[j] = '04';
-                else if (crimeTime[j] == '5') crimeTime[j] = '05';
-                else if (crimeTime[j] == '6') crimeTime[j] = '06';
-                else if (crimeTime[j] == '7') crimeTime[j] = '07';
-                else if (crimeTime[j] == '8') crimeTime[j] = '08';
-                else if (crimeTime[j] == '9') crimeTime[j] = '09';
-            }
-            // create html
-            let crimeIDHTML   = '<td>' + crimeID + '</td>';
-            let crimeTypeHTML = '<td>' + crimeType + '</td>';
-            let crimeDateHTML = '<td>' + crimeDate[0] + '-' + crimeDate[1] + '-' + crimeDate[2] + '</td>';
-            let crimeTimeHTML = '<td>' + crimeTime[0] + ':' + crimeTime[1] + '</td>';
-
-            // combine html and append to new table string
-            let newEntry = '<tr>' + crimeIDHTML + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
-            newTableString = newTableString + newEntry;
+        // fix time formatting
+        for (j = 0; j < crimeTime.length; j++) {
+          if (crimeTime[j] == '0') crimeTime[j] = '00';
+          else if (crimeTime[j] == '1') crimeTime[j] = '01';
+          else if (crimeTime[j] == '2') crimeTime[j] = '02';
+          else if (crimeTime[j] == '3') crimeTime[j] = '03';
+          else if (crimeTime[j] == '4') crimeTime[j] = '04';
+          else if (crimeTime[j] == '5') crimeTime[j] = '05';
+          else if (crimeTime[j] == '6') crimeTime[j] = '06';
+          else if (crimeTime[j] == '7') crimeTime[j] = '07';
+          else if (crimeTime[j] == '8') crimeTime[j] = '08';
+          else if (crimeTime[j] == '9') crimeTime[j] = '09';
         }
+        // create html
+        let crimeIDHTML = '<td>' + crimeID + '</td>';
+        let crimeTypeHTML = '<td>' + crimeType + '</td>';
+        let crimeDateHTML = '<td>' + crimeDate[0] + '-' + crimeDate[1] + '-' + crimeDate[2] + '</td>';
+        let crimeTimeHTML = '<td>' + crimeTime[0] + ':' + crimeTime[1] + '</td>';
 
-        // add closing HTML to table string and return it
-        newTableString = newTableString + tableClosingHTML;
-        // console.log
-        return newTableString
+        // combine html and append to new table string
+        let newEntry = '<tr>' + crimeIDHTML + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
+        newTableString = newTableString + newEntry;
+      }
+
+      // add closing HTML to table string and return it
+      newTableString = newTableString + tableClosingHTML;
+      // console.log
+      return newTableString
     }
 
-      //=============================== POP UP CODE ===================================
-      // ----------------draw table inside map marker----------------//
+    //=============================== POP UP CODE ===================================
+    // ----------------draw table inside map marker----------------//
 
 
-    function addTableItem(crimeType, crimeTime, tableString){
-      let timeSplit     = crimeTime.split("T");       // reformat timestamp
+    function addTableItem(crimeType, crimeTime, tableString) {
+      let timeSplit = crimeTime.split("T");       // reformat timestamp
       let crimeTypeHTML = '<td>' + crimeType.toUpperCase() + '</td>';
       let crimeDateHTML = '<td>' + timeSplit[0] + '</td>';
       let crimeTimeHTML = '<td>' + timeSplit[1] + '</td>';
 
-      let newEntry      = '<tr>' + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
-      tableString       = tableString + newEntry;
+      let newEntry = '<tr>' + crimeTypeHTML + crimeDateHTML + crimeTimeHTML + '</tr>';
+      tableString = tableString + newEntry;
 
       return tableString;
     }
-    
+
     var tableString = `<tr>
               <td>THEFT</td>
               <td>2020-04-06 </td>
@@ -635,7 +640,7 @@
     var popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div> <br> 
         <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
 
-    
+
     function addCrimePopup() {
       // window.alert("YEET");
       // ----------------add crime popup modal JS----------------
@@ -652,15 +657,15 @@
       modal.style.display = "block";
 
       // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
-         modal.style.display = "none";
+      span.onclick = function () {
+        modal.style.display = "none";
       }
 
       // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-      if (event.target == modal) {
+      window.onclick = function (event) {
+        if (event.target == modal) {
           modal.style.display = "none";
-      }
+        }
       }
     }
 
@@ -670,14 +675,14 @@
       // When the user clicks the button, open the modal 
       modal.style.display = "block";
       // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
+      span.onclick = function () {
         modal.style.display = "none";
       }
       // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-      if (event.target == modal) {
+      window.onclick = function (event) {
+        if (event.target == modal) {
           modal.style.display = "none";
-      }
+        }
       }
     }
 
@@ -689,220 +694,241 @@
       // When the user clicks the button, open the modal 
       modal.style.display = "block";
       // When the user clicks on <span> (x), close the modal
-      span.onclick = function() {
+      span.onclick = function () {
         modal.style.display = "none";
       }
       // When the user clicks anywhere outside of the modal, close it
-      window.onclick = function(event) {
-      if (event.target == modal) {
+      window.onclick = function (event) {
+        if (event.target == modal) {
           modal.style.display = "none";
-      }
+        }
       }
     }
 
-    // dropdown select list 
-      var x, i, j, selElmnt, a, b, c;
-      /* Look for any elements with the class "custom-select": */
-      x = document.getElementsByClassName("custom-select");
-      for (i = 0; i < x.length; i++) {
-          selElmnt = x[i].getElementsByTagName("select")[0];
-          /* For each element, create a new DIV that will act as the selected item: */
-          a = document.createElement("DIV");
-          a.setAttribute("class", "select-selected");
-          a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-          x[i].appendChild(a);
-          /* For each element, create a new DIV that will contain the option list: */
-          b = document.createElement("DIV");
-          b.setAttribute("class", "select-items select-hide");
-          for (j = 1; j < selElmnt.length; j++) {
-              /* For each option in the original select element,
-              create a new DIV that will act as an option item: */
-              c = document.createElement("DIV");
-              c.innerHTML = selElmnt.options[j].innerHTML;
-              c.addEventListener("click", function(e) {
-                  /* When an item is clicked, update the original select box,
-                  and the selected item: */
-                  var y, i, k, s, h;
-                  s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-                  h = this.parentNode.previousSibling;
-                  for (i = 0; i < s.length; i++) {
-                  if (s.options[i].innerHTML == this.innerHTML) {
-                      s.selectedIndex = i;
-                      h.innerHTML = this.innerHTML;
-                      y = this.parentNode.getElementsByClassName("same-as-selected");
-                      for (k = 0; k < y.length; k++) {
-                      y[k].removeAttribute("class");
-                      }
-                      this.setAttribute("class", "same-as-selected");
-                      break;
-                  }
-                  }
-              h.click();
-          });
-          b.appendChild(c);
+    function updatePopupTable(crimeType, crimeTime) {
+      newTableString = addTableItem(crimeType, crimeTime, tableString);
+      tableString = newTableString;
+      popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader + tableString + `</table></div>
+        <br> <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
+    }
+
+
+    // ======================== DROPDOWN SELECT JS ========================
+    var x, i, j, selElmnt, a, b, c;
+    /* Look for any elements with the class "custom-select": */
+    x = document.getElementsByClassName("custom-select");
+    for (i = 0; i < x.length; i++) {
+      selElmnt = x[i].getElementsByTagName("select")[0];
+      /* For each element, create a new DIV that will act as the selected item: */
+      a = document.createElement("DIV");
+      a.setAttribute("class", "select-selected");
+      a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+      x[i].appendChild(a);
+      /* For each element, create a new DIV that will contain the option list: */
+      b = document.createElement("DIV");
+      b.setAttribute("class", "select-items select-hide");
+      for (j = 1; j < selElmnt.length; j++) {
+        /* For each option in the original select element,
+        create a new DIV that will act as an option item: */
+        c = document.createElement("DIV");
+        c.innerHTML = selElmnt.options[j].innerHTML;
+        c.addEventListener("click", function (e) {
+          /* When an item is clicked, update the original select box,
+          and the selected item: */
+          var y, i, k, s, h;
+          s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+          h = this.parentNode.previousSibling;
+          for (i = 0; i < s.length; i++) {
+            if (s.options[i].innerHTML == this.innerHTML) {
+              s.selectedIndex = i;
+              h.innerHTML = this.innerHTML;
+              y = this.parentNode.getElementsByClassName("same-as-selected");
+              for (k = 0; k < y.length; k++) {
+                y[k].removeAttribute("class");
+              }
+              this.setAttribute("class", "same-as-selected");
+              break;
+            }
+          }
+          h.click();
+        });
+        b.appendChild(c);
       }
       x[i].appendChild(b);
-      a.addEventListener("click", function(e) {
-          /* When the select box is clicked, close any other select boxes,
-          and open/close the current select box: */
-          e.stopPropagation();
-          closeAllSelect(this);
-          this.nextSibling.classList.toggle("select-hide");
-          this.classList.toggle("select-arrow-active");
+      a.addEventListener("click", function (e) {
+        /* When the select box is clicked, close any other select boxes,
+        and open/close the current select box: */
+        e.stopPropagation();
+        closeAllSelect(this);
+        this.nextSibling.classList.toggle("select-hide");
+        this.classList.toggle("select-arrow-active");
       });
-      }
+    }
 
-      function closeAllSelect(elmnt) {
+    function closeAllSelect(elmnt) {
       /* A function that will close all select boxes in the document,
       except the current select box: */
       var x, y, i, arrNo = [];
       x = document.getElementsByClassName("select-items");
       y = document.getElementsByClassName("select-selected");
       for (i = 0; i < y.length; i++) {
-          if (elmnt == y[i]) {
+        if (elmnt == y[i]) {
           arrNo.push(i)
-          } else {
+        } else {
           y[i].classList.remove("select-arrow-active");
-          }
+        }
       }
       for (i = 0; i < x.length; i++) {
-          if (arrNo.indexOf(i)) {
+        if (arrNo.indexOf(i)) {
           x[i].classList.add("select-hide");
-          }
-      }
-      }
-
-      /* If the user clicks anywhere outside the select box,
-      then close all select boxes: */
-      document.addEventListener("click", closeAllSelect);
-
-
-      
-
-      //  ============================== CRIME MODIFICATION FUNCTIONS ==============================
-
-      /**
-       * Function to add a new crime to the database
-       */
-      function addCrime(){
-          var crimeType = document.getElementById("addForm-crimeType").value;       // string holding crime type -- can be sent to DB
-          var crimeDisp = document.getElementById("selected-disposition").value.toUpperCase();   // holds disposition type -- can be sent to DB
-          var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
-          var modal = document.getElementById("addCrimeModal");
-
-          let crimeDateTime = crimeTime.replace('T', ' ') + ':00'; // YYYY-nn-dd hh:mm:ss    
-          let crimeCoords = [clickCoords.lat, clickCoords.lng]; // coordinates to send to DB
-        
-          console.log("crime coords: ", crimeCoords);
-
-
-          // send to DB
-          $.ajax({
-            type: "POST",
-            url: "{{ url_for('insert') }}",
-            contentType: "application/json",
-            data: JSON.stringify({crimeType, crimeDateTime, disposition: crimeDisp, lat: crimeCoords[0], lon: crimeCoords[1]}),
-            dataType: "json",
-            // success: function() {
-            //     console.log("Succeeded!");
-            // },
-            error: function(err) {
-                console.log(err);
-            }
-          });
-
-          // close the modal
-          modal.style.display = "none";
-      }
-
-
-      /**
-       * Function to edit a crime
-       */
-      function editCrime(){
-        var modal = document.getElementById("editCrimeModal");   
-
-        var oldID   = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
-
-        var columns = document.getElementsByName("editRadio");
-        var columnToBeUpdated = '';
-        var newColumnValue = '';
-
-        for (i=0; i<columns.length; i++){
-            if(columns[i].checked){
-                columnToBeUpdated = columns[i].id;
-                // if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
-                if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
-                else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
-                // newColumnValue = columns[i].value;
-            }
         }
+      }
+    }
 
-        if (columnToBeUpdated == '' && newColumnValue == ''){
-            window.alert("You didn't enter any changes!");
-            return
+    /* If the user clicks anywhere outside the select box,
+    then close all select boxes: */
+    document.addEventListener("click", closeAllSelect);
+
+
+
+
+    //  ============================== CRIME MODIFICATION/DATABASE QUERYING FUNCTIONS ==============================
+
+    /**
+     * Function to add a new crime to the database
+     */
+    function addCrime() {
+      var crimeType = document.getElementById("addForm-crimeType").value;       // string holding crime type -- can be sent to DB
+      var crimeDisp = document.getElementById("selected-disposition").value.toUpperCase();   // holds disposition type -- can be sent to DB
+      var crimeTime = document.getElementById("addForm-crimeTime").value;       // holds crime time in the form 2020-04-10T18:07 (raw data)
+      var modal = document.getElementById("addCrimeModal");
+
+      let crimeDateTime = crimeTime.replace('T', ' ') + ':00'; // YYYY-nn-dd hh:mm:ss    
+      let crimeCoords = [clickCoords.lat, clickCoords.lng]; // coordinates to send to DB
+
+      console.log("crime coords: ", crimeCoords);
+
+
+      // send to DB
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('insert') }}",
+        contentType: "application/json",
+        data: JSON.stringify({ crimeType, crimeDateTime, disposition: crimeDisp, lat: crimeCoords[0], lon: crimeCoords[1] }),
+        dataType: "json",
+        // success: function() {
+        //     console.log("Succeeded!");
+        // },
+        error: function (err) {
+          console.log(err);
         }
+      });
 
-        console.log("update Column: ", columnToBeUpdated);
-        console.log("incidentID: ", oldID);
-        console.log("new val:", newColumnValue);
+      // close the modal
+      modal.style.display = "none";
+    }
 
-        // send to DB
-        $.ajax({
-            type: "POST",
-            url: "{{ url_for('edit') }}",
-            contentType: "application/json",
-            data: JSON.stringify({updateColumn: columnToBeUpdated, incidentID: oldID, newVal: newColumnValue}),
-            dataType: "json",
-            // success: function() {
-            //     console.log("Succeeded!");
-            // },
-            error: function(err) {
-                console.log(err);
-            }
-          });
-        
-        modal.style.display = "none";  // close the modal
 
+    /**
+     * Function to edit a crime
+     */
+    function editCrime() {
+      var modal = document.getElementById("editCrimeModal");
+
+      var oldID = document.getElementById("oldCrimeID").value;      // incident ID of crime to be updated 
+
+      var columns = document.getElementsByName("editRadio");
+      var columnToBeUpdated = '';
+      var newColumnValue = '';
+
+      for (i = 0; i < columns.length; i++) {
+        if (columns[i].checked) {
+          columnToBeUpdated = columns[i].id;
+          // if (columnToBeUpdated == 'incidentID') newColumnValue = document.getElementById("newCrimeID").value;
+          if (columnToBeUpdated == 'occuredAt') newColumnValue = document.getElementById("newCrimeDate").value;
+          else if (columnToBeUpdated == 'disposition') newColumnValue = document.getElementById("newDispType").value.toUpperCase();
+          // newColumnValue = columns[i].value;
+        }
       }
 
-      /**
-       * Function to delete a crime
-       */
-      function deleteCrime(){
-        var modal = document.getElementById("deleteCrimeModal");
-
-        var deleteID = document.getElementById("deleteID").value;
-        var typeToDelete = 'incidentID'
-
-        console.log(deleteID);
-        console.log(typeToDelete);
-
-        // send to DB
-        $.ajax({
-            type: "POST",
-            url: "{{ url_for('delete') }}",
-            contentType: "application/json",
-            data: JSON.stringify({deleteColumn: typeToDelete , deleteValue: deleteID}),
-            dataType: "json",
-            error: function(err) {
-                console.log(err);
-            }
-          });
-
-
-        modal.style.display = "none";  // close the modal
+      if (columnToBeUpdated == '' && newColumnValue == '') {
+        window.alert("You didn't enter any changes!");
+        return
       }
 
+      console.log("update Column: ", columnToBeUpdated);
+      console.log("incidentID: ", oldID);
+      console.log("new val:", newColumnValue);
 
-      function updatePopupTable(crimeType, crimeTime){
-          newTableString = addTableItem(crimeType, crimeTime, tableString);
-          tableString = newTableString;
-          popUp = '<div style="height: 150px; width: 300px; overflow: auto"><table>' + tableHeader +  tableString + `</table></div>
-          <br> <button class="button" id="addCrimeBtn" onclick="addCrimePopup()">ADD CRIME</button>`;
-          // console.log(popUp);
-      }
+      // send to DB
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('edit') }}",
+        contentType: "application/json",
+        data: JSON.stringify({ updateColumn: columnToBeUpdated, incidentID: oldID, newVal: newColumnValue }),
+        dataType: "json",
+        // success: function() {
+        //     console.log("Succeeded!");
+        // },
+        error: function (err) {
+          console.log(err);
+        }
+      });
 
+      modal.style.display = "none";  // close the modal
+
+    }
+
+    /**
+     * Function to delete a crime
+     */
+    function deleteCrime() {
+      var modal = document.getElementById("deleteCrimeModal");
+
+      var deleteID = document.getElementById("deleteID").value;
+      var typeToDelete = 'incidentID'
+
+      console.log(deleteID);
+      console.log(typeToDelete);
+
+      // send to DB
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('delete') }}",
+        contentType: "application/json",
+        data: JSON.stringify({ deleteColumn: typeToDelete, deleteValue: deleteID }),
+        dataType: "json",
+        error: function (err) {
+          console.log(err);
+        }
+      });
+
+
+      modal.style.display = "none";  // close the modal
+    }
+
+
+
+    // function to send complex query 2 (top crimes) to Flask
+    function sendQuery2() {
+      var numCrimes = document.getElementById("numTopCrimes").value;
+      var afterDate = document.getElementById("topCrimeTime").value;
+      var afterDate = afterDate.split('T')[0];
+
+      // query the database
+      $.ajax({
+        type: "POST",
+        url: "{{ url_for('query2') }}",
+        contentType: "application/json",
+        data: JSON.stringify({ numOfCrimes: numCrimes, crimeTime: afterDate }),
+        dataType: "json",
+        error: function (err) {
+          console.log(err);
+        }
+      });
+
+
+    }
 
 
       //   ============================== ASYNCHRONOUS ==============================
@@ -960,21 +986,23 @@
 
       // ============================== PAGE FUNCTIONALITY ==============================
 
-      document.getElementById("crimeTypeBtn").click();
-      document.getElementById("crimeFreqBtn").click();
+    //   document.getElementById("crimeTypeBtn").click();
+    //   document.getElementById("crimeFreqBtn").click();
 
-      // Accordion
-      function displayDropdown(listTitle) {
-        console.log(listTitle);
-        var x = document.getElementById(listTitle);
-        if (x.className.indexOf("w3-show") == -1) {
-          x.className += " w3-show";
-        } else {
-          x.className = x.className.replace(" w3-show", "");
-        }
-      }
-    </script>
-  </body>
+    //   // Accordion
+    //   function displayDropdown(listTitle) {
+    //     console.log(listTitle);
+    //     var x = document.getElementById(listTitle);
+    //     if (x.className.indexOf("w3-show") == -1) {
+    //       x.className += " w3-show";
+    //     } else {
+    //       x.className = x.className.replace(" w3-show", "");
+    //     }
+    //   }
+
+  </script>
+</body>
+
 </html>
 
 <!-- END JAVASCRIPT -->
@@ -985,15 +1013,17 @@
 <!-- ============================== CSS STYLING ===================================== -->
 
 <style type="text/css">
-
-/* -------- Content ordering --------- */
+  /* -------- Content ordering --------- */
 
   /* Set the size of the div element that contains the map */
   #mapid {
     /* height: 500px; */
-    z-index:1; 
+    z-index: 1;
   }
-  #modal{ z-index:2; }
+
+  #modal {
+    z-index: 2;
+  }
 
   #log {
     height: 500px;
@@ -1018,7 +1048,7 @@
 
   /* -------------checkbox styling----------------- */
 
-  
+
   .checkbox-label {
     display: inline-block;
     position: relative;
@@ -1055,7 +1085,7 @@
     border: 2px solid #ff8052;
   }
 
-  .checkbox-label input:checked ~ .checkbox-custom {
+  .checkbox-label input:checked~.checkbox-custom {
     background-color: #ff8052;
     border-radius: 5px;
     -webkit-transform: rotate(0deg) scale(1);
@@ -1086,7 +1116,7 @@
     -o-transition: all 0.3s ease-out;
   }
 
-  .checkbox-label input:checked ~ .checkbox-custom::after {
+  .checkbox-label input:checked~.checkbox-custom::after {
     -webkit-transform: rotate(45deg) scale(1);
     -ms-transform: rotate(45deg) scale(1);
     transform: rotate(45deg) scale(1);
@@ -1116,7 +1146,7 @@
     transform: scale(0);
   }
 
-  .checkbox-label input:checked ~ .checkbox-custom::before {
+  .checkbox-label input:checked~.checkbox-custom::before {
     left: -3px;
     top: -3px;
     width: 24px;
@@ -1141,15 +1171,17 @@
     border: 2px solid #ff8052;
   }
 
-  .checkbox-label input:checked ~ .checkbox-custom.circular {
+  .checkbox-label input:checked~.checkbox-custom.circular {
     background-color: #ff8052;
     border-radius: 50%;
     border: 2px solid #ff8052;
   }
-  .checkbox-label input:checked ~ .checkbox-custom.circular::after {
+
+  .checkbox-label input:checked~.checkbox-custom.circular::after {
     border: solid #ffffff;
     border-width: 0 2px 2px 0;
   }
+
   .checkbox-label .checkbox-custom.circular::after {
     border-radius: 50%;
   }
@@ -1159,7 +1191,7 @@
     border: 2px solid #ffffff;
   }
 
-  .checkbox-label input:checked ~ .checkbox-custom.circular::before {
+  .checkbox-label input:checked~.checkbox-custom.circular::before {
     border-radius: 50%;
   }
 
@@ -1170,191 +1202,219 @@
     width: 100%;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
     font-family: "Montserrat", sans-serif;
   }
 
-  tr:hover {background-color:#f5f5f5;}
+  tr:hover {
+    background-color: #f5f5f5;
+  }
 
 
   /* --------------button stuff -------------*/
   .button {
-      background-color: #ff8052;
-      border: none;
-      color: white;
-      padding: 6px 12px;
-      text-align: center;
-      text-decoration: none;
-      margin: 15px;
-      display: inline-block;
-      font-size: 14px;
-      border-radius: 8px;
-      transition-duration: 0.4s;
+    background-color: #ff8052;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+    margin: 15px;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
   }
 
   .button:hover {
-      background-color: white;
-      color: #ff8052;
-      /* outline: 2px solid #ff8052; */
-      border: 2px solid #ff8052;
-      border-radius: 8px;
+    background-color: white;
+    color: #ff8052;
+    /* outline: 2px solid #ff8052; */
+    border: 2px solid #ff8052;
+    border-radius: 8px;
   }
 
   .submit-button {
-      background-color: #7cbb18;
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      text-align: left;
-      text-decoration: none;
-      margin: auto;
-      margin-bottom: 15px;
-      margin-top: 5px;
-      display: inline-block;
-      font-size: 14px;
-      border-radius: 8px;
-      transition-duration: 0.4s;
+    background-color: #7cbb18;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: left;
+    text-decoration: none;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
   }
 
   .submit-button:hover {
-      background-color: white;
-      color: #7cbb18;
-      /* outline: 2px solid #ff8052; */
-      border: 2px solid #7cbb18;
-      border-radius: 8px;
+    background-color: white;
+    color: #7cbb18;
+    /* outline: 2px solid #ff8052; */
+    border: 2px solid #7cbb18;
+    border-radius: 8px;
   }
 
   .delete-button {
-      background-color: #ee2c46;
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      text-align: left;
-      text-decoration: none;
-      margin: auto;
-      margin-bottom: 15px;
-      margin-top: 5px;
-      display: inline-block;
-      font-size: 14px;
-      border-radius: 8px;
-      transition-duration: 0.4s;
+    background-color: #ee2c46;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: left;
+    text-decoration: none;
+    margin: auto;
+    margin-bottom: 15px;
+    margin-top: 5px;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 8px;
+    transition-duration: 0.4s;
   }
 
   .delete-button:hover {
-      background-color: white;
-      color: #ee2c46;
-      /* outline: 2px solid #ff8052; */
-      border: 2px solid #ee2c46;
-      border-radius: 8px;
+    background-color: white;
+    color: #ee2c46;
+    /* outline: 2px solid #ff8052; */
+    border: 2px solid #ee2c46;
+    border-radius: 8px;
   }
 
   /* ----------------popup modal stuff------------------  */
   /* The Modal (background) */
-    body {
-        font-family: "Montserrat", sans-serif;
+  body {
+    font-family: "Montserrat", sans-serif;
+  }
+
+  /* The Modal (background) */
+  .modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    padding-top: 100px;
+    /* Location of the box */
+    padding-left: 20%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: 0 auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 40%;
+    border-radius: 8px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+
+  /* Add Animation */
+  @-webkit-keyframes animatetop {
+    from {
+      top: -300px;
+      opacity: 0
     }
 
-    /* The Modal (background) */
-    .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
-        padding-left: 20%;
-        left: 0;
-        top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    to {
+      top: 0;
+      opacity: 1
+    }
+  }
+
+  @keyframes animatetop {
+    from {
+      top: -300px;
+      opacity: 0
     }
 
-    /* Modal Content */
-    .modal-content {
+    to {
+      top: 0;
+      opacity: 1
+    }
+  }
+
+  /* The Close Button */
+  .close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .modal-header {
+    padding: 2px 16px;
+    background-color: #ff8052;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .modal-body {
+    padding: 2px 16px;
+  }
+
+  .modal-footer {
+    padding: 2px 16px;
+    background-color: #ff8052;
+    color: white;
+  }
+
+
+  /* -------------- custom dropdown select box -----------------  */
+
+  /* The container must be positioned relative: */
+  .custom-select {
+    position: relative;
+    font-family: "Montserrat", sans-serif;
+
+  }
+
+  .custom-select select {
+    display: none;
+    /*hide original SELECT element: */
+  }
+
+  .select-selected {
+    background-color: #ff8052;
+  }
+
+  /* Style the arrow inside the select element: */
+  /* .select-selected:after {
         position: relative;
-        background-color: #fefefe;
-        margin: 0 auto;
-        padding: 0;
-        border: 1px solid #888;
-        width: 40%;
-        border-radius: 8px;
-        border-top-right-radius: 10px;
-        border-top-left-radius:  10px;
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-        -webkit-animation-name: animatetop;
-        -webkit-animation-duration: 0.4s;
-        animation-name: animatetop;
-        animation-duration: 0.4s
-    }
-
-    /* Add Animation */
-    @-webkit-keyframes animatetop {
-        from {top:-300px; opacity:0} 
-        to {top:0; opacity:1}
-    }
-
-    @keyframes animatetop {
-        from {top:-300px; opacity:0}
-        to {top:0; opacity:1}
-    }
-
-    /* The Close Button */
-    .close {
-        color: white;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: #000;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .modal-header {
-        padding: 2px 16px;
-        background-color: #ff8052;
-        color: white;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-    }
-
-    .modal-body {padding: 2px 16px;}
-
-    .modal-footer {
-        padding: 2px 16px;
-        background-color: #ff8052;
-        color: white;
-    }
-
-
-    /* -------------- custom dropdown select box -----------------  */
-
-    /* The container must be positioned relative: */
-    .custom-select {
-        position: relative;
-        font-family: "Montserrat", sans-serif;
-    
-        
-    }
-
-    .custom-select select {
-     display: none; /*hide original SELECT element: */
-    }
-
-    .select-selected {
-      background-color: #ff8052;
-    }
-
-    /* Style the arrow inside the select element: */
-    .select-selected:after {
-        position: absolute;
         content: "";
         top: 40px;
         right: 10px;
@@ -1362,251 +1422,259 @@
         height: 0;
         border: 5px solid transparent;
         border-color: #fff transparent transparent transparent;
-    }
+    } */
 
-    /* Point the arrow upwards when the select box is open (active): */
-    .select-selected.select-arrow-active:after {
+  /* Point the arrow upwards when the select box is open (active): */
+  /* .select-selected.select-arrow-active:after {
         border-color: transparent transparent #fff transparent;
         top: 7px;
-    }
+    } */
 
-    /* style the items (options), including the selected item: */
-    .select-items div,.select-selected {
-        color: #ffffff;
-        margin-top: 3px;
-        margin-bottom: 10px;
-        padding: 8px 16px;
-        border: 1px solid transparent;
-        border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-        border-radius: 8px;
-        cursor: pointer;
-    }
+  /* style the items (options), including the selected item: */
+  .select-items div,
+  .select-selected {
+    color: #ffffff;
+    margin-top: 3px;
+    margin-bottom: 10px;
+    padding: 8px 16px;
+    border: 1px solid transparent;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 
-    /* Style items (options): */
-    .select-items {
-        position: absolute;
-        background-color: #ff8052;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 99;
-    }
+  /* Style items (options): */
+  .select-items {
+    position: absolute;
+    background-color: #ff8052;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border-radius: 8px;
+    z-index: 99;
+    overflow-y: auto;
+  }
 
-    /* Hide the items when the select box is closed: */
-    .select-hide {
-     display: none;
-    }
+  /* Hide the items when the select box is closed: */
+  .select-hide {
+    display: none;
+  }
 
-    .select-items div:hover, .same-as-selected {
-     background-color: rgba(0, 0, 0, 0.1);
-    }
-
-
-    /* ----------------- custom datetime --------------------  */
-
-    /* The container must be positioned relative: */
-    .custom-datetime label {
-        display: none; /*hide original SELECT element: */
-        display: block;
-        font-family: "Montserrat", sans-serif;
-    }
-    
-    .custom-datetime input {
-        /* margin: .4rem 0; */
-        font-family: "Montserrat", sans-serif;
-        background-color: #ff8052;
-        color: #fff;
-        width: 100%;
-        height: 40px;
-        border-radius: 8px;
-        margin-bottom: 10px;
-    }
-
-    /* ----------------- custom entry form ------------------- */
-
-    .custom-form {
-        position: relative;
-        font-family: "Montserrat", sans-serif;
-        margin-bottom: 15px;
-    }
-    
-    .custom-form input[type=text]{
-        width: 100%;
-        padding: 3px 5px;
-        margin: 4px 0;
-        border: 1px solid #ff8052;
-        border-radius: 4px;
-    }
+  .select-items div:hover,
+  .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 
 
+  /* ----------------- custom datetime --------------------  */
+
+  /* The container must be positioned relative: */
+  .custom-datetime label {
+    display: none;
+    /*hide original SELECT element: */
+    display: block;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .custom-datetime input {
+    /* margin: .4rem 0; */
+    font-family: "Montserrat", sans-serif;
+    background-color: #ff8052;
+    color: #fff;
+    width: 100%;
+    height: 40px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  /* ----------------- custom entry form ------------------- */
+
+  .custom-form {
+    position: relative;
+    font-family: "Montserrat", sans-serif;
+    margin-bottom: 15px;
+  }
+
+  .custom-form input[type=text] {
+    width: 100%;
+    padding: 3px 5px;
+    margin: 4px 0;
+    border: 1px solid #ff8052;
+    border-radius: 4px;
+  }
 
 
-    /* ----------------- custom scrollbar ------------------- */
 
-    /* width */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1; 
-    }
-    
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #ff8052; 
-      border-radius: 8px;
-    }
+  /* ----------------- custom scrollbar ------------------- */
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffc252; 
-    }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
 
-    /* ----------------- custom search bar ------------------- */
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
 
-    .topnav {
-      overflow: hidden;
-      background-color: #ffffff;
-      width: 100%;
-      height: 100px;
-      padding: 3px;
-    }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ff8052;
+    border-radius: 8px;
+  }
 
-    .topnav a {
-      float: left;
-      display: block;
-      color: black;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-size: 17px;
-    }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ffc252;
+  }
 
-    .topnav a:hover {
-      background-color: #ddd;
-      color: black;
-    }
+  /* ----------------- custom search bar ------------------- */
 
-    .topnav a.active {
-      background-color: #2196F3;
-      color: white;
-    }
+  .topnav {
+    overflow: hidden;
+    background-color: #ffffff;
+    width: 100%;
+    height: 100px;
+    padding: 3px;
+  }
 
+  .topnav a {
+    float: left;
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+  .topnav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  .topnav a.active {
+    background-color: #2196F3;
+    color: white;
+  }
+
+  .topnav .search-container {
+    float: right;
+  }
+
+  .topnav input[type=text] {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    background: #ddd;
+  }
+
+  .topnav .search-container button {
+    float: right;
+    padding: 6px 10px;
+    margin-top: 8px;
+    margin-right: 16px;
+    background: #ff8052;
+    font-size: 17px;
+    border: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    cursor: pointer;
+  }
+
+  .topnav .search-container button:hover {
+    background: #ccc;
+  }
+
+  @media screen and (max-width: 600px) {
     .topnav .search-container {
-      float: right;
+      float: none;
+    }
+
+    .topnav a,
+    .topnav input[type=text],
+    .topnav .search-container button {
+      float: none;
+      display: block;
+      text-align: left;
+      width: 100%;
+      margin: 0;
+      padding: 14px;
     }
 
     .topnav input[type=text] {
-      padding: 6px;
-      margin-top: 8px;
-      font-size: 17px;
-      border: none;
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
-      background: #ddd;
+      border: 1px solid #ccc;
     }
+  }
 
-    .topnav .search-container button {
-      float: right;
-      padding: 6px 10px;
-      margin-top: 8px;
-      margin-right: 16px;
-      background: #ff8052;
-      font-size: 17px;
-      border: none;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-      cursor: pointer;
-    }
+  /* ----------------- custom toggle switch button ------------------- */
 
-    .topnav .search-container button:hover {
-      background: #ccc;
-    }
+  /* The switch - the box around the slider */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 25px;
+    margin: 15px;
+  }
 
-    @media screen and (max-width: 600px) {
-      .topnav .search-container {
-        float: none;
-      }
-      .topnav a, .topnav input[type=text], .topnav .search-container button {
-        float: none;
-        display: block;
-        text-align: left;
-        width: 100%;
-        margin: 0;
-        padding: 14px;
-      }
-      .topnav input[type=text] {
-        border: 1px solid #ccc;  
-      }
-    }
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 
-    /* ----------------- custom toggle switch button ------------------- */
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
 
-    /* The switch - the box around the slider */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 45px;
-        height: 25px;
-        margin: 15px;
-    }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
 
-    /* Hide default HTML checkbox */
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
+  input:checked+.slider {
+    background-color: #ff8052;
+  }
 
-    /* The slider */
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
+  input:focus+.slider {
+    box-shadow: 0 0 1px #ff8052;
+  }
 
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 18px;
-        width: 18px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
+  input:checked+.slider:before {
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
+  }
 
-    input:checked + .slider {
-        background-color: #ff8052;
-    }
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px #ff8052;
-    }
-
-    input:checked + .slider:before {
-        -webkit-transform: translateX(20px);
-        -ms-transform: translateX(20px);
-        transform: translateX(20px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
-
+  .slider.round:before {
+    border-radius: 50%;
+  }
 </style>
 <!-- END CSS STYLING  -->

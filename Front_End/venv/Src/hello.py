@@ -34,14 +34,15 @@ DBPASS = ""
 DBUSER = "root"
 
 
-# -------------------- main page data ------------------------
+# =============================== FLASK: MAIN DATA ===============================
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     # only by sending this page first will the client be connected to the socketio instance
     crimeDBData  = sendDBData()
+    # complexQ2Data = complexQuery2('3',"""'2015-01-01'""")
     # blueLightData = sendBluelightData()
     return render_template('track1index.html', crimeDBData=crimeDBData) #, blueLightData=blueLightData)
-
 
 
 # TODO: Jonathan will add Xin's predictions to site
@@ -52,7 +53,7 @@ def predicted():
     # only by sending this page first will the client be connected to the socketio instance
     return render_template('predicted.html', blockToCoord=blockDict, predictedDBData=predictDict)
 
-# To rec'v data passed from Javascript
+# INSERT data into DB
 @app.route('/insert/', methods=['POST'])
 def insert():
     data = request.get_json()
@@ -74,23 +75,20 @@ def insert():
     # return jsonify(status="success", data=data)
     return None
 
-
+# EDIT data in DB
 @app.route('/edit/', methods=['POST'])
 def edit():
     data = request.get_json()
     print('FROM JAVASCRIPT: ', data)
-    # res = WebsiteToDB.updateData(data['crimeTypeID'], data['oldVal'], data['newVal'])
-
     res = WebsiteToDB.updateDataUsingIncidentID(data['updateColumn'], data['incidentID'], data['newVal'])
     
     # Emit updated data if insertion succesful
     if res:
         print('editsuccessful')
-        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
         return render_template('track1index.html', crimeDBData=sendDBData())
-    # return jsonify(status="success", data=data)
     return None
 
+# DELETE data from DB
 @app.route('/delete/', methods=['POST'])
 def delete():
     data = request.get_json()
@@ -101,11 +99,10 @@ def delete():
     # Emit updated data if insertion succesful
     if res:
         print('deletion successful')
-        # socketio.emit('newdata', {'newdata': sendDBData()}, namespace='/test')
         return render_template('track1index.html', crimeDBData=sendDBData())
-    # return jsonify(status="success", data=data)
     return None
 
+# SEARCH for data tuple in DB
 @app.route('/search/', methods=['POST'])
 def search():
     if request.method == 'POST':
@@ -115,9 +112,28 @@ def search():
         if res:
             print('search successful')
             return render_template('track1index.html', crimeDBData=sendDBData(), search_res=res)
-    # return jsonify(status="success", data=data)
+
     return None
 
+# COMPLEX QUERY 2
+@app.route('/query2/', methods=['POST'])
+def query2():
+    if request.method == 'POST':
+        print("Executing Complex Query 2")
+        data = request.get_json()
+        numCrimes = str(data['numOfCrimes'])
+        crimeAfterDate = str(data['crimeTime'])
+
+        # get results of query
+        query2CrimeList = complexQuery2(numCrimes, crimeAfterDate)
+        # print(query2CrimeList)
+        if query2CrimeList:
+            return render_template('track1index.html', crimeDBData=sendDBData(), query2CrimeList=query2CrimeList)
+    return None
+
+
+
+# connect live thread
 @socketio.on('connect', namespace='/test')
 def test_connect():
     # need visibility of the global thread object
@@ -129,9 +145,18 @@ def test_connect():
         print("Starting Thread")
         thread = socketio.start_background_task(randomNumberGenerator)
 
+# disconnect thread 
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    global thread, thread_stop_event
+    print('Client disconnected')
+    # test_connect()
+    # thread_stop_event.set()
+    # thread.join()
+    # print('All threads killed')
 
-# ---------------------- DATABASE FUNCTIONS -----------------------------
 
+# =============================== DATABASE FUNCTIONS ===============================
 
 def connectToDatabase():
     try:
@@ -212,9 +237,10 @@ def randomNumberGenerator():
         socketio.sleep(5)
 
 
+# =============================== DATABASE QUERYING ===============================
+
 # function to query DB for crime data and return as list of lists
 def sendDBData():
-
     sqlQeueryForMap = """
                     select c.incidentID, ct.type, c.occuredAt, bl.topLeft_lat, bl.topLeft_lon, bl.topRight_lat, bl.topRight_lon, bl.bottomLeft_lat, bl.bottomLeft_lon, bl.bottomRight_lat, bl.bottomRight_lon 
                     from 
@@ -231,16 +257,13 @@ def sendDBData():
 
                     """
     tupleOfTupleForMap = executeSingleQueryWhichReturns(sqlQeueryForMap)
-
     listOfListForMap = []
-
     for row in tupleOfTupleForMap:
         if None in row:
             continue
 
         crimeID = row[0]
         crimeType = row[1]
-        # print("row:", row)
         dateTimeList = [row[2].year, row[2].month,
                         row[2].day, row[2].hour, row[2].minute]
         coord1 = row[3]
@@ -256,6 +279,40 @@ def sendDBData():
         listOfListForMap.append(listRow)
 
     return listOfListForMap
+
+# function for complex query 2
+# numCrimes is the number of crimes to be shown
+# afterDate is the date after which these crimes should occur
+def complexQuery2(numCrimes, afterDate):
+    query = """select ct.type as crimeType, count(c.incidentID) as numberOfCrimes
+                        from Crime c
+                        INNER JOIN
+                        CrimeType ct ON
+                        c.crimeTypeID = ct.crimeTypeID
+                        INNER JOIN
+                        happensAt h ON
+                        c.incidentID = h.incidentID
+                        where h.blockID != 0 and c.occuredAt >= """ + afterDate + """
+                        group by ct.type
+                        order by count(h.incidentID) desc
+                        LIMIT """ + numCrimes
+
+    print(query)
+    
+    queryTuples = executeSingleQueryWhichReturns(query)
+    complexQueryList = []
+
+    for row in queryTuples:
+        crimeType = row[0]
+        numCrimes = row[1]
+        listRow = [crimeType, numCrimes]
+
+        complexQueryList.append(listRow)
+    
+    print(complexQueryList)
+    return complexQueryList
+
+
 
 # function to query safecall DB and get blue light coordinates 
 # def sendBluelightData():
@@ -278,6 +335,7 @@ def sendDBData():
 #     return blueLightList
 
 
+
 # Function to map block locations to block coords
 def getBlockAndPredictionDicts():
     import csv 
@@ -287,15 +345,6 @@ def getBlockAndPredictionDicts():
         predictionDict = csv.DictReader(f)
     return blockCoordDict, predictionDict
     
-
-@socketio.on('disconnect', namespace='/test')
-def test_disconnect():
-    global thread, thread_stop_event
-    print('Client disconnected')
-    # test_connect()
-    # thread_stop_event.set()
-    # thread.join()
-    # print('All threads killed')
 
 
 if __name__ == '__main__':
