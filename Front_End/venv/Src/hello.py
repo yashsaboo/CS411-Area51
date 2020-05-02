@@ -34,15 +34,15 @@ DBPASS = ""
 DBUSER = "root"
 
 
+query2CrimeList = []
 # =============================== FLASK: MAIN DATA ===============================
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     # only by sending this page first will the client be connected to the socketio instance
-    crimeDBData  = sendDBData()
-    # complexQ2Data = complexQuery2('3',"""'2015-01-01'""")
-    # blueLightData = sendBluelightData()
-    return render_template('track1index.html', crimeDBData=crimeDBData) #, blueLightData=blueLightData)
+    crimeDBData  = sendDBData()     
+    query1Coords, query1Count = complexQuery1()
+    return render_template('track1index.html', crimeDBData=crimeDBData, query1Coords=query1Coords, query1Count=query1Count, query2CrimeList=query2CrimeList)
 
 
 # TODO: Jonathan will add Xin's predictions to site
@@ -50,8 +50,12 @@ def index():
 def predicted():
     # Get (1) dictionary mapping block ID to coords and (2) dictionary mapping block ID to crime predictions
     blockDict, predictDict = getBlockAndPredictionDicts()
+    # print(type(predictDict), '\n', predictDict)
+    # print(type(blockDict), '\n', blockDict)
+    
+
     # only by sending this page first will the client be connected to the socketio instance
-    return render_template('predicted.html', blockToCoord=blockDict, predictedDBData=predictDict)
+    return render_template('predicted.html', predictedDBData=predictDict, blockToCoord=blockDict)
 
 # INSERT data into DB
 @app.route('/insert/', methods=['POST'])
@@ -120,10 +124,12 @@ def search():
 def query2():
     if request.method == 'POST':
         print("Executing Complex Query 2")
-        data = request.get_json()
-        numCrimes = str(data['numOfCrimes'])
-        crimeAfterDate = str(data['crimeTime'])
-
+        
+        # data = request.get_json()
+        numCrimes = str(request.form['topCrimeNum'])#str(data['numOfCrimes'])
+        crimeAfterDate = str(request.form['topCrimeTime'])#str(data['crimeTime'])
+        crimeTime = crimeAfterDate.split('T')
+        crimeAfterDate = crimeTime[0]
         # get results of query
         query2CrimeList = complexQuery2(numCrimes, crimeAfterDate)
         # print(query2CrimeList)
@@ -280,6 +286,46 @@ def sendDBData():
 
     return listOfListForMap
 
+
+# function for complex query 1
+def complexQuery1():
+    query = """select h.blockID, count(h.incidentID)
+                from Crime c inner join happensAt h on c.incidentID = h.incidentID
+                where c.occuredAt between '2013-01-01' and '2020-12-31' and h.blockID != 0
+                group by h.blockID
+                order by count(h.incidentID) """
+
+    blockQuery = """select blockID, topLeft_lat, topLeft_lon, topRight_lat, topRight_lon, bottomLeft_lat, bottomLeft_lon, bottomRight_lat, bottomRight_lon
+                from blocklocation"""
+    
+    queryTuples = executeSingleQueryWhichReturns(query)
+    blockQueryTuples = executeSingleQueryWhichReturns(blockQuery)
+   
+    # dictionary of block ID to avg lat, avg lon
+    blockCoordDict = {}
+    for row in blockQueryTuples:
+        blockID = row[0]
+        avgLat = (row[1]+row[3]+row[5]+row[7])/4
+        avgLon = (row[2]+row[4]+row[6]+row[8])/4
+        blockCoordDict[blockID] = [avgLat, avgLon]
+
+    coordinates = []
+    numberOfCrimes = []
+
+    # blockDict, _ = getBlockAndPredictionDicts() # blockDict = {blockID: all 8 lat and lons}
+
+    for row in queryTuples:
+        blockID = row[0]
+        avgCoords = blockCoordDict.get(blockID, 0)
+        avgLat = avgCoords[0]
+        avgLon = avgCoords[1]
+        coordinates.append(avgLat)
+        coordinates.append(avgLon)
+        numberOfCrimes.append(row[1])
+
+    return coordinates, numberOfCrimes
+
+
 # function for complex query 2
 # numCrimes is the number of crimes to be shown
 # afterDate is the date after which these crimes should occur
@@ -314,6 +360,8 @@ def complexQuery2(numCrimes, afterDate):
 
 
 
+
+
 # function to query safecall DB and get blue light coordinates 
 # def sendBluelightData():
 #     blueLightQuery = """
@@ -339,12 +387,21 @@ def complexQuery2(numCrimes, afterDate):
 # Function to map block locations to block coords
 def getBlockAndPredictionDicts():
     import csv 
-    with open(r'\Src\DatabaseInteractionScripts\Data\BlockLocation.csv', 'r') as f:
+    blocks, predictions = {}, {}
+    with open(r'C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\DatabaseInteractionScripts\Data\BlockLocation.csv', 'r') as f:
         blockCoordDict = csv.DictReader(f)
-    with open(r'\Src\DatabaseInteractionScripts\Data\predictions.csv', 'r') as f:
+        for row in blockCoordDict:
+            blocks[row['blockID']] = [row['topLeft_lat'], row['topLeft_lon'], row['topRight_lat'], row['topRight_lon'], row['bottomLeft_lat'], row['bottomLeft_lon'], row['bottomRight_lat'], row['bottomRight_lon']]
+    with open(r'C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\DatabaseInteractionScripts\Data\prediction.csv', 'r') as f:
         predictionDict = csv.DictReader(f)
-    return blockCoordDict, predictionDict
+        for row in predictionDict:
+            predictions[row['BlockId']] = [row['2013 CrimeCount'], row['2014 CrimeCount'], row['2015 CrimeCount'], row['2016 CrimeCount'], row['2017 CrimeCount'], row['2018 CrimeCount'], row['2019 CrimeCount'], row['Prediction CrimeCount']]
+    return blocks, predictions
     
+
+
+
+
 
 
 if __name__ == '__main__':
