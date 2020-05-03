@@ -72,7 +72,7 @@ WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete a
 To run the Flask application, please follow the instructions on /Front_End/Setup_Instructions/Instructions.md
 
 ### Contributors: 
-- [Yash Saboo](https://github.com/yashsaboo)
 - [Jonathan Osei-Owusu](https://github.com/joseio)
 - [Stephanie Lin](https://github.com/stephclin)
 - [Xin Chen](https://github.com/xinc66)
+- [Yash Saboo](https://github.com/yashsaboo)
