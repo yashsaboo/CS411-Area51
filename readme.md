@@ -69,7 +69,7 @@ GetDataForWebsiteMap.ipynb: Gets data from database to serve the website request
 
 WebsiteToDB.ipynb: Performs queries on database such as insert, update, delete and select. Multiple wrapper functions are written to perform those tasks with various use cases. Please check the input/output instructions given and also it's looks pretty in Jupyter Notebook.
 
-To run the Flask application, please follow the instructions on /Front_End/Setup_Instructions/
+To run the Flask application, please follow the instructions on /Front_End/Setup_Instructions/Instructions.md
 
 ### Contributors: 
 - [Yash Saboo](https://github.com/yashsaboo)
