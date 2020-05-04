@@ -391,21 +391,16 @@ def complexQuery2(numCrimes, afterDate):
 def getBlockAndPredictionDicts():
     import csv 
     blocks, predictions = {}, {}
-    with open(r'C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\DatabaseInteractionScripts\Data\BlockLocation.csv', 'r') as f:
+    with open(r'C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\DatabaseInteractionScripts\Data\BlockLocation.csv', 'r') as f:
         blockCoordDict = csv.DictReader(f)
         for row in blockCoordDict:
             blocks[row['blockID']] = [row['topLeft_lat'], row['topLeft_lon'], row['topRight_lat'], row['topRight_lon'], row['bottomLeft_lat'], row['bottomLeft_lon'], row['bottomRight_lat'], row['bottomRight_lon']]
-    with open(r'C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\DatabaseInteractionScripts\Data\prediction.csv', 'r') as f:
+    with open(r'C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\DatabaseInteractionScripts\Data\prediction.csv', 'r') as f:
         predictionDict = csv.DictReader(f)
         for row in predictionDict:
             predictions[row['BlockId']] = [row['2013 CrimeCount'], row['2014 CrimeCount'], row['2015 CrimeCount'], row['2016 CrimeCount'], row['2017 CrimeCount'], row['2018 CrimeCount'], row['2019 CrimeCount'], row['Prediction CrimeCount']]
     return blocks, predictions
     
-
-
-
-
-
 
 if __name__ == '__main__':
     socketio.run(app)

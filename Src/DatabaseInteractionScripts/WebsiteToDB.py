@@ -31,7 +31,7 @@ Created on Thu Apr 9
 # 
 #                 For instance,
 #                             {'incidentID': 'II1300563',
-#                              'reportedAt': '20135-1-1 11:39:00',
+#                              'reportedAt': '2013-1-1 11:39:00',
 #                              'occuredAt': '2013-1-1 11:39:00',
 #                              'disposition': 'ARREST',
 #                              'type': 'POSSESSION OF CANNABIS test5',
@@ -90,8 +90,8 @@ import numpy as np
 # In[3]:
 
 
-csvFilePath = r"C:\Users\Yash\Desktop\Courses\CS411\Project Track 1\Src\DatabaseInteractionScripts\Data"
-
+csvFilePath = r"C:\Users\steph\Documents\School\Illinois\CS 411\Track 1\CS411-Area51\Src\DatabaseInteractionScripts\Data"
+# csvFilePath = r'\Src\DatabaseInteractionScripts\Data\BlockLocation.csv'
 
 # ### Sanity Checker
 
@@ -172,7 +172,6 @@ def findCrimeTypeID_InsertIfNotPresent(crimeType):
         #Find new crimeTypeID
         sqlQeueryForFindingLastID = """
                     SELECT * FROM CrimeType ORDER BY crimeTypeID DESC LIMIT 1
-
                     """
         lastIDResult = dbhelp.executeSingleQueryWhichReturns(sqlQeueryForFindingLastID)
     #     print(lastIDResult)
@@ -269,7 +268,7 @@ def insertNewData(msg):
         
         print("Inserted the new row")
         return True
-    except e:
+    except Exception as e:
         print("Couldn't insert the new row")
         print(e)
         return False
@@ -624,7 +623,7 @@ def updateDataUsingIncidentID(columnNameOfUpdateRecord, incidentIDValueOfUpdateR
 # In[47]:
 
 
-def serchData(incidentID):
+def searchData(incidentID):
     
     sqlQeueryForSearchUsingIncidentID = """
                 select *

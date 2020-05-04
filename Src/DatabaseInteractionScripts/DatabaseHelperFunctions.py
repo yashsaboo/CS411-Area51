@@ -86,7 +86,3 @@ def executeSingleQueryWhichReturns(sqlquery):
 
 
 # In[ ]:
-
-
-
-
